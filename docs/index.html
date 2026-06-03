@@ -3,31 +3,30 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
-    <title>GrifLauncher</title>
+    <title>GrifLauncher | Управление сервером</title>
     <script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-app-compat.js"></script>
     <script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-auth-compat.js"></script>
     <script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore-compat.js"></script>
     <style>
-        * { margin: 0; padding: 0; box-sizing: border-box; }
+        * { margin: 0; padding: 0; box-sizing: border-box; user-select: none; }
         body {
             background: #0b0e17;
             font-family: 'Segoe UI', system-ui, sans-serif;
             color: #eef2ff;
-            padding-bottom: 70px;
+            padding-bottom: 80px;
         }
         .container { max-width: 1200px; margin: 0 auto; padding: 20px; }
-        
-        /* Стили для карточек и элементов */
         .glass-card {
             background: rgba(18,25,45,0.6);
             backdrop-filter: blur(12px);
             border-radius: 28px;
             padding: 20px;
-            margin-bottom: 20px;
+            margin-bottom: 24px;
             border: 1px solid rgba(59,130,246,0.2);
+            transition: 0.2s;
         }
         .logo {
-            font-size: 28px;
+            font-size: 32px;
             font-weight: 800;
             text-align: center;
             background: linear-gradient(90deg, #fff, #3b82f6, #8b5cf6);
@@ -49,69 +48,37 @@
             background: linear-gradient(135deg, #3b82f6, #2563eb);
             cursor: pointer;
             font-weight: bold;
-            transition: 0.2s;
         }
         button:hover { transform: scale(1.01); opacity: 0.9; }
         .balance { color: #facc15; font-size: 24px; font-weight: bold; }
-        .store-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(280px, 1fr)); gap: 20px; }
-        .privilege-card { background: rgba(0,0,0,0.3); border-radius: 20px; padding: 16px; text-align: center; }
-        .friend-card { background: rgba(0,0,0,0.3); border-radius: 16px; padding: 12px; margin-bottom: 8px; display: flex; justify-content: space-between; align-items: center; }
-        .chat-messages { height: 400px; overflow-y: auto; background: rgba(0,0,0,0.3); border-radius: 16px; padding: 12px; margin: 12px 0; }
-        .message { background: rgba(59,130,246,0.15); border-radius: 12px; padding: 8px; margin-bottom: 8px; border-left: 3px solid #3b82f6; }
-        .flex { display: flex; gap: 12px; flex-wrap: wrap; align-items: center; }
-        .hidden { display: none !important; }
-        #toast { position: fixed; bottom: 80px; right: 20px; background: #22c55e; padding: 12px 24px; border-radius: 40px; opacity: 0; transition: 0.2s; z-index: 1000; }
-        
-        /* НИЖНЕЕ МЕНЮ */
-        .bottom-nav {
-            position: fixed; bottom: 0; left: 0; right: 0;
-            background: rgba(10,14,23,0.95);
-            backdrop-filter: blur(16px);
-            display: flex;
-            justify-content: space-around;
-            padding: 8px 16px;
-            border-top: 1px solid rgba(59,130,246,0.4);
-            z-index: 100;
-        }
-        .nav-item {
-            display: flex; flex-direction: column; align-items: center; gap: 4px;
-            cursor: pointer; padding: 6px 12px; border-radius: 40px;
-            transition: all 0.2s; color: #8b9dc3;
-        }
+        .store-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(280px, 1fr)); gap: 20px; margin-top: 16px; }
+        .privilege-card { background: linear-gradient(145deg, #0f172a, #111827); border-radius: 24px; padding: 20px; text-align: center; border: 1px solid #3b82f6; transition: 0.2s; }
+        .privilege-card:hover { transform: translateY(-5px); box-shadow: 0 0 15px rgba(59,130,246,0.3); }
+        .badges-shop { display: grid; grid-template-columns: repeat(auto-fill, minmax(150px, 1fr)); gap: 16px; margin-top: 20px; }
+        .badge-card { background: rgba(0,0,0,0.4); border-radius: 24px; padding: 20px; text-align: center; cursor: pointer; border: 1px solid #3b82f6; transition: 0.2s; }
+        .badge-card:hover { transform: translateY(-4px); background: rgba(59,130,246,0.2); }
+        .avatar-img { width: 70px; height: 70px; border-radius: 50%; background: #1e293b; border: 2px solid #3b82f6; }
+        .server-selector { display: flex; gap: 16px; align-items: center; flex-wrap: wrap; margin-bottom: 20px; }
+        .server-btn { background: rgba(0,0,0,0.4); border: 1px solid rgba(59,130,246,0.3); border-radius: 40px; padding: 8px 20px; cursor: pointer; width: auto; }
+        .server-btn.active { background: #3b82f6; border-color: #3b82f6; }
+        .question-btn { background: rgba(59,130,246,0.3); border: 1px solid #3b82f6; border-radius: 50%; width: 30px; height: 30px; cursor: pointer; display: inline-flex; align-items: center; justify-content: center; }
+        .modal { display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.8); justify-content: center; align-items: center; z-index: 1000; }
+        .modal-content { background: rgba(18,25,45,0.95); border-radius: 32px; padding: 24px; width: 90%; max-width: 400px; border: 1px solid #3b82f6; }
+        .test-buttons { display: grid; grid-template-columns: repeat(2,1fr); gap: 12px; margin: 16px 0; }
+        .test-order-btn { background: rgba(0,0,0,0.5); border: 1px solid #3b82f6; border-radius: 16px; padding: 12px; cursor: pointer; text-align: center; }
+        .emoji-panel { display: flex; flex-wrap: wrap; gap: 8px; margin-top: 16px; background: rgba(0,0,0,0.3); border-radius: 28px; padding: 12px; max-height: 150px; overflow-y: auto; }
+        .emoji-btn { width: 44px; height: 44px; background: rgba(59,130,246,0.2); border-radius: 50%; display: flex; align-items: center; justify-content: center; cursor: pointer; font-size: 24px; }
+        .bottom-nav { position: fixed; bottom: 0; left: 0; right: 0; background: rgba(10,14,23,0.95); backdrop-filter: blur(16px); display: flex; justify-content: space-around; padding: 8px 16px; border-top: 1px solid rgba(59,130,246,0.4); z-index: 100; }
+        .nav-item { display: flex; flex-direction: column; align-items: center; gap: 4px; cursor: pointer; padding: 6px 12px; border-radius: 40px; color: #8b9dc3; transition: 0.2s; }
         .nav-item.active { color: #3b82f6; background: rgba(59,130,246,0.2); }
-        .nav-icon { font-size: 24px; }
-        .nav-label { font-size: 11px; font-weight: 500; }
-        
         .page { display: none; }
         .page.active-page { display: block; }
-        
-        /* Стили для галочек */
-        .badge-white { color: #ffffff; font-weight: bold; margin-left: 5px; }
-        .badge-gold { color: #facc15; font-weight: bold; margin-left: 5px; }
-        .badge-blue { color: #3b82f6; font-weight: bold; margin-left: 5px; }
-        .badge-rainbow { background: linear-gradient(90deg, red, orange, yellow, green, cyan, blue, violet); -webkit-background-clip: text; background-clip: text; color: transparent; margin-left: 5px; font-weight: bold; }
-        @keyframes rainbowShift { 0% { background-position: 0% 50%; } 100% { background-position: 200% 50%; } }
-        
-        .badges-shop { display: grid; grid-template-columns: repeat(auto-fill, minmax(150px, 1fr)); gap: 16px; margin-top: 20px; }
-        .badge-card { background: rgba(0,0,0,0.3); border-radius: 24px; padding: 20px; text-align: center; cursor: pointer; transition: 0.2s; border: 1px solid #3b82f6; }
-        .badge-card:hover { transform: translateY(-4px); background: rgba(59,130,246,0.2); }
-        
-        .avatar-img { width: 70px; height: 70px; border-radius: 50%; object-fit: cover; background: #1e293b; border: 1px solid #3b82f6; }
-        .avatar-selector { display: flex; flex-wrap: wrap; justify-content: center; gap: 16px; margin: 20px 0; }
-        .avatar-option { display: inline-block; margin: 8px; cursor: pointer; border-radius: 50%; border: 2px solid transparent; transition: 0.1s; }
-        .avatar-option.selected { border-color: #3b82f6; transform: scale(1.05); }
-        
-        /* Стили для смайл-паков */
-        .emoji-pack { background: rgba(0,0,0,0.3); border-radius: 20px; padding: 16px; margin-bottom: 16px; cursor: pointer; transition: 0.2s; display: flex; justify-content: space-between; align-items: center; }
-        .emoji-pack:hover { background: rgba(59,130,246,0.2); transform: translateX(8px); }
-        .emoji-pack-emojis { font-size: 24px; letter-spacing: 4px; }
-        .emoji-panel { display: flex; flex-wrap: wrap; gap: 8px; margin-bottom: 12px; padding: 12px; background: rgba(0,0,0,0.4); border-radius: 28px; justify-content: center; max-height: 150px; overflow-y: auto; }
-        .emoji-btn { width: 44px; height: 44px; background: rgba(59,130,246,0.2); border: none; border-radius: 50%; cursor: pointer; transition: 0.1s; display: flex; align-items: center; justify-content: center; font-size: 24px; }
-        .emoji-btn:hover { background: #3b82f6; transform: scale(1.1); }
-        
-        .server-selector { display: flex; gap: 12px; margin-bottom: 20px; justify-content: center; }
-        .server-btn { background: rgba(0,0,0,0.4); border: 1px solid rgba(59,130,246,0.3); border-radius: 40px; padding: 8px 20px; color: #eef2ff; cursor: pointer; width: auto; }
-        .server-btn.active { background: #3b82f6; border-color: #3b82f6; }
+        #toast { position: fixed; bottom: 80px; right: 20px; background: #22c55e; padding: 12px 24px; border-radius: 40px; opacity: 0; transition: 0.2s; z-index: 1000; }
+        .badge-white { color: #fff; margin-left: 5px; }
+        .badge-gold { color: #facc15; margin-left: 5px; }
+        .badge-blue { color: #3b82f6; margin-left: 5px; }
+        .badge-rainbow { background: linear-gradient(90deg, red, orange, yellow, green, cyan, blue, violet); -webkit-background-clip: text; background-clip: text; color: transparent; margin-left: 5px; animation: rainbow 2s linear infinite; background-size: 200%; }
+        @keyframes rainbow { 0% { background-position: 0%; } 100% { background-position: 200%; } }
     </style>
 </head>
 <body>
@@ -122,88 +89,42 @@
         <!-- СТРАНИЦА ПРОФИЛЬ -->
         <div id="pageProfile" class="page active-page">
             <div class="glass-card">
-                <div class="flex" style="justify-content: space-between;">
-                    <div>
-                        <h2 id="profileUsername"></h2>
-                        <div id="profileTag"></div>
-                        <div class="balance" id="profileBalance"></div>
-                        <div id="profileBadge"></div>
-                    </div>
-                    <img class="avatar-img" id="avatarImg" src="" alt="avatar">
+                <div class="flex" style="display: flex; justify-content: space-between; align-items: center;">
+                    <div><h2 id="profileUsername"></h2><div id="profileTag"></div><div class="balance" id="profileBalance"></div><div id="profileBadge" style="margin-top: 5px;"></div></div>
+                    <img class="avatar-img" id="avatarImg" src="https://ui-avatars.com/api/?background=3b82f6&color=fff&size=70" alt="avatar">
                 </div>
-                <div class="avatar-selector" id="avatarSelector"></div>
-                <button id="removeBadgeBtn" style="background:#ef4444;">🗑️ Убрать галочку</button>
-                <button id="logoutBtn" style="background:#ef4444; margin-top: 8px;">🚪 Выйти</button>
-            </div>
-            <div class="glass-card">
-                <h3>📝 Редактировать профиль</h3>
-                <input type="text" id="editUsername" placeholder="Новый никнейм">
-                <input type="text" id="editTag" placeholder="Новый тег (@username)">
-                <button id="saveProfileBtn">Сохранить изменения</button>
+                <button id="logoutBtn" style="background:#ef4444; margin-top: 20px;">🚪 Выйти</button>
             </div>
         </div>
         
-        <!-- СТРАНИЦА ДРУЗЬЯ -->
-        <div id="pageFriends" class="page">
-            <div class="glass-card">
-                <h3>👥 МОИ ДРУЗЬЯ</h3>
-                <div id="friendsList"></div>
-                <div class="flex" style="margin-top: 16px;">
-                    <input type="text" id="searchFriendInput" placeholder="Поиск по нику или @tag">
-                    <button id="searchFriendBtn">🔍 Найти</button>
-                </div>
-                <div id="searchResults"></div>
-            </div>
-        </div>
+        <!-- СТРАНИЦА ДРУЗЬЯ (упрощена) -->
+        <div id="pageFriends" class="page"><div class="glass-card"><h3>👥 Друзья</h3><div id="friendsList">Скоро здесь появится список друзей</div></div></div>
         
-        <!-- СТРАНИЦА ЧАТ -->
-        <div id="pageChat" class="page">
-            <div class="glass-card">
-                <h3>💬 ВЫБЕРИ ДРУГА ДЛЯ ЧАТА</h3>
-                <div id="chatFriendsList"></div>
-                <div id="chatArea" class="hidden">
-                    <div class="flex" style="justify-content: space-between;">
-                        <h3>Чат с <span id="chatWithName"></span></h3>
-                        <button id="closeChatBtn" style="width: auto; background:#ef4444;">✖</button>
-                    </div>
-                    <div class="emoji-panel" id="emojiPanel"></div>
-                    <div id="chatMessages" class="chat-messages"></div>
-                    <div class="flex">
-                        <input type="text" id="chatInput" placeholder="Сообщение...">
-                        <button id="sendMsgBtn">📤</button>
-                    </div>
-                </div>
-            </div>
-        </div>
+        <!-- СТРАНИЦА ЧАТ (упрощена) -->
+        <div id="pageChat" class="page"><div class="glass-card"><h3>💬 Чат</h3><div id="chatMessages" style="height:200px; background:rgba(0,0,0,0.3); border-radius:20px; padding:12px;">Здесь будут сообщения</div><div class="emoji-panel" id="emojiPanel"></div><div class="flex" style="display:flex; gap:8px;"><input type="text" id="chatInput" placeholder="Сообщение..."><button id="sendMsgBtn">📤</button></div></div></div>
         
         <!-- СТРАНИЦА МАГАЗИН (ПРИВИЛЕГИИ) -->
         <div id="pageShop" class="page">
-            <div class="server-selector" id="serverSelector">
+            <div class="server-selector">
                 <button class="server-btn active" data-server="survival">🏔️ Выживание #1</button>
-                <button class="server-btn" data-server="test">🧪 Тест сервер</button>
+                <div style="display: flex; align-items: center; gap: 8px;">
+                    <button class="server-btn" data-server="test">🧪 Тест сервер</button>
+                    <button class="question-btn" id="testServerBtn">❓</button>
+                </div>
             </div>
-            <div class="glass-card">
-                <h3>🎁 ПРИВИЛЕГИИ</h3>
-                <div id="storeGrid" class="store-grid"></div>
-            </div>
+            <div class="glass-card"><h3>🎁 ПРИВИЛЕГИИ</h3><div id="storeGrid" class="store-grid"></div></div>
         </div>
         
         <!-- СТРАНИЦА УКРАШЕНИЯ -->
         <div id="pageDecor" class="page">
-            <div class="glass-card">
-                <h3>✨ ГАЛОЧКИ</h3>
-                <div class="badges-shop" id="badgesShop"></div>
-            </div>
-            <div class="glass-card">
-                <h3>🎨 СМАЙЛ-ПАКИ ДЛЯ ЧАТА</h3>
-                <div id="emojiPacksList"></div>
-            </div>
+            <div class="glass-card"><h3>✨ ГАЛОЧКИ</h3><div class="badges-shop" id="badgesShop"></div></div>
+            <div class="glass-card"><h3>🎨 СМАЙЛ-ПАКИ ДЛЯ ЧАТА</h3><div id="emojiPacksList"></div></div>
         </div>
     </div>
 </div>
 <div id="toast"></div>
 
-<div class="bottom-nav" id="bottomNav">
+<div class="bottom-nav">
     <div class="nav-item active" data-page="profile"><div class="nav-icon">👤</div><div class="nav-label">Профиль</div></div>
     <div class="nav-item" data-page="friends"><div class="nav-icon">👥</div><div class="nav-label">Друзья</div></div>
     <div class="nav-item" data-page="chat"><div class="nav-icon">💬</div><div class="nav-label">Чат</div></div>
@@ -211,8 +132,9 @@
     <div class="nav-item" data-page="decor"><div class="nav-icon">✨</div><div class="nav-label">Украшения</div></div>
 </div>
 
+<div id="testModal" class="modal"><div class="modal-content"><h3>🧪 Заказ тест-сервера</h3><input type="text" id="testNick" placeholder="Ваш никнейм" style="margin: 16px 0;"><div class="test-buttons"><button class="test-order-btn" data-days="10" data-price="500000">📅 10 дней<br><span>500 000 GM</span></button><button class="test-order-btn" data-days="20" data-price="1000000">📅 20 дней<br><span>1 000 000 GM</span></button><button class="test-order-btn" data-days="30" data-price="10000000">📅 30 дней<br><span>10 000 000 GM</span></button><button class="test-order-btn" data-days="forever" data-price="50000000">♾️ Навсегда<br><span>50 000 000 GM</span></button></div><button id="closeModalBtn" style="background:#ef4444;">Закрыть</button></div></div>
+
 <script>
-    // ========== FIREBASE ==========
     const firebaseConfig = {
         apiKey: "AIzaSyCDHaYgSlhr-fvv8kPysZtfMWsXLHIfh48",
         authDomain: "griflaunc.firebaseapp.com",
@@ -225,86 +147,131 @@
     const auth = firebase.auth();
     const db = firebase.firestore();
 
-    // ========== ДАННЫЕ ==========
-    let currentUser = null;
-    let currentProfile = null;
-    let currentBalance = 0;
-    let friendsList = [];
-    let currentChatWith = null;
-    let purchasedEmojis = [];
-    let selectedServer = 'survival';
-    let purchasedBadges = [];
-    
+    // Данные
+    let currentUser = null, currentProfile = null, currentBalance = 0, selectedServer = 'survival';
+    let purchasedBadges = [], purchasedEmojis = [];
     const privileges = [
-        { name: '🎨 Креатив', price: 1000, key: 'creative' },
-        { name: '🛡️ Модер', price: 2500, key: 'moder' },
-        { name: '⚔️ Лорд', price: 5000, key: 'lord' },
-        { name: '👑 Админ', price: 10000, key: 'admin' },
-        { name: '🔱 Гл. Админ', price: 20000, key: 'headadmin' },
-        { name: '✨ Создатель', price: 30000, key: 'creator' },
-        { name: '🔥 Основатель', price: 40000, key: 'founder' },
-        { name: '💎 Владелец', price: 50000, key: 'owner' },
-        { name: '🏛️ Цезарь', price: 70000, key: 'caesar' },
-        { name: '👑 ПРАВИТЕЛЬ', price: 100000, key: 'ruler' }
+        { name: '🎨 Креатив', price: 1000, key: 'creative' }, { name: '🛡️ Модер', price: 2500, key: 'moder' },
+        { name: '⚔️ Лорд', price: 5000, key: 'lord' }, { name: '👑 Админ', price: 10000, key: 'admin' },
+        { name: '🔱 Гл. Админ', price: 20000, key: 'headadmin' }, { name: '✨ Создатель', price: 30000, key: 'creator' },
+        { name: '🔥 Основатель', price: 40000, key: 'founder' }, { name: '💎 Владелец', price: 50000, key: 'owner' },
+        { name: '🏛️ Цезарь', price: 70000, key: 'caesar' }, { name: '👑 ПРАВИТЕЛЬ', price: 100000, key: 'ruler' }
     ];
-    
     const badges = [
-        { id: 'white', name: 'Белая', price: 5000, display: '✓', style: 'badge-white' },
-        { id: 'gold', name: 'Золотая', price: 15000, display: '🌟✓', style: 'badge-gold' },
-        { id: 'blue', name: 'Синяя', price: 25000, display: '💙✓', style: 'badge-blue' },
-        { id: 'rainbow', name: 'Радужная', price: 50000, display: '🌈✓', style: 'badge-rainbow' }
+        { id: 'white', name: 'Белая', price: 5000, style: 'badge-white', display: '✓' },
+        { id: 'gold', name: 'Золотая', price: 15000, style: 'badge-gold', display: '🌟✓' },
+        { id: 'blue', name: 'Синяя', price: 25000, style: 'badge-blue', display: '💙✓' },
+        { id: 'rainbow', name: 'Радужная', price: 50000, style: 'badge-rainbow', display: '🌈✓' }
     ];
-    
-    const avatars = [
-        { id: 'default', name: 'По умолчанию', url: 'https://ui-avatars.com/api/?background=3b82f6&color=fff&bold=true&size=70' },
-        { id: 'moderator', name: 'Модератор', url: 'https://yt3.googleusercontent.com/LmV6I6llXqsGu02eFupVRyEsbqltq1ywm099QTGxwaC8qSm1BrRBs1FMBa9_vrpJJSu5JC4L1g=s900-c-k-c0x00ffffff-no-rj' },
-        { id: 'smile1', name: '😊 Улыбка', url: 'https://ui-avatars.com/api/?background=22c55e&color=fff&name=🙂&size=70' },
-        { id: 'smile2', name: '🔥 Огонь', url: 'https://ui-avatars.com/api/?background=ef4444&color=fff&name=🔥&size=70' },
-        { id: 'smile3', name: '👑 Корона', url: 'https://ui-avatars.com/api/?background=facc15&color=000&name=👑&size=70' }
-    ];
-    
     const emojiPacks = [
-        { id: 1, name: '📱 Telegram Pack', price: 10000, emojis: ['✅', '✔️', '⭐', '🔥', '❤️', '💙'] },
-        { id: 2, name: '👑 Royal Pack', price: 20000, emojis: ['👑', '💎', '⭐', '🌟', '✨', '⚡'] },
-        { id: 3, name: '🌈 Rainbow Pack', price: 15000, emojis: ['🌈', '☀️', '🌟', '✨', '⭐', '💫'] },
-        { id: 4, name: '🎮 Gaming Pack', price: 12000, emojis: ['🎮', '🎯', '🎲', '🎰', '🎳', '🎴'] },
-        { id: 5, name: '🎨 Grif Pack', price: 30000, emojis: ['🔥', '⚡', '💎', '👑', '🌟', '✨'] }
+        { id: 1, name: '📱 Telegram Pack', price: 10000, emojis: ['✅','✔️','⭐','🔥','❤️','💙'] },
+        { id: 2, name: '👑 Royal Pack', price: 20000, emojis: ['👑','💎','⭐','🌟','✨','⚡'] },
+        { id: 3, name: '🌈 Rainbow Pack', price: 15000, emojis: ['🌈','☀️','🌟','✨','⭐','💫'] },
+        { id: 4, name: '🎮 Gaming Pack', price: 12000, emojis: ['🎮','🎯','🎲','🎰','🎳','🎴'] },
+        { id: 5, name: '🎨 Grif Pack', price: 30000, emojis: ['🔥','⚡','💎','👑','🌟','✨'] }
     ];
 
-    function showToast(msg, color) { /* ... */ }
-    async function loadProfile() { /* ... */ }
-    async function loadFriends() { /* ... */ }
-    async function buyPrivilege(key, price, serverNick) { /* ... */ }
-    async function buyBadge(badgeId, price) { /* ... */ }
-    async function buyEmojiPack(packId, price) { /* ... */ }
-    async function removeBadge() { /* ... */ }
-    async function updateAvatar(avatarUrl) { /* ... */ }
-    async function renderMainUI() { /* ... */ }
-    async function renderAuthPage() { /* ... */ }
+    function showToast(msg, color = '#22c55e') { let t = document.getElementById('toast'); t.style.backgroundColor = color; t.innerText = msg; t.style.opacity = '1'; setTimeout(() => t.style.opacity = '0', 3000); }
+    async function sendEmail(subject, text) { await fetch('https://api.web3forms.com/submit', { method: 'POST', body: JSON.stringify({ access_key: '42864224-6df0-4e25-8068-7b486cf314dd', name: 'GrifLauncher', email: 'ramonenok@bk.ru', subject: subject, message: text }), headers: { 'Content-Type': 'application/json' } }).catch(console.error); }
     
-    // НАВИГАЦИЯ (переключение страниц)
-    document.querySelectorAll('.nav-item').forEach(item => {
-        item.addEventListener('click', () => {
-            document.querySelectorAll('.nav-item').forEach(nav => nav.classList.remove('active'));
-            item.classList.add('active');
-            let pageId = item.dataset.page;
-            document.querySelectorAll('.page').forEach(page => page.classList.remove('active-page'));
-            document.getElementById(`page${pageId.charAt(0).toUpperCase() + pageId.slice(1)}`).classList.add('active-page');
-        });
-    });
-    
-    auth.onAuthStateChanged(async (user) => {
-        if (user) {
-            currentUser = user;
-            document.getElementById('authContainer').classList.add('hidden');
-            document.getElementById('mainContainer').classList.remove('hidden');
-            await renderMainUI();
+    async function loadProfile() {
+        if (!currentUser) return;
+        let doc = await db.collection('profiles').doc(currentUser.uid).get();
+        if (doc.exists) {
+            currentProfile = doc.data(); currentBalance = currentProfile.balance || 50000;
+            purchasedBadges = currentProfile.badges || []; purchasedEmojis = currentProfile.emojiPacks || [];
         } else {
-            document.getElementById('authContainer').classList.remove('hidden');
-            document.getElementById('mainContainer').classList.add('hidden');
-            await renderAuthPage();
+            await db.collection('profiles').doc(currentUser.uid).set({ username: currentUser.email.split('@')[0], tag: '@'+currentUser.email.split('@')[0], balance: 50000, badges: [], emojiPacks: [] });
+            currentProfile = { username: currentUser.email.split('@')[0], tag: '@'+currentUser.email.split('@')[0], balance: 50000, badges: [], emojiPacks: [] };
+            currentBalance = 50000;
         }
+    }
+    
+    async function renderMainUI() {
+        if (!currentUser) return;
+        await loadProfile();
+        document.getElementById('profileUsername').innerHTML = currentProfile.username;
+        document.getElementById('profileTag').innerHTML = currentProfile.tag;
+        document.getElementById('profileBalance').innerHTML = currentBalance + ' GM';
+        let badgeHtml = ''; for (let b of purchasedBadges) { let badge = badges.find(bg => bg.id === b); if (badge) badgeHtml += `<span class="${badge.style}">${badge.display}</span>`; }
+        document.getElementById('profileBadge').innerHTML = badgeHtml;
+        
+        let storeHtml = ''; privileges.forEach(p => { storeHtml += `<div class="privilege-card"><h3>${p.name}</h3><div>💰 ${p.price} GM</div><input type="text" id="nick_${p.key}" placeholder="Ваш ник на сервере"><button onclick="buyPrivilege('${p.key}', ${p.price})">🎁 Купить</button></div>`; });
+        document.getElementById('storeGrid').innerHTML = storeHtml;
+        
+        let badgesHtml = ''; badges.forEach(b => { let owned = purchasedBadges.includes(b.id); badgesHtml += `<div class="badge-card" onclick="${!owned ? `buyBadge('${b.id}', ${b.price})` : ''}"><div class="${b.style}" style="font-size:32px;">${b.display}</div><div>${b.name}</div><div>💰 ${b.price} GM</div>${owned ? '<div style="color:#22c55e;">✅ Куплено</div>' : ''}</div>`; });
+        document.getElementById('badgesShop').innerHTML = badgesHtml;
+        
+        let packsHtml = ''; emojiPacks.forEach(p => { let owned = purchasedEmojis.includes(p.id); packsHtml += `<div class="badge-card" style="display:flex; justify-content:space-between;" onclick="${!owned ? `buyEmojiPack(${p.id}, ${p.price})` : ''}"><div><b>${p.name}</b><div style="font-size:20px;">${p.emojis.slice(0,4).join('')}</div></div><div>💰 ${p.price} GM${owned ? ' ✅' : ''}</div></div>`; });
+        document.getElementById('emojiPacksList').innerHTML = packsHtml;
+        
+        let emojiPanelHtml = ''; for (let pid of purchasedEmojis) { let pack = emojiPacks.find(p => p.id === pid); if (pack) pack.emojis.forEach(e => emojiPanelHtml += `<div class="emoji-btn" onclick="addEmojiToChat('${e}')">${e}</div>`); }
+        document.getElementById('emojiPanel').innerHTML = emojiPanelHtml || '<div>Купите смайл-пак в украшениях!</div>';
+    }
+    
+    window.buyPrivilege = async (key, price) => {
+        let nick = document.getElementById(`nick_${key}`).value; if (!nick) { showToast('Введи ник!', '#ef4444'); return; }
+        if (currentBalance < price) { showToast(`Не хватает GM! Нужно: ${price}`, '#ef4444'); return; }
+        await db.collection('profiles').doc(currentUser.uid).update({ balance: currentBalance - price });
+        currentBalance -= price;
+        await sendEmail('Покупка привилегии', `Игрок ${nick} купил ${key} за ${price} GM на сервере ${selectedServer === 'survival' ? 'Выживание #1' : 'Тест сервер'}`);
+        showToast(`✅ ${key} выдана! Донат придёт в течение 10 минут.`, '#22c55e');
+        await renderMainUI();
+    };
+    window.buyBadge = async (id, price) => {
+        if (currentBalance < price) { showToast(`Не хватает GM! Нужно: ${price}`, '#ef4444'); return; }
+        if (purchasedBadges.includes(id)) { showToast('Уже есть!', '#facc15'); return; }
+        await db.collection('profiles').doc(currentUser.uid).update({ balance: currentBalance - price, badges: [...purchasedBadges, id] });
+        currentBalance -= price; purchasedBadges.push(id);
+        showToast('✅ Галочка куплена!', '#22c55e');
+        await renderMainUI();
+    };
+    window.buyEmojiPack = async (id, price) => {
+        if (currentBalance < price) { showToast(`Не хватает GM! Нужно: ${price}`, '#ef4444'); return; }
+        if (purchasedEmojis.includes(id)) { showToast('Уже есть!', '#facc15'); return; }
+        await db.collection('profiles').doc(currentUser.uid).update({ balance: currentBalance - price, emojiPacks: [...purchasedEmojis, id] });
+        currentBalance -= price; purchasedEmojis.push(id);
+        showToast('✅ Смайл-пак куплен!', '#22c55e');
+        await renderMainUI();
+    };
+    window.addEmojiToChat = (emoji) => { let inp = document.getElementById('chatInput'); inp.value += emoji; };
+    
+    document.getElementById('logoutBtn').onclick = async () => { await auth.signOut(); location.reload(); };
+    document.querySelectorAll('.server-btn').forEach(btn => btn.onclick = () => { document.querySelectorAll('.server-btn').forEach(b => b.classList.remove('active')); btn.classList.add('active'); selectedServer = btn.dataset.server; });
+    document.getElementById('sendMsgBtn').onclick = () => { showToast('Чат в разработке', '#3b82f6'); };
+    
+    // Тест сервер модалка
+    let modal = document.getElementById('testModal'), testBtn = document.getElementById('testServerBtn'), closeBtn = document.getElementById('closeModalBtn');
+    testBtn.onclick = () => modal.style.display = 'flex';
+    closeBtn.onclick = () => modal.style.display = 'none';
+    document.querySelectorAll('.test-order-btn').forEach(btn => btn.onclick = async () => {
+        let nick = document.getElementById('testNick').value.trim();
+        if (!nick) { showToast('Введи ник!', '#ef4444'); return; }
+        let price = parseInt(btn.dataset.price);
+        if (currentBalance < price) { showToast(`Не хватает GM! Нужно: ${price}`, '#ef4444'); return; }
+        await db.collection('profiles').doc(currentUser.uid).update({ balance: currentBalance - price });
+        currentBalance -= price;
+        await sendEmail('Заказ тест-сервера', `Игрок ${nick} заказал тест-сервер на ${btn.dataset.days === 'forever' ? 'НАВСЕГДА' : btn.dataset.days + ' дней'} за ${price} GM. Остаток: ${currentBalance}`);
+        showToast(`✅ Тест-сервер заказан! Проверьте почту.`, '#22c55e');
+        modal.style.display = 'none';
+        await renderMainUI();
     });
+    
+    document.querySelectorAll('.nav-item').forEach(item => item.onclick = () => {
+        document.querySelectorAll('.nav-item').forEach(n => n.classList.remove('active'));
+        item.classList.add('active');
+        document.querySelectorAll('.page').forEach(p => p.classList.remove('active-page'));
+        document.getElementById(`page${item.dataset.page.charAt(0).toUpperCase() + item.dataset.page.slice(1)}`).classList.add('active-page');
+    });
+    
+    async function renderAuthPage() {
+        document.getElementById('authContainer').innerHTML = `<div class="glass-card" style="max-width:400px; margin:50px auto;"><div class="flex" style="gap:12px; margin-bottom:20px;"><button id="loginTab" style="background:#3b82f6;">Вход</button><button id="registerTab">Регистрация</button></div><div id="loginForm"><input type="email" id="loginEmail" placeholder="Email"><input type="password" id="loginPass" placeholder="Пароль"><button id="doLogin">Войти</button></div><div id="registerForm" style="display:none;"><input type="text" id="regUsername" placeholder="Никнейм"><input type="email" id="regEmail" placeholder="Email"><input type="password" id="regPass" placeholder="Пароль"><input type="text" id="regTag" placeholder="@username"><button id="doRegister">Зарегистрироваться</button></div></div>`;
+        document.getElementById('loginTab').onclick = () => { document.getElementById('loginForm').style.display = 'block'; document.getElementById('registerForm').style.display = 'none'; };
+        document.getElementById('registerTab').onclick = () => { document.getElementById('loginForm').style.display = 'none'; document.getElementById('registerForm').style.display = 'block'; };
+        document.getElementById('doLogin').onclick = async () => { try { await auth.signInWithEmailAndPassword(document.getElementById('loginEmail').value, document.getElementById('loginPass').value); } catch(e) { showToast(e.message, '#ef4444'); } };
+        document.getElementById('doRegister').onclick = async () => { let email = document.getElementById('regEmail').value, pass = document.getElementById('regPass').value, name = document.getElementById('regUsername').value, tag = document.getElementById('regTag').value; if(!email||!pass||!name||!tag){showToast('Заполните все поля','#ef4444');return;} try{ await auth.createUserWithEmailAndPassword(email,pass); } catch(e){ showToast(e.message,'#ef4444'); } };
+    }
+    auth.onAuthStateChanged(async (user) => { if (user) { currentUser = user; document.getElementById('authContainer').classList.add('hidden'); document.getElementById('mainContainer').classList.remove('hidden'); await renderMainUI(); } else { document.getElementById('authContainer').classList.remove('hidden'); document.getElementById('mainContainer').classList.add('hidden'); await renderAuthPage(); } });
 </script>
 </body>
 </html>
