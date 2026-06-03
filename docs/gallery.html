@@ -4,39 +4,39 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>GrifLauncher | Галерея</title>
-    <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;500;600;700;800&display=swap" rel="stylesheet">
-    <link rel="stylesheet" href="style.css">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    <link rel="stylesheet" href="style.css">
+    <script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-app-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-auth-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore-compat.js"></script>
 </head>
 <body>
-    <div class="header">
-        <div class="nav">
-            <div class="logo">GRIF LAUNCHER</div>
-            <div class="nav-links">
-                <a href="index.html">Главная</a>
-                <a href="index.html#shop">Магазин</a>
-                <a href="wiki.html">База знаний</a>
-                <a href="gallery.html">Галерея</a>
-            </div>
-            <div class="auth-status">
-                <a href="https://griflauncher.tebex.io/account" class="login-link">Войти / Профиль</a>
-            </div>
+    <div class="sidebar">
+        <div class="sidebar-header">GRIF LAUNCHER</div>
+        <div class="sidebar-menu">
+            <a href="index.html" class="menu-item"><i class="fas fa-home"></i> Главная</a>
+            <a href="shop.html" class="menu-item"><i class="fas fa-store"></i> Магазин</a>
+            <a href="chat.html" class="menu-item"><i class="fas fa-comments"></i> Чат</a>
+            <a href="profile.html" class="menu-item"><i class="fas fa-user"></i> Профиль</a>
+            <a href="wiki.html" class="menu-item"><i class="fas fa-book"></i> База знаний</a>
+            <a href="gallery.html" class="menu-item active"><i class="fas fa-image"></i> Галерея</a>
+        </div>
+        <div class="sidebar-footer">
+            <div id="authStatus"></div>
+            <button id="logoutBtn" class="logout-btn"><i class="fas fa-sign-out-alt"></i> Выйти</button>
         </div>
     </div>
 
-    <div class="container">
-        <div class="section-title">🏆 ЛУЧШИЕ РАБОТЫ ИГРОКОВ</div>
+    <div class="main-content">
+        <div class="gallery-header"><h1>🏆 ЛУЧШИЕ РАБОТЫ ИГРОКОВ</h1></div>
         <div class="gallery-grid">
-            <div class="gallery-item"><img src="https://picsum.photos/id/104/400/300" alt=""><p>Эпичный замок</p></div>
-            <div class="gallery-item"><img src="https://picsum.photos/id/106/400/300" alt=""><p>Киберпанк город</p></div>
-            <div class="gallery-item"><img src="https://picsum.photos/id/107/400/300" alt=""><p>Подводная база</p></div>
-            <div class="gallery-item"><img src="https://picsum.photos/id/108/400/300" alt=""><p>Средневековый замок</p></div>
+            <div class="gallery-item"><img src="https://picsum.photos/id/104/400/300" alt=""><p>Эпичный замок от Player1</p><div class="gallery-likes">❤️ 24</div></div>
+            <div class="gallery-item"><img src="https://picsum.photos/id/106/400/300" alt=""><p>Киберпанк город</p><div class="gallery-likes">❤️ 18</div></div>
+            <div class="gallery-item"><img src="https://picsum.photos/id/107/400/300" alt=""><p>Подводная база</p><div class="gallery-likes">❤️ 32</div></div>
+            <div class="gallery-item"><img src="https://picsum.photos/id/108/400/300" alt=""><p>Средневековый замок</p><div class="gallery-likes">❤️ 15</div></div>
         </div>
     </div>
-
-    <footer class="footer">
-        <p>© 2026 GrifLauncher</p>
-    </footer>
     <script src="script.js"></script>
 </body>
 </html>
