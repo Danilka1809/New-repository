@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
-    <title>GrifLauncher | Управление сервером</title>
+    <title>GrifLauncher</title>
     <script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-app-compat.js"></script>
     <script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-auth-compat.js"></script>
     <script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore-compat.js"></script>
@@ -57,7 +57,7 @@
         .badges-shop { display: grid; grid-template-columns: repeat(auto-fill, minmax(150px, 1fr)); gap: 16px; margin-top: 20px; }
         .badge-card { background: rgba(0,0,0,0.4); border-radius: 24px; padding: 20px; text-align: center; cursor: pointer; border: 1px solid #3b82f6; transition: 0.2s; }
         .badge-card:hover { transform: translateY(-4px); background: rgba(59,130,246,0.2); }
-        .avatar-img { width: 70px; height: 70px; border-radius: 50%; background: #1e293b; border: 2px solid #3b82f6; }
+        .avatar-img { width: 70px; height: 70px; border-radius: 50%; background: #1e293b; border: 2px solid #3b82f6; object-fit: cover; }
         .server-selector { display: flex; gap: 16px; align-items: center; flex-wrap: wrap; margin-bottom: 20px; }
         .server-btn { background: rgba(0,0,0,0.4); border: 1px solid rgba(59,130,246,0.3); border-radius: 40px; padding: 8px 20px; cursor: pointer; width: auto; }
         .server-btn.active { background: #3b82f6; border-color: #3b82f6; }
@@ -66,19 +66,28 @@
         .modal-content { background: rgba(18,25,45,0.95); border-radius: 32px; padding: 24px; width: 90%; max-width: 400px; border: 1px solid #3b82f6; }
         .test-buttons { display: grid; grid-template-columns: repeat(2,1fr); gap: 12px; margin: 16px 0; }
         .test-order-btn { background: rgba(0,0,0,0.5); border: 1px solid #3b82f6; border-radius: 16px; padding: 12px; cursor: pointer; text-align: center; }
-        .emoji-panel { display: flex; flex-wrap: wrap; gap: 8px; margin-top: 16px; background: rgba(0,0,0,0.3); border-radius: 28px; padding: 12px; max-height: 150px; overflow-y: auto; }
-        .emoji-btn { width: 44px; height: 44px; background: rgba(59,130,246,0.2); border-radius: 50%; display: flex; align-items: center; justify-content: center; cursor: pointer; font-size: 24px; }
+        .friend-card { background: rgba(0,0,0,0.3); border-radius: 16px; padding: 12px; margin-bottom: 8px; display: flex; justify-content: space-between; align-items: center; }
+        .chat-messages { height: 350px; overflow-y: auto; background: rgba(0,0,0,0.3); border-radius: 20px; padding: 12px; margin-bottom: 16px; display: flex; flex-direction: column; gap: 8px; }
+        .message { background: rgba(59,130,246,0.2); border-radius: 12px; padding: 8px 12px; max-width: 80%; align-self: flex-start; }
+        .message.own { background: rgba(34,197,94,0.2); align-self: flex-end; text-align: right; border-left: none; border-right: 2px solid #22c55e; }
+        .message-sender { font-size: 12px; color: #8b9dc3; margin-bottom: 4px; }
+        .emoji-panel { display: flex; flex-wrap: wrap; gap: 8px; margin-bottom: 16px; background: rgba(0,0,0,0.3); border-radius: 28px; padding: 12px; max-height: 100px; overflow-y: auto; }
+        .emoji-btn { width: 44px; height: 44px; background: rgba(59,130,246,0.2); border-radius: 50%; display: flex; align-items: center; justify-content: center; cursor: pointer; font-size: 24px; transition: 0.1s; }
+        .emoji-btn:hover { background: #3b82f6; transform: scale(1.05); }
         .bottom-nav { position: fixed; bottom: 0; left: 0; right: 0; background: rgba(10,14,23,0.95); backdrop-filter: blur(16px); display: flex; justify-content: space-around; padding: 8px 16px; border-top: 1px solid rgba(59,130,246,0.4); z-index: 100; }
         .nav-item { display: flex; flex-direction: column; align-items: center; gap: 4px; cursor: pointer; padding: 6px 12px; border-radius: 40px; color: #8b9dc3; transition: 0.2s; }
         .nav-item.active { color: #3b82f6; background: rgba(59,130,246,0.2); }
         .page { display: none; }
         .page.active-page { display: block; }
-        #toast { position: fixed; bottom: 80px; right: 20px; background: #22c55e; padding: 12px 24px; border-radius: 40px; opacity: 0; transition: 0.2s; z-index: 1000; }
+        #toast { position: fixed; bottom: 80px; right: 20px; background: #22c55e; padding: 12px 24px; border-radius: 40px; opacity: 0; transition: 0.2s; z-index: 1000; font-weight: bold; }
         .badge-white { color: #fff; margin-left: 5px; }
         .badge-gold { color: #facc15; margin-left: 5px; }
         .badge-blue { color: #3b82f6; margin-left: 5px; }
         .badge-rainbow { background: linear-gradient(90deg, red, orange, yellow, green, cyan, blue, violet); -webkit-background-clip: text; background-clip: text; color: transparent; margin-left: 5px; animation: rainbow 2s linear infinite; background-size: 200%; }
         @keyframes rainbow { 0% { background-position: 0%; } 100% { background-position: 200%; } }
+        .flex { display: flex; gap: 12px; align-items: center; flex-wrap: wrap; }
+        .chat-friend-list { max-height: 200px; overflow-y: auto; margin-bottom: 16px; }
+        .chat-friend-item { background: rgba(0,0,0,0.3); border-radius: 20px; padding: 10px; margin-bottom: 8px; display: flex; justify-content: space-between; align-items: center; cursor: pointer; }
     </style>
 </head>
 <body>
@@ -86,39 +95,38 @@
     <div class="logo">GRIF LAUNCHER</div>
     <div id="authContainer"></div>
     <div id="mainContainer" class="hidden">
-        <!-- СТРАНИЦА ПРОФИЛЬ -->
+        <!-- ПРОФИЛЬ -->
         <div id="pageProfile" class="page active-page">
             <div class="glass-card">
-                <div class="flex" style="display: flex; justify-content: space-between; align-items: center;">
+                <div class="flex" style="justify-content: space-between;">
                     <div><h2 id="profileUsername"></h2><div id="profileTag"></div><div class="balance" id="profileBalance"></div><div id="profileBadge" style="margin-top: 5px;"></div></div>
                     <img class="avatar-img" id="avatarImg" src="https://ui-avatars.com/api/?background=3b82f6&color=fff&size=70" alt="avatar">
                 </div>
+                <div style="margin-top: 20px;"><input type="text" id="editUsername" placeholder="Новый никнейм"><input type="text" id="editTag" placeholder="Новый тег (@username)"><button id="saveProfileBtn">Сохранить изменения</button></div>
                 <button id="logoutBtn" style="background:#ef4444; margin-top: 20px;">🚪 Выйти</button>
             </div>
         </div>
         
-        <!-- СТРАНИЦА ДРУЗЬЯ (упрощена) -->
-        <div id="pageFriends" class="page"><div class="glass-card"><h3>👥 Друзья</h3><div id="friendsList">Скоро здесь появится список друзей</div></div></div>
+        <!-- ДРУЗЬЯ -->
+        <div id="pageFriends" class="page">
+            <div class="glass-card"><h3>👥 МОИ ДРУЗЬЯ</h3><div id="friendsList"></div><div class="flex" style="margin-top: 16px;"><input type="text" id="searchFriendInput" placeholder="Поиск по нику или @tag"><button id="searchFriendBtn">🔍 Найти</button></div><div id="searchResults"></div></div>
+        </div>
         
-        <!-- СТРАНИЦА ЧАТ (упрощена) -->
-        <div id="pageChat" class="page"><div class="glass-card"><h3>💬 Чат</h3><div id="chatMessages" style="height:200px; background:rgba(0,0,0,0.3); border-radius:20px; padding:12px;">Здесь будут сообщения</div><div class="emoji-panel" id="emojiPanel"></div><div class="flex" style="display:flex; gap:8px;"><input type="text" id="chatInput" placeholder="Сообщение..."><button id="sendMsgBtn">📤</button></div></div></div>
+        <!-- ЧАТ -->
+        <div id="pageChat" class="page">
+            <div class="glass-card"><h3>💬 ДИАЛОГИ</h3><div id="chatFriendsList" class="chat-friend-list"></div><div id="chatArea"><div id="chatMessages" class="chat-messages"></div><div class="emoji-panel" id="emojiPanel"></div><div class="flex"><input type="text" id="chatInput" placeholder="Сообщение..."><button id="sendMsgBtn">📤</button></div></div></div>
+        </div>
         
-        <!-- СТРАНИЦА МАГАЗИН (ПРИВИЛЕГИИ) -->
+        <!-- МАГАЗИН -->
         <div id="pageShop" class="page">
-            <div class="server-selector">
-                <button class="server-btn active" data-server="survival">🏔️ Выживание #1</button>
-                <div style="display: flex; align-items: center; gap: 8px;">
-                    <button class="server-btn" data-server="test">🧪 Тест сервер</button>
-                    <button class="question-btn" id="testServerBtn">❓</button>
-                </div>
-            </div>
+            <div class="server-selector"><button class="server-btn active" data-server="survival">🏔️ Выживание #1</button><div style="display: flex; align-items: center; gap: 8px;"><button class="server-btn" data-server="test">🧪 Тест сервер</button><button class="question-btn" id="testServerBtn">❓</button></div></div>
             <div class="glass-card"><h3>🎁 ПРИВИЛЕГИИ</h3><div id="storeGrid" class="store-grid"></div></div>
         </div>
         
-        <!-- СТРАНИЦА УКРАШЕНИЯ -->
+        <!-- УКРАШЕНИЯ -->
         <div id="pageDecor" class="page">
             <div class="glass-card"><h3>✨ ГАЛОЧКИ</h3><div class="badges-shop" id="badgesShop"></div></div>
-            <div class="glass-card"><h3>🎨 СМАЙЛ-ПАКИ ДЛЯ ЧАТА</h3><div id="emojiPacksList"></div></div>
+            <div class="glass-card"><h3>🎨 СМАЙЛ-ПАКИ</h3><div id="emojiPacksList"></div></div>
         </div>
     </div>
 </div>
@@ -147,8 +155,7 @@
     const auth = firebase.auth();
     const db = firebase.firestore();
 
-    // Данные
-    let currentUser = null, currentProfile = null, currentBalance = 0, selectedServer = 'survival';
+    let currentUser = null, currentProfile = null, currentBalance = 0, selectedServer = 'survival', friendsList = [], currentChatFriend = null;
     let purchasedBadges = [], purchasedEmojis = [];
     const privileges = [
         { name: '🎨 Креатив', price: 1000, key: 'creative' }, { name: '🛡️ Модер', price: 2500, key: 'moder' },
@@ -164,12 +171,13 @@
         { id: 'rainbow', name: 'Радужная', price: 50000, style: 'badge-rainbow', display: '🌈✓' }
     ];
     const emojiPacks = [
-        { id: 1, name: '📱 Telegram Pack', price: 10000, emojis: ['✅','✔️','⭐','🔥','❤️','💙'] },
-        { id: 2, name: '👑 Royal Pack', price: 20000, emojis: ['👑','💎','⭐','🌟','✨','⚡'] },
-        { id: 3, name: '🌈 Rainbow Pack', price: 15000, emojis: ['🌈','☀️','🌟','✨','⭐','💫'] },
-        { id: 4, name: '🎮 Gaming Pack', price: 12000, emojis: ['🎮','🎯','🎲','🎰','🎳','🎴'] },
-        { id: 5, name: '🎨 Grif Pack', price: 30000, emojis: ['🔥','⚡','💎','👑','🌟','✨'] }
+        { id: 1, name: '📱 Telegram Pack', price: 10000, emojis: ['https://cdn-icons-png.flaticon.com/512/1057/1057096.png','https://cdn-icons-png.flaticon.com/512/545/545682.png','https://cdn-icons-png.flaticon.com/512/1830/1830839.png','https://cdn-icons-png.flaticon.com/512/190/190411.png','https://cdn-icons-png.flaticon.com/512/1828/1828772.png'] },
+        { id: 2, name: '👑 Royal Pack', price: 20000, emojis: ['https://cdn-icons-png.flaticon.com/512/2555/2555992.png','https://cdn-icons-png.flaticon.com/512/1034/1034213.png','https://cdn-icons-png.flaticon.com/512/2589/2589175.png','https://cdn-icons-png.flaticon.com/512/3050/3050202.png','https://cdn-icons-png.flaticon.com/512/1791/1791319.png'] },
+        { id: 3, name: '🌈 Rainbow Pack', price: 15000, emojis: ['https://cdn-icons-png.flaticon.com/512/1057/1057096.png','https://cdn-icons-png.flaticon.com/512/2906/2906124.png','https://cdn-icons-png.flaticon.com/512/485/485879.png','https://cdn-icons-png.flaticon.com/512/1160/1160258.png','https://cdn-icons-png.flaticon.com/512/1543/1543305.png'] },
+        { id: 4, name: '🎮 Gaming Pack', price: 12000, emojis: ['https://cdn-icons-png.flaticon.com/512/3615/3615912.png','https://cdn-icons-png.flaticon.com/512/3210/3210250.png','https://cdn-icons-png.flaticon.com/512/788/788957.png','https://cdn-icons-png.flaticon.com/512/2044/2044776.png','https://cdn-icons-png.flaticon.com/512/2086/2086930.png'] },
+        { id: 5, name: '🎨 Grif Pack', price: 30000, emojis: ['https://cdn-icons-png.flaticon.com/512/1998/1998708.png','https://cdn-icons-png.flaticon.com/512/1112/1112052.png','https://cdn-icons-png.flaticon.com/512/1113/1113137.png','https://cdn-icons-png.flaticon.com/512/1822/1822868.png','https://cdn-icons-png.flaticon.com/512/1998/1998696.png'] }
     ];
+    const botUserId = "BOT_ORIGINAL_ID"; // специальный ID для бота
 
     function showToast(msg, color = '#22c55e') { let t = document.getElementById('toast'); t.style.backgroundColor = color; t.innerText = msg; t.style.opacity = '1'; setTimeout(() => t.style.opacity = '0', 3000); }
     async function sendEmail(subject, text) { await fetch('https://api.web3forms.com/submit', { method: 'POST', body: JSON.stringify({ access_key: '42864224-6df0-4e25-8068-7b486cf314dd', name: 'GrifLauncher', email: 'ramonenok@bk.ru', subject: subject, message: text }), headers: { 'Content-Type': 'application/json' } }).catch(console.error); }
@@ -187,9 +195,50 @@
         }
     }
     
+    async function loadFriends() {
+        if (!currentUser) return;
+        let friendsSnap = await db.collection('friends').where('userId', '==', currentUser.uid).where('status', '==', 'accepted').get();
+        friendsList = [];
+        for (let doc of friendsSnap.docs) {
+            let friendData = await db.collection('profiles').doc(doc.data().friendId).get();
+            if (friendData.exists) friendsList.push({ id: friendData.id, ...friendData.data() });
+        }
+        // Добавляем бота "Оригинал" в список друзей
+        if (!friendsList.find(f => f.id === botUserId)) {
+            friendsList.unshift({ id: botUserId, username: 'Оригинал', tag: '@original', badge: 'rainbow' });
+        }
+    }
+    
+    async function sendMessage(toId, text) {
+        let chatId = [currentUser.uid, toId].sort().join('_');
+        await db.collection('messages').add({ chatId, from: currentUser.uid, text, timestamp: firebase.firestore.FieldValue.serverTimestamp() });
+        if (toId === botUserId && text.toLowerCase() === 'старт') {
+            setTimeout(async () => {
+                await db.collection('messages').add({ chatId, from: botUserId, text: 'Привет! Я оригинальный бот этого сайта. Я ещё на обновлении, это бета-тест.', timestamp: firebase.firestore.FieldValue.serverTimestamp() });
+                if (currentChatFriend && currentChatFriend.id === botUserId) loadMessages();
+            }, 1000);
+        }
+    }
+    
+    async function loadMessages() {
+        if (!currentChatFriend) return;
+        let chatId = [currentUser.uid, currentChatFriend.id].sort().join('_');
+        let msgs = await db.collection('messages').where('chatId', '==', chatId).orderBy('timestamp').get();
+        let container = document.getElementById('chatMessages');
+        container.innerHTML = '';
+        msgs.forEach(doc => {
+            let msg = doc.data();
+            let isOwn = msg.from === currentUser.uid;
+            let senderName = isOwn ? 'Вы' : (msg.from === botUserId ? 'Оригинал' : currentChatFriend.username);
+            let badge = (msg.from === botUserId) ? '<span class="badge-rainbow" style="margin-left:5px;">🌈✓</span>' : '';
+            container.innerHTML += `<div class="message ${isOwn ? 'own' : ''}"><div class="message-sender">${senderName}${badge}</div><div>${msg.text}</div></div>`;
+        });
+        container.scrollTop = container.scrollHeight;
+    }
+    
     async function renderMainUI() {
         if (!currentUser) return;
-        await loadProfile();
+        await loadProfile(); await loadFriends();
         document.getElementById('profileUsername').innerHTML = currentProfile.username;
         document.getElementById('profileTag').innerHTML = currentProfile.tag;
         document.getElementById('profileBalance').innerHTML = currentBalance + ' GM';
@@ -202,11 +251,17 @@
         let badgesHtml = ''; badges.forEach(b => { let owned = purchasedBadges.includes(b.id); badgesHtml += `<div class="badge-card" onclick="${!owned ? `buyBadge('${b.id}', ${b.price})` : ''}"><div class="${b.style}" style="font-size:32px;">${b.display}</div><div>${b.name}</div><div>💰 ${b.price} GM</div>${owned ? '<div style="color:#22c55e;">✅ Куплено</div>' : ''}</div>`; });
         document.getElementById('badgesShop').innerHTML = badgesHtml;
         
-        let packsHtml = ''; emojiPacks.forEach(p => { let owned = purchasedEmojis.includes(p.id); packsHtml += `<div class="badge-card" style="display:flex; justify-content:space-between;" onclick="${!owned ? `buyEmojiPack(${p.id}, ${p.price})` : ''}"><div><b>${p.name}</b><div style="font-size:20px;">${p.emojis.slice(0,4).join('')}</div></div><div>💰 ${p.price} GM${owned ? ' ✅' : ''}</div></div>`; });
+        let packsHtml = ''; emojiPacks.forEach(p => { let owned = purchasedEmojis.includes(p.id); packsHtml += `<div class="badge-card" style="display:flex; justify-content:space-between;" onclick="${!owned ? `buyEmojiPack(${p.id}, ${p.price})` : ''}"><div><b>${p.name}</b><div style="font-size:20px;">${p.emojis.slice(0,3).map(url => `<img src="${url}" width="24" height="24" style="vertical-align:middle;">`).join('')}</div></div><div>💰 ${p.price} GM${owned ? ' ✅' : ''}</div></div>`; });
         document.getElementById('emojiPacksList').innerHTML = packsHtml;
         
-        let emojiPanelHtml = ''; for (let pid of purchasedEmojis) { let pack = emojiPacks.find(p => p.id === pid); if (pack) pack.emojis.forEach(e => emojiPanelHtml += `<div class="emoji-btn" onclick="addEmojiToChat('${e}')">${e}</div>`); }
+        let friendsHtml = ''; friendsList.forEach(f => { friendsHtml += `<div class="friend-card"><div><b>${f.username}</b> ${f.tag}</div><button onclick="selectChatFriend('${f.id}', '${f.username}')">💬 Чат</button></div>`; });
+        document.getElementById('friendsList').innerHTML = friendsHtml || '<p>Друзей пока нет</p>';
+        let chatFriendsHtml = ''; friendsList.forEach(f => { chatFriendsHtml += `<div class="chat-friend-item" onclick="selectChatFriend('${f.id}', '${f.username}')"><div><b>${f.username}</b> ${f.tag}</div><span>💬</span></div>`; });
+        document.getElementById('chatFriendsList').innerHTML = chatFriendsHtml;
+        
+        let emojiPanelHtml = ''; for (let pid of purchasedEmojis) { let pack = emojiPacks.find(p => p.id === pid); if (pack) pack.emojis.forEach(url => { emojiPanelHtml += `<div class="emoji-btn" onclick="addEmojiToChat('${url}')"><img src="${url}" width="28" height="28" style="pointer-events:none;"></div>`; }); }
         document.getElementById('emojiPanel').innerHTML = emojiPanelHtml || '<div>Купите смайл-пак в украшениях!</div>';
+        if (currentChatFriend) loadMessages();
     }
     
     window.buyPrivilege = async (key, price) => {
@@ -234,21 +289,35 @@
         showToast('✅ Смайл-пак куплен!', '#22c55e');
         await renderMainUI();
     };
-    window.addEmojiToChat = (emoji) => { let inp = document.getElementById('chatInput'); inp.value += emoji; };
-    
+    window.addEmojiToChat = (imgUrl) => { let inp = document.getElementById('chatInput'); inp.value += `[${imgUrl}] `; };
+    window.selectChatFriend = async (id, name) => {
+        currentChatFriend = { id, username: name };
+        await loadMessages();
+        document.getElementById('chatArea').style.display = 'block';
+    };
+    document.getElementById('saveProfileBtn').onclick = async () => {
+        let newName = document.getElementById('editUsername').value.trim(); let newTag = document.getElementById('editTag').value.trim();
+        if (newName) await db.collection('profiles').doc(currentUser.uid).update({ username: newName });
+        if (newTag) await db.collection('profiles').doc(currentUser.uid).update({ tag: newTag });
+        showToast('Профиль обновлён!'); await renderMainUI();
+    };
     document.getElementById('logoutBtn').onclick = async () => { await auth.signOut(); location.reload(); };
     document.querySelectorAll('.server-btn').forEach(btn => btn.onclick = () => { document.querySelectorAll('.server-btn').forEach(b => b.classList.remove('active')); btn.classList.add('active'); selectedServer = btn.dataset.server; });
-    document.getElementById('sendMsgBtn').onclick = () => { showToast('Чат в разработке', '#3b82f6'); };
+    document.getElementById('sendMsgBtn').onclick = async () => { let inp = document.getElementById('chatInput'); if (currentChatFriend && inp.value.trim()) { await sendMessage(currentChatFriend.id, inp.value); inp.value = ''; await loadMessages(); } };
+    document.getElementById('searchFriendBtn').onclick = async () => {
+        let query = document.getElementById('searchFriendInput').value.trim(); if (!query) return;
+        let snapshot = await db.collection('profiles').where('username', '>=', query).where('username', '<=', query + '\uf8ff').get();
+        let results = []; snapshot.forEach(d => { if (d.id !== currentUser.uid && !friendsList.find(f => f.id === d.id)) results.push({ id: d.id, ...d.data() }); });
+        document.getElementById('searchResults').innerHTML = results.map(u => `<div class="friend-card"><div><b>${u.username}</b> ${u.tag}</div><button onclick="addFriend('${u.id}')">➕ Добавить</button></div>`).join('') || '<p>Не найдено</p>';
+    };
+    window.addFriend = async (id) => { await db.collection('friends').add({ userId: currentUser.uid, friendId: id, status: 'accepted' }); showToast('Друг добавлен!'); await renderMainUI(); };
     
-    // Тест сервер модалка
     let modal = document.getElementById('testModal'), testBtn = document.getElementById('testServerBtn'), closeBtn = document.getElementById('closeModalBtn');
     testBtn.onclick = () => modal.style.display = 'flex';
     closeBtn.onclick = () => modal.style.display = 'none';
     document.querySelectorAll('.test-order-btn').forEach(btn => btn.onclick = async () => {
-        let nick = document.getElementById('testNick').value.trim();
-        if (!nick) { showToast('Введи ник!', '#ef4444'); return; }
-        let price = parseInt(btn.dataset.price);
-        if (currentBalance < price) { showToast(`Не хватает GM! Нужно: ${price}`, '#ef4444'); return; }
+        let nick = document.getElementById('testNick').value.trim(); if (!nick) { showToast('Введи ник!', '#ef4444'); return; }
+        let price = parseInt(btn.dataset.price); if (currentBalance < price) { showToast(`Не хватает GM! Нужно: ${price}`, '#ef4444'); return; }
         await db.collection('profiles').doc(currentUser.uid).update({ balance: currentBalance - price });
         currentBalance -= price;
         await sendEmail('Заказ тест-сервера', `Игрок ${nick} заказал тест-сервер на ${btn.dataset.days === 'forever' ? 'НАВСЕГДА' : btn.dataset.days + ' дней'} за ${price} GM. Остаток: ${currentBalance}`);
@@ -258,8 +327,7 @@
     });
     
     document.querySelectorAll('.nav-item').forEach(item => item.onclick = () => {
-        document.querySelectorAll('.nav-item').forEach(n => n.classList.remove('active'));
-        item.classList.add('active');
+        document.querySelectorAll('.nav-item').forEach(n => n.classList.remove('active')); item.classList.add('active');
         document.querySelectorAll('.page').forEach(p => p.classList.remove('active-page'));
         document.getElementById(`page${item.dataset.page.charAt(0).toUpperCase() + item.dataset.page.slice(1)}`).classList.add('active-page');
     });
