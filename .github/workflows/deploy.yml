@@ -14,13 +14,13 @@ jobs:
 
       - name: Download and Run Server
         run: |
-          # Создаем папку для сервера
+          # Создаем папку для сервера и переходим в неё
           mkdir server
           cd server
 
-          # Скачиваем файл напрямую с Purpur (это официальная ссылка)
-          wget https://api.purpurmc.org/v2/purpur/1.21.4/latest/download.jar -O server.jar
+          # Скачиваем файл с MCServerJars. Эта ссылка должна работать.
+          wget https://api.mcserverjars.com/api/purpur/1.21.4/latest/download -O server.jar
 
-          # Принимаем лицензию и запускаем
+          # Принимаем лицензию и запускаем сервер
           echo "eula=true" > eula.txt
           java -Xmx1024M -Xms1024M -jar server.jar nogui
