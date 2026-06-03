@@ -2,527 +2,300 @@
 <html lang="ru">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
-    <title>GrifLauncher | Платформа</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>GrifLauncher</title>
     <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
     <style>
         * { margin: 0; padding: 0; box-sizing: border-box; }
-        body {
-            background: radial-gradient(ellipse at 20% 30%, #0a0f1a, #03050a);
-            font-family: 'Segoe UI', system-ui, sans-serif;
-            color: #eef2ff;
-            min-height: 100vh;
-        }
-        .gradient-bg { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: radial-gradient(ellipse at 20% 30%, #0a0f1a, #03050a); z-index: -2; }
-        .gradient-bg::before { content: ''; position: absolute; top: 0; left: 0; width: 100%; height: 100%; background: linear-gradient(45deg, rgba(59,130,246,0.1), rgba(139,92,246,0.1)); background-size: 400% 400%; animation: gradientShift 15s ease infinite; }
-        @keyframes gradientShift { 0% { background-position: 0% 50%; } 50% { background-position: 100% 50%; } 100% { background-position: 0% 50%; } }
-        .container { max-width: 1400px; margin: 0 auto; padding: 20px; position: relative; z-index: 10; }
-        .glass-card { background: rgba(18,25,45,0.55); backdrop-filter: blur(16px); border-radius: 32px; border: 1px solid rgba(59,130,246,0.25); transition: all 0.3s ease; }
-        .glass-card:hover { border-color: rgba(59,130,246,0.5); }
-        .header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 30px; flex-wrap: wrap; gap: 16px; }
-        .logo { font-size: 36px; font-weight: 800; background: linear-gradient(90deg, #fff, #3b82f6, #8b5cf6, #ec4899); background-size: 300% auto; -webkit-background-clip: text; background-clip: text; color: transparent; animation: textGlow 4s linear infinite; }
-        @keyframes textGlow { 0% { background-position: 0% 50%; } 100% { background-position: 200% 50%; } }
-        .online-badge { background: rgba(18,25,45,0.7); backdrop-filter: blur(12px); padding: 8px 20px; border-radius: 60px; display: flex; align-items: center; gap: 10px; border: 1px solid rgba(59,130,246,0.3); }
-        .pulse-dot { width: 10px; height: 10px; background: #22c55e; border-radius: 50%; box-shadow: 0 0 8px #22c55e; animation: pulse 1.5s ease-in-out infinite; }
-        @keyframes pulse { 0%, 100% { opacity: 1; transform: scale(1); } 50% { opacity: 0.6; transform: scale(1.2); } }
-        .balance-value { font-size: 28px; font-weight: 800; background: linear-gradient(135deg, #facc15, #f59e0b); -webkit-background-clip: text; background-clip: text; color: transparent; }
-        .btn-gradient { background: linear-gradient(135deg, #3b82f6, #2563eb); border: none; padding: 12px 24px; border-radius: 60px; font-weight: bold; color: white; cursor: pointer; transition: all 0.2s; }
-        .btn-gradient:hover { transform: scale(1.02); }
-        .auth-container { max-width: 480px; margin: 60px auto; padding: 40px; }
-        input, select { width: 100%; padding: 12px 18px; background: rgba(0,0,0,0.4); border: 1px solid #3b82f6; border-radius: 60px; color: white; font-size: 14px; margin-bottom: 16px; }
-        input:focus { outline: none; border-color: #8b5cf6; }
-        .tab-buttons { display: flex; gap: 12px; margin-bottom: 24px; }
-        .tab-btn { flex: 1; background: rgba(59,130,246,0.2); border: none; padding: 12px; border-radius: 60px; color: white; cursor: pointer; }
-        .tab-btn.active { background: #3b82f6; }
-        .section-title { text-align: center; font-size: 28px; font-weight: 800; margin: 30px 0 25px; background: linear-gradient(135deg, #fff, #3b82f6, #8b5cf6); -webkit-background-clip: text; background-clip: text; color: transparent; }
-        .store-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(300px, 1fr)); gap: 24px; margin-bottom: 40px; }
-        .privilege-card { background: rgba(18,25,45,0.6); backdrop-filter: blur(12px); border-radius: 28px; padding: 24px; border: 1px solid rgba(59,130,246,0.2); transition: all 0.3s; }
-        .privilege-card:hover { transform: translateY(-8px); border-color: rgba(59,130,246,0.5); }
-        .privilege-card h3 { font-size: 24px; margin-bottom: 8px; }
-        .price { font-size: 22px; font-weight: bold; color: #facc15; margin: 12px 0; }
-        .profile-card { padding: 24px; margin-bottom: 24px; }
-        .profile-avatar { width: 80px; height: 80px; border-radius: 50%; background: linear-gradient(135deg, #3b82f6, #8b5cf6); display: flex; align-items: center; justify-content: center; font-size: 40px; margin-bottom: 16px; }
-        .profile-row { display: flex; justify-content: space-between; align-items: center; padding: 10px 0; border-bottom: 1px solid rgba(59,130,246,0.1); }
-        .friends-grid { display: grid; gap: 12px; margin: 16px 0; }
-        .friend-card { background: rgba(0,0,0,0.3); border-radius: 20px; padding: 12px 16px; display: flex; justify-content: space-between; align-items: center; }
-        .chat-area { margin-top: 16px; }
-        .chat-messages { height: 300px; overflow-y: auto; background: rgba(0,0,0,0.3); border-radius: 20px; padding: 16px; margin-bottom: 16px; }
-        .message { background: rgba(59,130,246,0.1); border-radius: 16px; padding: 8px 12px; margin-bottom: 8px; }
-        .message-sender { font-weight: bold; color: #3b82f6; }
-        .chat-input-area { display: flex; gap: 12px; }
-        .chat-input-area input { flex: 1; margin: 0; }
+        body { background: #0b0e17; font-family: 'Segoe UI', sans-serif; color: #eef2ff; padding: 20px; }
+        .container { max-width: 1200px; margin: 0 auto; }
+        .glass-card { background: rgba(18,25,45,0.6); backdrop-filter: blur(12px); border-radius: 24px; padding: 20px; margin-bottom: 20px; border: 1px solid rgba(59,130,246,0.2); }
+        .logo { font-size: 32px; font-weight: 800; text-align: center; margin-bottom: 20px; background: linear-gradient(90deg, #fff, #3b82f6, #8b5cf6); -webkit-background-clip: text; background-clip: text; color: transparent; }
+        input, button { width: 100%; padding: 12px; margin: 8px 0; background: rgba(0,0,0,0.4); border: 1px solid #3b82f6; border-radius: 40px; color: white; }
+        button { background: #3b82f6; cursor: pointer; font-weight: bold; }
+        button:hover { opacity: 0.9; }
+        .balance { font-size: 24px; color: #facc15; }
         .hidden { display: none; }
-        .modal { display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.7); backdrop-filter: blur(8px); z-index: 1000; justify-content: center; align-items: center; }
-        .modal-content { background: rgba(18,25,45,0.95); backdrop-filter: blur(16px); border-radius: 32px; width: 90%; max-width: 450px; border: 1px solid rgba(59,130,246,0.3); }
-        .modal-header { display: flex; justify-content: space-between; align-items: center; padding: 20px; border-bottom: 1px solid rgba(59,130,246,0.2); }
-        .modal-body { padding: 20px; }
-        .modal-footer { display: flex; gap: 12px; padding: 20px; border-top: 1px solid rgba(59,130,246,0.2); }
-        .btn-cancel { flex: 1; background: rgba(239,68,68,0.15); border: 1px solid #ef4444; border-radius: 40px; padding: 10px; color: #ef4444; cursor: pointer; }
-        .shop-items { display: grid; grid-template-columns: repeat(auto-fill, minmax(150px, 1fr)); gap: 12px; margin-top: 16px; }
-        .shop-item { background: rgba(0,0,0,0.3); border-radius: 20px; padding: 12px; text-align: center; cursor: pointer; transition: all 0.2s; }
-        .shop-item:hover { background: rgba(59,130,246,0.2); }
-        .badge-blue { color: #3b82f6; font-weight: bold; }
-        .badge-gold { color: #facc15; font-weight: bold; }
-        .badge-rainbow { background: linear-gradient(90deg, red, orange, yellow, green, cyan, blue, violet); -webkit-background-clip: text; background-clip: text; color: transparent; }
-        #toast { position: fixed; bottom: 20px; right: 20px; background: #22c55e; color: white; padding: 12px 24px; border-radius: 60px; opacity: 0; transition: 0.2s; pointer-events: none; z-index: 1001; font-weight: 500; }
-        @media (max-width: 768px) { .logo { font-size: 24px; } .store-grid { grid-template-columns: 1fr; } }
+        .store-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(280px, 1fr)); gap: 20px; }
+        .privilege-card { background: rgba(0,0,0,0.3); border-radius: 20px; padding: 15px; }
+        .friend-card { background: rgba(0,0,0,0.3); border-radius: 16px; padding: 10px; margin-bottom: 10px; display: flex; justify-content: space-between; align-items: center; }
+        .chat-messages { height: 300px; overflow-y: auto; background: rgba(0,0,0,0.3); border-radius: 16px; padding: 10px; margin: 10px 0; }
+        .message { background: rgba(59,130,246,0.2); border-radius: 12px; padding: 8px; margin-bottom: 8px; }
+        .flex { display: flex; gap: 10px; }
+        .flex button { width: auto; padding: 10px 20px; }
+        #toast { position: fixed; bottom: 20px; right: 20px; background: #22c55e; padding: 12px 24px; border-radius: 40px; opacity: 0; transition: 0.2s; z-index: 1000; }
     </style>
 </head>
 <body>
-    <div class="gradient-bg"></div>
-    <div class="container" id="app"></div>
-    <div id="toast"></div>
+<div class="container" id="app"></div>
+<div id="toast"></div>
 
-    <script>
-        // ========== НАСТРОЙКИ SUPABASE ==========
-        const SUPABASE_URL = 'https://shdvwyaculqqkrwnqlwt.supabase.co';
-        const SUPABASE_KEY = 'sb_publishable_VYWWvPXpsGXkpeUOtcoyOg_5leIFS3w';
+<script>
+(function() {
+    // КЛЮЧИ SUPABASE
+    const SUPABASE_URL = 'https://shdvwyaculqqkrwnqlwt.supabase.co';
+    const SUPABASE_KEY = 'sb_publishable_VYWWvPXpsGXkpeUOtcoyOg_5leIFS3w';
+    const supabase = window.supabase.createClient(SUPABASE_URL, SUPABASE_KEY);
 
-        const supabase = window.supabase.createClient(SUPABASE_URL, SUPABASE_KEY);
+    let currentUser = null;
+    let currentProfile = null;
+    let currentBalance = 0;
+    let friendsList = [];
+    let currentChatWith = null;
 
-        // ========== ДАННЫЕ ==========
-        const privileges = [
-            { name: '🎨 Креатив', price: 1000, key: 'creative', color: '#10b981' },
-            { name: '🛡️ Модер', price: 2500, key: 'moder', color: '#3b82f6' },
-            { name: '⚔️ Лорд', price: 5000, key: 'lord', color: '#8b5cf6' },
-            { name: '👑 Админ', price: 10000, key: 'admin', color: '#ef4444' },
-            { name: '🔱 Гл. Админ', price: 20000, key: 'headadmin', color: '#a855f7' },
-            { name: '✨ Создатель', price: 30000, key: 'creator', color: '#06b6d4' },
-            { name: '🔥 Основатель', price: 40000, key: 'founder', color: '#f97316' },
-            { name: '💎 Владелец', price: 50000, key: 'owner', color: '#ec4899' },
-            { name: '🏛️ Цезарь', price: 70000, key: 'caesar', color: '#d946ef' },
-            { name: '👑 ПРАВИТЕЛЬ', price: 100000, key: 'ruler', color: '#fbbf24' }
-        ];
+    // ПРИВИЛЕГИИ
+    const privileges = [
+        { name: '🎨 Креатив', price: 1000, key: 'creative' },
+        { name: '🛡️ Модер', price: 2500, key: 'moder' },
+        { name: '⚔️ Лорд', price: 5000, key: 'lord' },
+        { name: '👑 Админ', price: 10000, key: 'admin' },
+        { name: '🔱 Гл. Админ', price: 20000, key: 'headadmin' },
+        { name: '✨ Создатель', price: 30000, key: 'creator' },
+        { name: '🔥 Основатель', price: 40000, key: 'founder' },
+        { name: '💎 Владелец', price: 50000, key: 'owner' },
+        { name: '🏛️ Цезарь', price: 70000, key: 'caesar' },
+        { name: '👑 ПРАВИТЕЛЬ', price: 100000, key: 'ruler' }
+    ];
 
-        const avatarFrames = [
-            { name: 'Круг', style: 'circle', price: 0 },
-            { name: 'Квадрат', style: 'square', price: 10000 },
-            { name: 'Сердце', style: 'heart', price: 50000 },
-            { name: 'Звезда', style: 'star', price: 100000 },
-            { name: 'Радуга', style: 'rainbow', price: 500000 }
-        ];
+    function showToast(msg, color = '#22c55e') {
+        const toast = document.getElementById('toast');
+        toast.style.backgroundColor = color;
+        toast.innerText = msg;
+        toast.style.opacity = '1';
+        setTimeout(() => toast.style.opacity = '0', 3000);
+    }
 
-        const nicknameColors = [
-            { name: 'Белый', code: '#ffffff', price: 0 },
-            { name: 'Красный', code: '#ef4444', price: 10000 },
-            { name: 'Зелёный', code: '#22c55e', price: 10000 },
-            { name: 'Синий', code: '#3b82f6', price: 10000 },
-            { name: 'Золотой', code: '#facc15', price: 50000 },
-            { name: 'Фиолетовый', code: '#a855f7', price: 50000 },
-            { name: 'Радужный', code: 'rainbow', price: 500000 }
-        ];
-
-        const verifiedBadges = [
-            { name: 'Нет', style: 'none', price: 0 },
-            { name: 'Синяя', style: 'blue', price: 100000 },
-            { name: 'Золотая', style: 'gold', price: 500000 },
-            { name: 'Радужная', style: 'rainbow', price: 1000000 }
-        ];
-
-        let currentUser = null;
-        let currentProfile = null;
-        let currentBalance = 0;
-        let currentChatWith = null;
-        let friendsList = [];
-
-        function showToast(msg, color = '#22c55e') {
-            const toast = document.getElementById('toast');
-            toast.style.backgroundColor = color;
-            toast.innerText = msg;
-            toast.style.opacity = '1';
-            setTimeout(() => toast.style.opacity = '0', 3000);
+    async function loadProfile() {
+        if (!currentUser) return;
+        const { data } = await supabase.from('profiles').select('*').eq('id', currentUser.id).single();
+        if (data) {
+            currentProfile = data;
+            currentBalance = data.balance || 50000;
         }
+    }
 
-        async function loadProfile() {
-            if (!currentUser) return;
-            const { data, error } = await supabase
-                .from('profiles')
-                .select('*')
-                .eq('id', currentUser.id)
-                .single();
-            if (!error && data) {
-                currentProfile = data;
-                currentBalance = data.balance || 50000;
-            }
-        }
+    async function loadFriends() {
+        if (!currentUser) return;
+        const { data } = await supabase
+            .from('friends')
+            .select('friend_id, profiles!friends_friend_id_fkey (username, tag)')
+            .eq('user_id', currentUser.id)
+            .eq('status', 'accepted');
+        friendsList = data?.map(f => ({ id: f.friend_id, username: f.profiles.username, tag: f.profiles.tag })) || [];
+    }
 
-        async function loadFriends() {
-            if (!currentUser) return;
-            const { data, error } = await supabase
-                .from('friends')
-                .select('friend_id, profiles!friends_friend_id_fkey (username, tag)')
-                .eq('user_id', currentUser.id)
-                .eq('status', 'accepted');
-            if (!error && data) {
-                friendsList = data.map(f => ({
-                    id: f.friend_id,
-                    username: f.profiles.username,
-                    tag: f.profiles.tag
-                }));
-            }
-        }
+    async function searchUsers(query) {
+        if (!query.trim()) return [];
+        const { data } = await supabase
+            .from('profiles')
+            .select('id, username, tag')
+            .or(`username.ilike.%${query}%,tag.ilike.%${query}%`)
+            .neq('id', currentUser.id)
+            .limit(10);
+        return data || [];
+    }
 
-        async function searchUsers(query) {
-            if (!query.trim()) return [];
-            const { data, error } = await supabase
-                .from('profiles')
-                .select('id, username, tag')
-                .or(`username.ilike.%${query}%,tag.ilike.%${query}%`)
-                .neq('id', currentUser.id)
-                .limit(10);
-            if (error) return [];
-            return data;
-        }
+    async function sendFriendRequest(friendId) {
+        const { error } = await supabase.from('friends').insert({ user_id: currentUser.id, friend_id: friendId, status: 'pending' });
+        showToast(error ? 'Ошибка' : 'Заявка отправлена!', error ? '#ef4444' : '#22c55e');
+    }
 
-        async function sendFriendRequest(friendId) {
-            const { error } = await supabase
-                .from('friends')
-                .insert({ user_id: currentUser.id, friend_id: friendId, status: 'pending' });
-            if (error) {
-                showToast('Ошибка отправки заявки', '#ef4444');
-            } else {
-                showToast('Заявка отправлена!', '#22c55e');
-            }
-        }
+    async function loadMessages(withUserId) {
+        if (!withUserId) return [];
+        const { data } = await supabase
+            .from('messages')
+            .select('*')
+            .or(`and(from_user_id.eq.${currentUser.id},to_user_id.eq.${withUserId}),and(from_user_id.eq.${withUserId},to_user_id.eq.${currentUser.id})`)
+            .order('created_at', { ascending: true });
+        return data || [];
+    }
 
-        async function loadMessages(withUserId) {
-            if (!withUserId) return [];
-            const { data, error } = await supabase
-                .from('messages')
-                .select('*')
-                .or(`and(from_user_id.eq.${currentUser.id},to_user_id.eq.${withUserId}),and(from_user_id.eq.${withUserId},to_user_id.eq.${currentUser.id})`)
-                .order('created_at', { ascending: true });
-            if (error) return [];
-            return data;
-        }
+    async function sendMessage(toUserId, message) {
+        if (!message.trim()) return;
+        await supabase.from('messages').insert({ from_user_id: currentUser.id, to_user_id: toUserId, message: message.trim() });
+    }
 
-        async function sendMessage(toUserId, message) {
-            if (!message.trim()) return;
-            const { error } = await supabase
-                .from('messages')
-                .insert({
-                    from_user_id: currentUser.id,
-                    to_user_id: toUserId,
-                    message: message.trim()
-                });
-            if (error) {
-                showToast('Ошибка отправки', '#ef4444');
-            }
-        }
+    async function buyPrivilege(privilegeKey, price, serverNick) {
+        if (!serverNick) { showToast('Введи ник на сервере!', '#ef4444'); return false; }
+        if (currentBalance < price) { showToast(`Не хватает GM! Нужно: ${price}`, '#ef4444'); return false; }
+        const newBalance = currentBalance - price;
+        await supabase.from('profiles').update({ balance: newBalance }).eq('id', currentUser.id);
+        currentBalance = newBalance;
+        const fd = new FormData();
+        fd.append('access_key', '483fce89-6fa4-4704-bc74-1dac5cfcf0d0');
+        fd.append('email', 'ramonenok@bk.ru');
+        fd.append('subject', `Покупка ${privilegeKey}`);
+        fd.append('message', `${serverNick} купил ${privilegeKey} за ${price} GM`);
+        fetch('https://api.web3forms.com/submit', { method: 'POST', body: fd });
+        showToast(`${privilegeKey} выдана!`, '#22c55e');
+        return true;
+    }
 
-        async function buyPrivilege(privilegeKey, price, serverNick) {
-            if (!serverNick) {
-                showToast('❌ Введи никнейм на сервере!', '#ef4444');
-                return false;
-            }
-            if (currentBalance < price) {
-                showToast(`❌ Не хватает GM! Нужно: ${price.toLocaleString()} GM`, '#ef4444');
-                return false;
-            }
+    async function renderChatWindow(friend) {
+        currentChatWith = friend;
+        const messages = await loadMessages(friend.id);
+        const chatDiv = document.getElementById('chatMessages');
+        const chatArea = document.getElementById('chatArea');
+        if (!chatArea) return;
+        chatArea.classList.remove('hidden');
+        document.getElementById('chatWithName').innerText = friend.username;
+        chatDiv.innerHTML = messages.map(m => `<div class="message"><b>${m.from_user_id === currentUser.id ? 'Вы' : friend.username}:</b> ${m.message}<br><small>${new Date(m.created_at).toLocaleTimeString()}</small></div>`).join('');
+        chatDiv.scrollTop = chatDiv.scrollHeight;
+    }
 
-            const newBalance = currentBalance - price;
-            const { error } = await supabase
-                .from('profiles')
-                .update({ balance: newBalance })
-                .eq('id', currentUser.id);
+    async function renderMainPage() {
+        if (!currentUser) return;
+        await loadProfile();
+        await loadFriends();
 
-            if (error) {
-                showToast('Ошибка при покупке', '#ef4444');
-                return false;
-            }
+        let storeHtml = privileges.map(p => `
+            <div class="privilege-card">
+                <h3>${p.name}</h3>
+                <div>💰 ${p.price} GM</div>
+                <input type="text" id="nick_${p.key}" placeholder="Ваш ник на сервере">
+                <button onclick="buy('${p.key}', ${p.price})">🎁 Купить</button>
+            </div>
+        `).join('');
 
-            currentBalance = newBalance;
-            
-            const formData = new FormData();
-            formData.append('access_key', '483fce89-6fa4-4704-bc74-1dac5cfcf0d0');
-            formData.append('email', 'ramonenok@bk.ru');
-            formData.append('subject', `🛒 Покупка привилегии ${privilegeKey}`);
-            formData.append('message', `Игрок ${serverNick} купил привилегию ${privilegeKey} за ${price} GM`);
-            fetch('https://api.web3forms.com/submit', { method: 'POST', body: formData }).catch(console.error);
+        let friendsHtml = friendsList.map(f => `
+            <div class="friend-card">
+                <div><b>${f.username}</b> <span style="font-size:12px;color:#8b9dc3;">${f.tag}</span></div>
+                <button onclick="openChat('${f.id}', '${f.username}')">💬 Чат</button>
+            </div>
+        `).join('');
+        if (!friendsHtml) friendsHtml = '<p>У вас пока нет друзей</p>';
 
-            showToast(`✅ ${privilegeKey} выдана! Донат придёт в течение 10 минут.`, '#22c55e');
-            return true;
-        }
-
-        async function purchaseItem(itemType, itemId, price, itemName) {
-            if (currentBalance < price) {
-                showToast(`❌ Не хватает GM! Нужно: ${price.toLocaleString()} GM`, '#ef4444');
-                return false;
-            }
-
-            const newBalance = currentBalance - price;
-            const { error: balanceError } = await supabase
-                .from('profiles')
-                .update({ balance: newBalance })
-                .eq('id', currentUser.id);
-
-            if (balanceError) {
-                showToast('Ошибка при покупке', '#ef4444');
-                return false;
-            }
-
-            const { error: purchaseError } = await supabase
-                .from('purchases')
-                .insert({
-                    user_id: currentUser.id,
-                    item_type: itemType,
-                    item_id: itemId,
-                    price: price
-                });
-
-            if (purchaseError) {
-                await supabase.from('profiles').update({ balance: currentBalance }).eq('id', currentUser.id);
-                showToast('Ошибка при сохранении покупки', '#ef4444');
-                return false;
-            }
-
-            if (itemType === 'avatar_frame') {
-                await supabase.from('profiles').update({ avatar_frame: itemId }).eq('id', currentUser.id);
-                if (currentProfile) currentProfile.avatar_frame = itemId;
-            } else if (itemType === 'nickname_color') {
-                await supabase.from('profiles').update({ nickname_color: itemId }).eq('id', currentUser.id);
-                if (currentProfile) currentProfile.nickname_color = itemId;
-            } else if (itemType === 'verified_badge') {
-                await supabase.from('profiles').update({ verified_badge: itemId }).eq('id', currentUser.id);
-                if (currentProfile) currentProfile.verified_badge = itemId;
-            }
-
-            currentBalance = newBalance;
-            showToast(`✅ ${itemName} куплен!`, '#22c55e');
-            return true;
-        }
-
-        async function renderChatWindow(friend) {
-            currentChatWith = friend;
-            const messages = await loadMessages(friend.id);
-            const chatArea = document.getElementById('chatArea');
-            const chatMessages = document.getElementById('chatMessages');
-            const chatWithName = document.getElementById('chatWithName');
-            
-            if (!chatArea || !chatMessages) return;
-            
-            chatArea.classList.remove('hidden');
-            if (chatWithName) chatWithName.innerText = friend.username;
-            
-            chatMessages.innerHTML = '';
-            for (const msg of messages) {
-                const isOwn = msg.from_user_id === currentUser.id;
-                chatMessages.innerHTML += `
-                    <div class="message" style="text-align: ${isOwn ? 'right' : 'left'}">
-                        <div class="message-sender">${isOwn ? 'Вы' : msg.from_user_id === currentUser.id ? 'Вы' : friend.username}</div>
-                        <div>${msg.message}</div>
-                        <div style="font-size: 10px; color: #8b9dc3;">${new Date(msg.created_at).toLocaleTimeString()}</div>
-                    </div>
-                `;
-            }
-            chatMessages.scrollTop = chatMessages.scrollHeight;
-        }
-
-        async function renderMainPage() {
-            if (!currentUser) return;
-
-            await loadProfile();
-            await loadFriends();
-
-            let storeHtml = '';
-            for (const p of privileges) {
-                storeHtml += `
-                    <div class="privilege-card">
-                        <h3>${p.name}</h3>
-                        <div class="price">💰 ${p.price.toLocaleString()} GM</div>
-                        <input type="text" id="nick_${p.key}" placeholder="Ваш ник на сервере" style="margin-bottom: 12px;">
-                        <button class="btn-gradient" style="width: 100%;" onclick="buyPrivilegeHandler('${p.key}', ${p.price})">🎁 Купить</button>
-                    </div>
-                `;
-            }
-
-            let friendsHtml = '';
-            for (const friend of friendsList) {
-                friendsHtml += `
-                    <div class="friend-card">
-                        <div><strong>${friend.username}</strong> <span style="font-size: 12px; color: #8b9dc3;">${friend.tag}</span></div>
-                        <button class="btn-gradient" style="width: auto; padding: 8px 20px;" onclick="openChat('${friend.id}', '${friend.username}')">💬 Чат</button>
-                    </div>
-                `;
-            }
-            if (friendsHtml === '') friendsHtml = '<p style="text-align: center; padding: 20px;">У вас пока нет друзей. Найдите их по поиску!</p>';
-
-            const app = document.getElementById('app');
-            app.innerHTML = `
-                <div class="header">
-                    <div class="logo">GRIF LAUNCHER</div>
-                    <div class="online-badge"><span class="pulse-dot"></span><span>💰 Баланс: <span class="balance-value" id="balanceDisplay">${currentBalance.toLocaleString()}</span> GM</span></div>
+        document.getElementById('app').innerHTML = `
+            <div class="glass-card">
+                <div class="logo">GRIF LAUNCHER</div>
+                <div class="flex" style="justify-content: space-between; align-items: center;">
+                    <div>👤 ${currentProfile?.username || ''} <span style="color:#8b9dc3;">${currentProfile?.tag || ''}</span></div>
+                    <div class="balance">💰 ${currentBalance} GM</div>
                 </div>
-                <div class="glass-card profile-card">
-                    <div style="display: flex; gap: 24px; flex-wrap: wrap;">
-                        <div class="profile-avatar">👤</div>
-                        <div style="flex: 1;">
-                            <div class="profile-row"><span>Никнейм:</span><span id="profileUsername" style="color: ${currentProfile?.nickname_color || '#ffffff'}">${currentProfile?.username || '-'}</span></div>
-                            <div class="profile-row"><span>Тег:</span><span>${currentProfile?.tag || '-'}</span></div>
-                            <div class="profile-row"><span>Галочка:</span><span id="profileBadge" class="${currentProfile?.verified_badge !== 'none' ? `badge-${currentProfile.verified_badge}` : ''}">${getBadgeName(currentProfile?.verified_badge)}</span></div>
-                            <div class="profile-row"><span>Баланс:</span><span class="balance-value" id="profileBalance">${currentBalance.toLocaleString()}</span> GM</div>
-                        </div>
-                    </div>
-                    <div style="display: flex; gap: 12px; margin-top: 20px;">
-                        <button class="btn-gradient" id="shopBtn">🛒 Магазин</button>
-                        <button class="btn-gradient" id="settingsBtn">⚙️ Настройки</button>
-                    </div>
-                </div>
-                <div class="section-title">✨ ДОСТУПНЫЕ ПРИВИЛЕГИИ</div>
+            </div>
+            <div class="glass-card">
+                <h3>🎁 МАГАЗИН ПРИВИЛЕГИЙ</h3>
                 <div class="store-grid">${storeHtml}</div>
-                <div class="glass-card" style="margin-top: 24px;">
-                    <h3>👥 ДРУЗЬЯ</h3>
-                    <div class="friends-grid" id="friendsList">${friendsHtml}</div>
-                    <div style="margin-top: 20px;">
-                        <div style="display: flex; gap: 12px;">
-                            <input type="text" id="searchFriendInput" placeholder="Поиск по нику или @tag" style="flex: 1;">
-                            <button class="btn-gradient" id="searchFriendBtn">🔍 Найти</button>
-                        </div>
-                        <div id="searchResults" style="margin-top: 16px;"></div>
-                    </div>
+            </div>
+            <div class="glass-card">
+                <h3>👥 ДРУЗЬЯ</h3>
+                <div id="friendsListDiv">${friendsHtml}</div>
+                <div class="flex" style="margin-top: 15px;">
+                    <input type="text" id="searchInput" placeholder="Поиск по нику или @tag">
+                    <button id="searchBtn">🔍</button>
                 </div>
-                <div id="chatArea" class="glass-card hidden" style="margin-top: 24px;">
-                    <div style="display: flex; justify-content: space-between; align-items: center;"><h3>💬 Чат с <span id="chatWithName"></span></h3><button id="closeChatBtn" class="btn-gradient" style="width: auto; padding: 5px 15px; background: #ef4444;">✖ Закрыть</button></div>
-                    <div class="chat-messages" id="chatMessages"></div>
-                    <div class="chat-input-area">
-                        <input type="text" id="chatInput" placeholder="Сообщение...">
-                        <button class="btn-gradient" id="sendChatBtn">📤 Отправить</button>
-                    </div>
+                <div id="searchResults" style="margin-top: 10px;"></div>
+            </div>
+            <div id="chatArea" class="glass-card hidden">
+                <div class="flex" style="justify-content: space-between;">
+                    <h3>💬 Чат с <span id="chatWithName"></span></h3>
+                    <button id="closeChat" style="width: auto; background:#ef4444;">✖</button>
                 </div>
-            `;
-
-            document.getElementById('balanceDisplay').innerText = currentBalance.toLocaleString();
-            document.getElementById('profileBalance').innerText = currentBalance.toLocaleString();
-
-            document.getElementById('shopBtn')?.addEventListener('click', () => openShopModal());
-            document.getElementById('settingsBtn')?.addEventListener('click', () => openShopModal());
-            document.getElementById('searchFriendBtn')?.addEventListener('click', async () => {
-                const query = document.getElementById('searchFriendInput').value;
-                const results = await searchUsers(query);
-                const resultsDiv = document.getElementById('searchResults');
-                if (results.length === 0) { resultsDiv.innerHTML = '<p style="padding: 10px;">Ничего не найдено</p>'; return; }
-                resultsDiv.innerHTML = results.map(u => `<div class="friend-card"><div><strong>${u.username}</strong> <span style="font-size: 12px; color: #8b9dc3;">${u.tag}</span></div><button class="btn-gradient" style="width: auto; padding: 8px 20px;" onclick="addFriend('${u.id}')">➕ Добавить</button></div>`).join('');
-            });
-            document.getElementById('closeChatBtn')?.addEventListener('click', () => { document.getElementById('chatArea').classList.add('hidden'); currentChatWith = null; });
-            document.getElementById('sendChatBtn')?.addEventListener('click', async () => {
-                const input = document.getElementById('chatInput');
-                if (currentChatWith && input.value.trim()) {
-                    await sendMessage(currentChatWith.id, input.value);
-                    input.value = '';
-                    await renderChatWindow(currentChatWith);
-                }
-            });
-            document.getElementById('chatInput')?.addEventListener('keypress', async (e) => {
-                if (e.key === 'Enter') {
-                    const input = document.getElementById('chatInput');
-                    if (currentChatWith && input.value.trim()) {
-                        await sendMessage(currentChatWith.id, input.value);
-                        input.value = '';
-                        await renderChatWindow(currentChatWith);
-                    }
-                }
-            });
-        }
-
-        window.buyPrivilegeHandler = async (privilegeKey, price) => {
-            const nickInput = document.getElementById(`nick_${privilegeKey}`);
-            const nickname = nickInput?.value.trim();
-            await buyPrivilege(privilegeKey, price, nickname);
-            await renderMainPage();
-        };
-
-        window.openChat = async (friendId, friendName) => { await renderChatWindow({ id: friendId, username: friendName }); };
-        window.addFriend = async (friendId) => { await sendFriendRequest(friendId); document.getElementById('searchResults').innerHTML = ''; document.getElementById('searchFriendInput').value = ''; };
-
-        function getBadgeName(style) {
-            if (style === 'blue') return '🔵 Синяя галочка';
-            if (style === 'gold') return '🟡 Золотая галочка';
-            if (style === 'rainbow') return '🌈 Радужная галочка';
-            return 'Нет';
-        }
-
-        async function openShopModal() {
-            const modal = document.getElementById('shopModal');
-            if (!modal) return;
-            const framesHtml = avatarFrames.map(f => `<div class="shop-item" onclick="buyItem('avatar_frame', '${f.style}', ${f.price}, '${f.name}')"><strong>${f.name}</strong><br><span style="color: #facc15;">${f.price.toLocaleString()} GM</span></div>`).join('');
-            const colorsHtml = nicknameColors.map(c => `<div class="shop-item" onclick="buyItem('nickname_color', '${c.code}', ${c.price}, '${c.name} цвет')"><div style="color: ${c.code};">${c.name}</div><span style="color: #facc15;">${c.price.toLocaleString()} GM</span></div>`).join('');
-            const badgesHtml = verifiedBadges.map(b => `<div class="shop-item" onclick="buyItem('verified_badge', '${b.style}', ${b.price}, '${b.name} галочка')"><strong>${b.name} галочка</strong><br><span style="color: #facc15;">${b.price.toLocaleString()} GM</span></div>`).join('');
-            modal.innerHTML = `
-                <div class="modal-content">
-                    <div class="modal-header"><h3>🛒 Магазин</h3><button class="modal-close" onclick="closeShopModal()">✖</button></div>
-                    <div class="modal-body">
-                        <h4>Рамки аватара</h4><div class="shop-items">${framesHtml}</div>
-                        <h4 style="margin-top: 20px;">Цвета ника</h4><div class="shop-items">${colorsHtml}</div>
-                        <h4 style="margin-top: 20px;">Галочки верификации</h4><div class="shop-items">${badgesHtml}</div>
-                    </div>
-                    <div class="modal-footer"><button class="btn-cancel" onclick="closeShopModal()">Закрыть</button></div>
+                <div id="chatMessages" class="chat-messages"></div>
+                <div class="flex">
+                    <input type="text" id="chatInput" placeholder="Сообщение...">
+                    <button id="sendMsg">📤</button>
                 </div>
-            `;
-            modal.style.display = 'flex';
-        }
+            </div>
+        `;
 
-        window.buyItem = async (itemType, itemId, price, itemName) => {
-            await purchaseItem(itemType, itemId, price, itemName);
-            await renderMainPage();
-            closeShopModal();
-        };
-        window.closeShopModal = () => { const modal = document.getElementById('shopModal'); if (modal) modal.style.display = 'none'; };
-
-        async function renderAuthPage() {
-            const app = document.getElementById('app');
-            app.innerHTML = `
-                <div class="glass-card auth-container">
-                    <div class="logo" style="text-align: center; margin-bottom: 32px;">GRIF LAUNCHER</div>
-                    <div class="tab-buttons" id="authTabs"><button class="tab-btn active" data-tab="login">🔐 Вход</button><button class="tab-btn" data-tab="register">📝 Регистрация</button></div>
-                    <div id="loginForm"><input type="email" id="loginEmail" placeholder="Email"><input type="password" id="loginPassword" placeholder="Пароль"><button class="btn-gradient" id="doLoginBtn" style="width: 100%;">Войти</button></div>
-                    <div id="registerForm" style="display: none;"><input type="text" id="regUsername" placeholder="Никнейм"><input type="email" id="regEmail" placeholder="Email"><input type="password" id="regPassword" placeholder="Пароль"><input type="text" id="regTag" placeholder="@username"><button class="btn-gradient" id="doRegisterBtn" style="width: 100%;">Зарегистрироваться</button></div>
+        document.getElementById('searchBtn')?.addEventListener('click', async () => {
+            const query = document.getElementById('searchInput').value;
+            const results = await searchUsers(query);
+            const resultsDiv = document.getElementById('searchResults');
+            if (!results.length) { resultsDiv.innerHTML = '<p>Не найдено</p>'; return; }
+            resultsDiv.innerHTML = results.map(u => `
+                <div class="friend-card">
+                    <div><b>${u.username}</b> <span style="font-size:12px;">${u.tag}</span></div>
+                    <button onclick="addFriendById('${u.id}')">➕ Добавить</button>
                 </div>
-            `;
-            document.querySelectorAll('.tab-btn').forEach(btn => {
-                btn.addEventListener('click', () => {
-                    document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
-                    btn.classList.add('active');
-                    if (btn.dataset.tab === 'login') { document.getElementById('loginForm').style.display = 'block'; document.getElementById('registerForm').style.display = 'none'; }
-                    else { document.getElementById('loginForm').style.display = 'none'; document.getElementById('registerForm').style.display = 'block'; }
-                });
-            });
-            document.getElementById('doLoginBtn')?.addEventListener('click', async () => {
-                const email = document.getElementById('loginEmail').value;
-                const password = document.getElementById('loginPassword').value;
-                const { data, error } = await supabase.auth.signInWithPassword({ email, password });
-                if (error) { showToast(error.message, '#ef4444'); return; }
-                currentUser = data.user;
-                await renderMainPage();
-            });
-            document.getElementById('doRegisterBtn')?.addEventListener('click', async () => {
-                const username = document.getElementById('regUsername').value;
-                const email = document.getElementById('regEmail').value;
-                const password = document.getElementById('regPassword').value;
-                const tag = document.getElementById('regTag').value;
-                if (!username || !email || !password || !tag) { showToast('Заполните все поля!', '#ef4444'); return; }
-                const { data, error } = await supabase.auth.signUp({ email, password, options: { data: { username, tag } } });
-                if (error) { showToast(error.message, '#ef4444'); return; }
-                showToast('Регистрация успешна! Теперь войдите.', '#22c55e');
-            });
-        }
-
-        // Создаём модальное окно
-        const modalDiv = document.createElement('div');
-        modalDiv.id = 'shopModal';
-        modalDiv.className = 'modal';
-        document.body.appendChild(modalDiv);
-
-        supabase.auth.onAuthStateChange(async (event, session) => {
-            if (session?.user) { currentUser = session.user; await loadProfile(); await renderMainPage(); }
-            else { currentUser = null; currentProfile = null; await renderAuthPage(); }
+            `).join('');
         });
 
-        async function init() {
-            const { data: { session } } = await supabase.auth.getSession();
-            if (session?.user) { currentUser = session.user; await loadProfile(); await renderMainPage(); }
-            else { await renderAuthPage(); }
-        }
-        init();
-    </script>
+        document.getElementById('closeChat')?.addEventListener('click', () => {
+            document.getElementById('chatArea').classList.add('hidden');
+            currentChatWith = null;
+        });
+
+        document.getElementById('sendMsg')?.addEventListener('click', async () => {
+            const input = document.getElementById('chatInput');
+            if (currentChatWith && input.value.trim()) {
+                await sendMessage(currentChatWith.id, input.value);
+                input.value = '';
+                await renderChatWindow(currentChatWith);
+            }
+        });
+    }
+
+    window.buy = async (key, price) => {
+        const nick = document.getElementById(`nick_${key}`)?.value;
+        await buyPrivilege(key, price, nick);
+        await renderMainPage();
+    };
+
+    window.openChat = async (id, name) => {
+        await renderChatWindow({ id, username: name });
+    };
+
+    window.addFriendById = async (id) => {
+        await sendFriendRequest(id);
+        document.getElementById('searchResults').innerHTML = '';
+        document.getElementById('searchInput').value = '';
+        await renderMainPage();
+    };
+
+    async function renderAuthPage() {
+        document.getElementById('app').innerHTML = `
+            <div class="glass-card" style="max-width: 400px; margin: 50px auto;">
+                <div class="logo">GRIF LAUNCHER</div>
+                <div id="loginForm">
+                    <input type="email" id="loginEmail" placeholder="Email">
+                    <input type="password" id="loginPass" placeholder="Пароль">
+                    <button id="loginBtn">Войти</button>
+                </div>
+                <div id="registerForm" style="margin-top: 20px;">
+                    <input type="text" id="regUsername" placeholder="Никнейм">
+                    <input type="email" id="regEmail" placeholder="Email">
+                    <input type="password" id="regPass" placeholder="Пароль">
+                    <input type="text" id="regTag" placeholder="@username">
+                    <button id="registerBtn">Зарегистрироваться</button>
+                </div>
+            </div>
+        `;
+
+        document.getElementById('loginBtn')?.addEventListener('click', async () => {
+            const email = document.getElementById('loginEmail').value;
+            const pass = document.getElementById('loginPass').value;
+            const { data, error } = await supabase.auth.signInWithPassword({ email, password: pass });
+            if (error) { showToast(error.message, '#ef4444'); return; }
+            currentUser = data.user;
+            await renderMainPage();
+        });
+
+        document.getElementById('registerBtn')?.addEventListener('click', async () => {
+            const username = document.getElementById('regUsername').value;
+            const email = document.getElementById('regEmail').value;
+            const pass = document.getElementById('regPass').value;
+            const tag = document.getElementById('regTag').value;
+            if (!username || !email || !pass || !tag) { showToast('Заполните все поля', '#ef4444'); return; }
+            const { error } = await supabase.auth.signUp({ email, password: pass, options: { data: { username, tag } } });
+            if (error) { showToast(error.message, '#ef4444'); return; }
+            showToast('Регистрация успешна! Войдите.', '#22c55e');
+        });
+    }
+
+    supabase.auth.onAuthStateChange(async (event, session) => {
+        if (session?.user) { currentUser = session.user; await loadProfile(); await renderMainPage(); }
+        else { currentUser = null; await renderAuthPage(); }
+    });
+
+    async function init() {
+        const { data } = await supabase.auth.getSession();
+        if (data.session?.user) { currentUser = data.session.user; await loadProfile(); await renderMainPage(); }
+        else { await renderAuthPage(); }
+    }
+    init();
+})();
+</script>
 </body>
 </html>
