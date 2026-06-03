@@ -1,16 +1,23 @@
 name: Запуск Minecraft
 
-# Этот workflow будет запускаться при каждой загрузке файлов
+# Эта строчка включает ручной запуск
 on: [workflow_dispatch]
 
 jobs:
   build-and-run-server:
-    runs-on: ubuntu-latest # Запускаем на бесплатном сервере с Ubuntu
+    runs-on: ubuntu-latest
 
     steps:
-      # Шаг 1: Получить файлы из репозитория
       - name: Checkout code
         uses: actions/checkout@v4
 
-      # Шаг 2: Установить Java, так как на сервере ее нет по умолчанию
-      - name:
+      - name: Set up JDK
+        uses: actions/setup-java@v4
+        with:
+          java-version: '17'
+          distribution: 'temurin'
+
+      - name: Run Server
+        run: |
+          # Запускаем сервер напрямую в этом терминале
+          java -Xmx1024M -Xms1024M -jar server.jar nogui
