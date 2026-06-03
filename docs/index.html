@@ -3,54 +3,115 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
-    <title>GrifLauncher | Смайл-паки из Telegram</title>
+    <title>GrifLauncher</title>
     <script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-app-compat.js"></script>
     <script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-auth-compat.js"></script>
     <script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore-compat.js"></script>
     <style>
-        /* Твои старые стили остаются, я добавил только стили для новых картинок */
-        .emoji-panel {
-            display: flex;
-            flex-wrap: wrap;
-            gap: 8px;
-            margin-bottom: 12px;
-            padding: 12px;
-            background: rgba(0,0,0,0.4);
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body {
+            background: #0b0e17;
+            font-family: 'Segoe UI', system-ui, sans-serif;
+            color: #eef2ff;
+            padding-bottom: 70px;
+        }
+        .container { max-width: 1200px; margin: 0 auto; padding: 20px; }
+        
+        /* Стили для карточек и элементов */
+        .glass-card {
+            background: rgba(18,25,45,0.6);
+            backdrop-filter: blur(12px);
             border-radius: 28px;
-            justify-content: center;
-            max-height: 150px;
-            overflow-y: auto;
+            padding: 20px;
+            margin-bottom: 20px;
+            border: 1px solid rgba(59,130,246,0.2);
         }
-        .emoji-btn {
-            width: 44px;
-            height: 44px;
-            background: rgba(59,130,246,0.2);
-            border: none;
-            border-radius: 50%;
+        .logo {
+            font-size: 28px;
+            font-weight: 800;
+            text-align: center;
+            background: linear-gradient(90deg, #fff, #3b82f6, #8b5cf6);
+            -webkit-background-clip: text;
+            background-clip: text;
+            color: transparent;
+            margin-bottom: 20px;
+        }
+        input, button {
+            width: 100%;
+            padding: 12px;
+            margin: 8px 0;
+            background: rgba(0,0,0,0.4);
+            border: 1px solid #3b82f6;
+            border-radius: 40px;
+            color: white;
+        }
+        button {
+            background: linear-gradient(135deg, #3b82f6, #2563eb);
             cursor: pointer;
-            transition: 0.1s;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            padding: 0;
+            font-weight: bold;
+            transition: 0.2s;
         }
+        button:hover { transform: scale(1.01); opacity: 0.9; }
+        .balance { color: #facc15; font-size: 24px; font-weight: bold; }
+        .store-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(280px, 1fr)); gap: 20px; }
+        .privilege-card { background: rgba(0,0,0,0.3); border-radius: 20px; padding: 16px; text-align: center; }
+        .friend-card { background: rgba(0,0,0,0.3); border-radius: 16px; padding: 12px; margin-bottom: 8px; display: flex; justify-content: space-between; align-items: center; }
+        .chat-messages { height: 400px; overflow-y: auto; background: rgba(0,0,0,0.3); border-radius: 16px; padding: 12px; margin: 12px 0; }
+        .message { background: rgba(59,130,246,0.15); border-radius: 12px; padding: 8px; margin-bottom: 8px; border-left: 3px solid #3b82f6; }
+        .flex { display: flex; gap: 12px; flex-wrap: wrap; align-items: center; }
+        .hidden { display: none !important; }
+        #toast { position: fixed; bottom: 80px; right: 20px; background: #22c55e; padding: 12px 24px; border-radius: 40px; opacity: 0; transition: 0.2s; z-index: 1000; }
+        
+        /* НИЖНЕЕ МЕНЮ */
+        .bottom-nav {
+            position: fixed; bottom: 0; left: 0; right: 0;
+            background: rgba(10,14,23,0.95);
+            backdrop-filter: blur(16px);
+            display: flex;
+            justify-content: space-around;
+            padding: 8px 16px;
+            border-top: 1px solid rgba(59,130,246,0.4);
+            z-index: 100;
+        }
+        .nav-item {
+            display: flex; flex-direction: column; align-items: center; gap: 4px;
+            cursor: pointer; padding: 6px 12px; border-radius: 40px;
+            transition: all 0.2s; color: #8b9dc3;
+        }
+        .nav-item.active { color: #3b82f6; background: rgba(59,130,246,0.2); }
+        .nav-icon { font-size: 24px; }
+        .nav-label { font-size: 11px; font-weight: 500; }
+        
+        .page { display: none; }
+        .page.active-page { display: block; }
+        
+        /* Стили для галочек */
+        .badge-white { color: #ffffff; font-weight: bold; margin-left: 5px; }
+        .badge-gold { color: #facc15; font-weight: bold; margin-left: 5px; }
+        .badge-blue { color: #3b82f6; font-weight: bold; margin-left: 5px; }
+        .badge-rainbow { background: linear-gradient(90deg, red, orange, yellow, green, cyan, blue, violet); -webkit-background-clip: text; background-clip: text; color: transparent; margin-left: 5px; font-weight: bold; }
+        @keyframes rainbowShift { 0% { background-position: 0% 50%; } 100% { background-position: 200% 50%; } }
+        
+        .badges-shop { display: grid; grid-template-columns: repeat(auto-fill, minmax(150px, 1fr)); gap: 16px; margin-top: 20px; }
+        .badge-card { background: rgba(0,0,0,0.3); border-radius: 24px; padding: 20px; text-align: center; cursor: pointer; transition: 0.2s; border: 1px solid #3b82f6; }
+        .badge-card:hover { transform: translateY(-4px); background: rgba(59,130,246,0.2); }
+        
+        .avatar-img { width: 70px; height: 70px; border-radius: 50%; object-fit: cover; background: #1e293b; border: 1px solid #3b82f6; }
+        .avatar-selector { display: flex; flex-wrap: wrap; justify-content: center; gap: 16px; margin: 20px 0; }
+        .avatar-option { display: inline-block; margin: 8px; cursor: pointer; border-radius: 50%; border: 2px solid transparent; transition: 0.1s; }
+        .avatar-option.selected { border-color: #3b82f6; transform: scale(1.05); }
+        
+        /* Стили для смайл-паков */
+        .emoji-pack { background: rgba(0,0,0,0.3); border-radius: 20px; padding: 16px; margin-bottom: 16px; cursor: pointer; transition: 0.2s; display: flex; justify-content: space-between; align-items: center; }
+        .emoji-pack:hover { background: rgba(59,130,246,0.2); transform: translateX(8px); }
+        .emoji-pack-emojis { font-size: 24px; letter-spacing: 4px; }
+        .emoji-panel { display: flex; flex-wrap: wrap; gap: 8px; margin-bottom: 12px; padding: 12px; background: rgba(0,0,0,0.4); border-radius: 28px; justify-content: center; max-height: 150px; overflow-y: auto; }
+        .emoji-btn { width: 44px; height: 44px; background: rgba(59,130,246,0.2); border: none; border-radius: 50%; cursor: pointer; transition: 0.1s; display: flex; align-items: center; justify-content: center; font-size: 24px; }
         .emoji-btn:hover { background: #3b82f6; transform: scale(1.1); }
-        .emoji-img {
-            width: 32px;
-            height: 32px;
-            object-fit: contain;
-            pointer-events: none;
-        }
-        .emoji-pack-emojis {
-            display: flex;
-            gap: 4px;
-            align-items: center;
-        }
-        .preview-emoji {
-            width: 28px;
-            height: 28px;
-            object-fit: contain;
-        }
+        
+        .server-selector { display: flex; gap: 12px; margin-bottom: 20px; justify-content: center; }
+        .server-btn { background: rgba(0,0,0,0.4); border: 1px solid rgba(59,130,246,0.3); border-radius: 40px; padding: 8px 20px; color: #eef2ff; cursor: pointer; width: auto; }
+        .server-btn.active { background: #3b82f6; border-color: #3b82f6; }
     </style>
 </head>
 <body>
@@ -58,7 +119,85 @@
     <div class="logo">GRIF LAUNCHER</div>
     <div id="authContainer"></div>
     <div id="mainContainer" class="hidden">
-        <!-- ... (разметка всех страниц остается без изменений) ... -->
+        <!-- СТРАНИЦА ПРОФИЛЬ -->
+        <div id="pageProfile" class="page active-page">
+            <div class="glass-card">
+                <div class="flex" style="justify-content: space-between;">
+                    <div>
+                        <h2 id="profileUsername"></h2>
+                        <div id="profileTag"></div>
+                        <div class="balance" id="profileBalance"></div>
+                        <div id="profileBadge"></div>
+                    </div>
+                    <img class="avatar-img" id="avatarImg" src="" alt="avatar">
+                </div>
+                <div class="avatar-selector" id="avatarSelector"></div>
+                <button id="removeBadgeBtn" style="background:#ef4444;">🗑️ Убрать галочку</button>
+                <button id="logoutBtn" style="background:#ef4444; margin-top: 8px;">🚪 Выйти</button>
+            </div>
+            <div class="glass-card">
+                <h3>📝 Редактировать профиль</h3>
+                <input type="text" id="editUsername" placeholder="Новый никнейм">
+                <input type="text" id="editTag" placeholder="Новый тег (@username)">
+                <button id="saveProfileBtn">Сохранить изменения</button>
+            </div>
+        </div>
+        
+        <!-- СТРАНИЦА ДРУЗЬЯ -->
+        <div id="pageFriends" class="page">
+            <div class="glass-card">
+                <h3>👥 МОИ ДРУЗЬЯ</h3>
+                <div id="friendsList"></div>
+                <div class="flex" style="margin-top: 16px;">
+                    <input type="text" id="searchFriendInput" placeholder="Поиск по нику или @tag">
+                    <button id="searchFriendBtn">🔍 Найти</button>
+                </div>
+                <div id="searchResults"></div>
+            </div>
+        </div>
+        
+        <!-- СТРАНИЦА ЧАТ -->
+        <div id="pageChat" class="page">
+            <div class="glass-card">
+                <h3>💬 ВЫБЕРИ ДРУГА ДЛЯ ЧАТА</h3>
+                <div id="chatFriendsList"></div>
+                <div id="chatArea" class="hidden">
+                    <div class="flex" style="justify-content: space-between;">
+                        <h3>Чат с <span id="chatWithName"></span></h3>
+                        <button id="closeChatBtn" style="width: auto; background:#ef4444;">✖</button>
+                    </div>
+                    <div class="emoji-panel" id="emojiPanel"></div>
+                    <div id="chatMessages" class="chat-messages"></div>
+                    <div class="flex">
+                        <input type="text" id="chatInput" placeholder="Сообщение...">
+                        <button id="sendMsgBtn">📤</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+        
+        <!-- СТРАНИЦА МАГАЗИН (ПРИВИЛЕГИИ) -->
+        <div id="pageShop" class="page">
+            <div class="server-selector" id="serverSelector">
+                <button class="server-btn active" data-server="survival">🏔️ Выживание #1</button>
+                <button class="server-btn" data-server="test">🧪 Тест сервер</button>
+            </div>
+            <div class="glass-card">
+                <h3>🎁 ПРИВИЛЕГИИ</h3>
+                <div id="storeGrid" class="store-grid"></div>
+            </div>
+        </div>
+        
+        <!-- СТРАНИЦА УКРАШЕНИЯ -->
+        <div id="pageDecor" class="page">
+            <div class="glass-card">
+                <h3>✨ ГАЛОЧКИ</h3>
+                <div class="badges-shop" id="badgesShop"></div>
+            </div>
+            <div class="glass-card">
+                <h3>🎨 СМАЙЛ-ПАКИ ДЛЯ ЧАТА</h3>
+                <div id="emojiPacksList"></div>
+            </div>
         </div>
     </div>
 </div>
@@ -95,134 +234,77 @@
     let purchasedEmojis = [];
     let selectedServer = 'survival';
     let purchasedBadges = [];
-
-    const privileges = [ /* ... (список привилегий без изменений) ... */ ];
-
-    const badges = [ /* ... (список галочек без изменений) ... */ ];
-
-    const avatars = [ /* ... (список аватарок без изменений) ... */ ];
     
-    // ========== НОВЫЕ СМАЙЛ-ПАКИ С КАРТИНКАМИ ==========
-    // ЭТО URL-АДРЕСА НА КАРТИНКИ ИЗ ИНТЕРНЕТА. ОНИ УЖЕ ВСТАВЛЕНЫ.
+    const privileges = [
+        { name: '🎨 Креатив', price: 1000, key: 'creative' },
+        { name: '🛡️ Модер', price: 2500, key: 'moder' },
+        { name: '⚔️ Лорд', price: 5000, key: 'lord' },
+        { name: '👑 Админ', price: 10000, key: 'admin' },
+        { name: '🔱 Гл. Админ', price: 20000, key: 'headadmin' },
+        { name: '✨ Создатель', price: 30000, key: 'creator' },
+        { name: '🔥 Основатель', price: 40000, key: 'founder' },
+        { name: '💎 Владелец', price: 50000, key: 'owner' },
+        { name: '🏛️ Цезарь', price: 70000, key: 'caesar' },
+        { name: '👑 ПРАВИТЕЛЬ', price: 100000, key: 'ruler' }
+    ];
+    
+    const badges = [
+        { id: 'white', name: 'Белая', price: 5000, display: '✓', style: 'badge-white' },
+        { id: 'gold', name: 'Золотая', price: 15000, display: '🌟✓', style: 'badge-gold' },
+        { id: 'blue', name: 'Синяя', price: 25000, display: '💙✓', style: 'badge-blue' },
+        { id: 'rainbow', name: 'Радужная', price: 50000, display: '🌈✓', style: 'badge-rainbow' }
+    ];
+    
+    const avatars = [
+        { id: 'default', name: 'По умолчанию', url: 'https://ui-avatars.com/api/?background=3b82f6&color=fff&bold=true&size=70' },
+        { id: 'moderator', name: 'Модератор', url: 'https://yt3.googleusercontent.com/LmV6I6llXqsGu02eFupVRyEsbqltq1ywm099QTGxwaC8qSm1BrRBs1FMBa9_vrpJJSu5JC4L1g=s900-c-k-c0x00ffffff-no-rj' },
+        { id: 'smile1', name: '😊 Улыбка', url: 'https://ui-avatars.com/api/?background=22c55e&color=fff&name=🙂&size=70' },
+        { id: 'smile2', name: '🔥 Огонь', url: 'https://ui-avatars.com/api/?background=ef4444&color=fff&name=🔥&size=70' },
+        { id: 'smile3', name: '👑 Корона', url: 'https://ui-avatars.com/api/?background=facc15&color=000&name=👑&size=70' }
+    ];
+    
     const emojiPacks = [
-        { 
-            id: 1, 
-            name: '📱 Telegram Pack', 
-            price: 10000, 
-            emojis: [
-                'https://cdn-icons-png.flaticon.com/512/1057/1057096.png',
-                'https://cdn-icons-png.flaticon.com/512/545/545682.png',
-                'https://cdn-icons-png.flaticon.com/512/1830/1830839.png',
-                'https://cdn-icons-png.flaticon.com/512/190/190411.png',
-                'https://cdn-icons-png.flaticon.com/512/1828/1828772.png'
-            ] 
-        },
-        { 
-            id: 2, 
-            name: '👑 Royal Pack', 
-            price: 20000, 
-            emojis: [
-                'https://cdn-icons-png.flaticon.com/512/2555/2555992.png',
-                'https://cdn-icons-png.flaticon.com/512/1034/1034213.png',
-                'https://cdn-icons-png.flaticon.com/512/2589/2589175.png',
-                'https://cdn-icons-png.flaticon.com/512/3050/3050202.png',
-                'https://cdn-icons-png.flaticon.com/512/1791/1791319.png'
-            ] 
-        },
-        { 
-            id: 3, 
-            name: '🌈 Rainbow Pack', 
-            price: 15000, 
-            emojis: [
-                'https://cdn-icons-png.flaticon.com/512/1057/1057096.png',
-                'https://cdn-icons-png.flaticon.com/512/2906/2906124.png',
-                'https://cdn-icons-png.flaticon.com/512/485/485879.png',
-                'https://cdn-icons-png.flaticon.com/512/1160/1160258.png',
-                'https://cdn-icons-png.flaticon.com/512/1543/1543305.png'
-            ] 
-        },
-        { 
-            id: 4, 
-            name: '🎮 Gaming Pack', 
-            price: 12000, 
-            emojis: [
-                'https://cdn-icons-png.flaticon.com/512/3615/3615912.png',
-                'https://cdn-icons-png.flaticon.com/512/3210/3210250.png',
-                'https://cdn-icons-png.flaticon.com/512/788/788957.png',
-                'https://cdn-icons-png.flaticon.com/512/2044/2044776.png',
-                'https://cdn-icons-png.flaticon.com/512/2086/2086930.png'
-            ] 
-        },
-        { 
-            id: 5, 
-            name: '🎨 Grif Pack', 
-            price: 30000, 
-            emojis: [
-                'https://cdn-icons-png.flaticon.com/512/1998/1998708.png',
-                'https://cdn-icons-png.flaticon.com/512/1112/1112052.png',
-                'https://cdn-icons-png.flaticon.com/512/1113/1113137.png',
-                'https://cdn-icons-png.flaticon.com/512/1822/1822868.png',
-                'https://cdn-icons-png.flaticon.com/512/1998/1998696.png'
-            ] 
-        }
+        { id: 1, name: '📱 Telegram Pack', price: 10000, emojis: ['✅', '✔️', '⭐', '🔥', '❤️', '💙'] },
+        { id: 2, name: '👑 Royal Pack', price: 20000, emojis: ['👑', '💎', '⭐', '🌟', '✨', '⚡'] },
+        { id: 3, name: '🌈 Rainbow Pack', price: 15000, emojis: ['🌈', '☀️', '🌟', '✨', '⭐', '💫'] },
+        { id: 4, name: '🎮 Gaming Pack', price: 12000, emojis: ['🎮', '🎯', '🎲', '🎰', '🎳', '🎴'] },
+        { id: 5, name: '🎨 Grif Pack', price: 30000, emojis: ['🔥', '⚡', '💎', '👑', '🌟', '✨'] }
     ];
 
-    // ========== ВСПОМОГАТЕЛЬНЫЕ ФУНКЦИИ (ЗАГРУЗКА ПРОФИЛЯ, ДРУЗЕЙ, ПОКУПКА) ==========
-    // ... (ВСЕ ФУНКЦИИ ОСТАЮТСЯ БЕЗ ИЗМЕНЕНИЙ. КОД, КОТОРЫЙ Я ДАЛ РАНЬШЕ, РАБОТАЕТ ИДЕАЛЬНО) ...
-
-    // --- ЭТОТ БЛОК НУЖНО ЗАМЕНИТЬ В ТВОЁМ ФАЙЛЕ, ОСТАЛЬНОЕ НЕ ТРОГАЙ ---
+    function showToast(msg, color) { /* ... */ }
+    async function loadProfile() { /* ... */ }
+    async function loadFriends() { /* ... */ }
+    async function buyPrivilege(key, price, serverNick) { /* ... */ }
+    async function buyBadge(badgeId, price) { /* ... */ }
+    async function buyEmojiPack(packId, price) { /* ... */ }
+    async function removeBadge() { /* ... */ }
+    async function updateAvatar(avatarUrl) { /* ... */ }
+    async function renderMainUI() { /* ... */ }
+    async function renderAuthPage() { /* ... */ }
     
-    // Функция покупки смайл-пака
-    async function buyEmojiPack(packId, price) {
-        if (currentBalance < price) { 
-            showToast(`❌ Не хватает GM! Нужно: ${price}`, '#ef4444'); 
-            return; 
-        }
-        if (purchasedEmojis.includes(packId)) { 
-            showToast('У вас уже есть этот смайл-пак', '#facc15'); 
-            return; 
-        }
-        await db.collection('profiles').doc(currentUser.uid).update({ 
-            balance: currentBalance - price, 
-            emojiPacks: [...purchasedEmojis, packId] 
+    // НАВИГАЦИЯ (переключение страниц)
+    document.querySelectorAll('.nav-item').forEach(item => {
+        item.addEventListener('click', () => {
+            document.querySelectorAll('.nav-item').forEach(nav => nav.classList.remove('active'));
+            item.classList.add('active');
+            let pageId = item.dataset.page;
+            document.querySelectorAll('.page').forEach(page => page.classList.remove('active-page'));
+            document.getElementById(`page${pageId.charAt(0).toUpperCase() + pageId.slice(1)}`).classList.add('active-page');
         });
-        currentBalance -= price;
-        purchasedEmojis.push(packId);
-        showToast('✅ Смайл-пак куплен!', '#22c55e');
-        await renderMainUI();
-    }
-
-    // Эта функция отрисовывает панель смайлов в чате
-    async function loadMessages() {
-        if (!currentChatWith) return;
-        const msgs = await db.collection('messages').where('chatId', '==', [currentUser.uid, currentChatWith.id].sort().join('_')).orderBy('timestamp').get();
-        let html = '';
-        msgs.forEach(d => { let m = d.data(); html += `<div class="message"><b>${m.from === currentUser.uid ? 'Вы' : currentChatWith.username}:</b> ${m.text}<div style="font-size:10px;color:#8b9dc3;">${m.timestamp?.toDate().toLocaleTimeString() || ''}</div></div>`; });
-        document.getElementById('chatMessages').innerHTML = html || '<p>Нет сообщений</p>';
-        document.getElementById('chatMessages').scrollTop = 9999;
-        
-        // 🟢 ГЛАВНОЕ: ОТРИСОВКА ПАНЕЛИ СМАЙЛОВ
-        let emojiPanelHtml = '';
-        for (let pid of purchasedEmojis) {
-            let pack = emojiPacks.find(p => p.id === pid);
-            if (pack) {
-                pack.emojis.forEach(imgUrl => {
-                    emojiPanelHtml += `<button class="emoji-btn" onclick="addEmojiToChat('${imgUrl}')"><img class="emoji-img" src="${imgUrl}" alt="emoji"></button>`;
-                });
-            }
-        }
-        if (emojiPanelHtml === '') emojiPanelHtml = '<div style="text-align: center; padding: 10px;">Купи смайл-пак в "Украшениях"!</div>';
-        document.getElementById('emojiPanel').innerHTML = emojiPanelHtml;
-    }
-
-    window.addEmojiToChat = (imgUrl) => {
-        let inp = document.getElementById('chatInput');
-        inp.value += ` [${imgUrl}] `; // Вставляем ссылку на картинку как текст
-        // Ты можешь изменить это на свой лад.
-    };
+    });
     
-    // ... (ОСТАЛЬНОЙ КОД ТВОЕГО САЙТА С РЕГИСТРАЦИЕЙ И ВХОДОМ) ...
-
+    auth.onAuthStateChanged(async (user) => {
+        if (user) {
+            currentUser = user;
+            document.getElementById('authContainer').classList.add('hidden');
+            document.getElementById('mainContainer').classList.remove('hidden');
+            await renderMainUI();
+        } else {
+            document.getElementById('authContainer').classList.remove('hidden');
+            document.getElementById('mainContainer').classList.add('hidden');
+            await renderAuthPage();
+        }
+    });
 </script>
 </body>
 </html>
