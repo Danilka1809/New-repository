@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>GrifL</title>
+    <title>GrifLauncher</title>
     <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
     <style>
         * { margin: 0; padding: 0; box-sizing: border-box; }
@@ -65,157 +65,159 @@
 <div id="toast"></div>
 
 <script>
-    // ========== НАСТРОЙКИ SUPABASE ==========
-    const SUPABASE_URL = 'https://ikjklkgxrgfumvcyzhfa.supabase.co';
-    const SUPABASE_KEY = 'sb_publishable_BjGrlriGkvA4byQOAbCESw_cjqTPmX8';
-    const supabase = window.supabase.createClient(SUPABASE_URL, SUPABASE_KEY);
+    (function() {
+        // ========== НАСТРОЙКИ SUPABASE ==========
+        const SUPABASE_URL = 'https://ikjklkgxrgfumvcyzhfa.supabase.co';
+        const SUPABASE_KEY = 'sb_publishable_BjGrlriGkvA4byQOAbCESw_cjqTPmX8';
+        const supabase = window.supabase.createClient(SUPABASE_URL, SUPABASE_KEY);
 
-    // ========== ПРИВИЛЕГИИ ==========
-    const privileges = [
-        { name: '🎨 Креатив', price: 1000, key: 'creative' },
-        { name: '🛡️ Модер', price: 2500, key: 'moder' },
-        { name: '⚔️ Лорд', price: 5000, key: 'lord' },
-        { name: '👑 Админ', price: 10000, key: 'admin' },
-        { name: '🔱 Гл. Админ', price: 20000, key: 'headadmin' },
-        { name: '✨ Создатель', price: 30000, key: 'creator' },
-        { name: '🔥 Основатель', price: 40000, key: 'founder' },
-        { name: '💎 Владелец', price: 50000, key: 'owner' },
-        { name: '🏛️ Цезарь', price: 70000, key: 'caesar' },
-        { name: '👑 ПРАВИТЕЛЬ', price: 100000, key: 'ruler' }
-    ];
+        // ========== ПРИВИЛЕГИИ ==========
+        const privileges = [
+            { name: '🎨 Креатив', price: 1000, key: 'creative' },
+            { name: '🛡️ Модер', price: 2500, key: 'moder' },
+            { name: '⚔️ Лорд', price: 5000, key: 'lord' },
+            { name: '👑 Админ', price: 10000, key: 'admin' },
+            { name: '🔱 Гл. Админ', price: 20000, key: 'headadmin' },
+            { name: '✨ Создатель', price: 30000, key: 'creator' },
+            { name: '🔥 Основатель', price: 40000, key: 'founder' },
+            { name: '💎 Владелец', price: 50000, key: 'owner' },
+            { name: '🏛️ Цезарь', price: 70000, key: 'caesar' },
+            { name: '👑 ПРАВИТЕЛЬ', price: 100000, key: 'ruler' }
+        ];
 
-    let currentUser = null;
-    let currentProfile = null;
-    let currentBalance = 0;
-    let friendsList = [];
-    let currentChatWith = null;
+        let currentUser = null;
+        let currentProfile = null;
+        let currentBalance = 0;
+        let friendsList = [];
+        let currentChatWith = null;
 
-    function showToast(msg, color = '#22c55e') {
-        const toast = document.getElementById('toast');
-        toast.style.backgroundColor = color;
-        toast.innerText = msg;
-        toast.style.opacity = '1';
-        setTimeout(() => toast.style.opacity = '0', 3000);
-    }
+        function showToast(msg, color = '#22c55e') {
+            const toast = document.getElementById('toast');
+            toast.style.backgroundColor = color;
+            toast.innerText = msg;
+            toast.style.opacity = '1';
+            setTimeout(() => toast.style.opacity = '0', 3000);
+        }
 
-    async function loadProfile() {
-        if (!currentUser) return;
-        const { data } = await supabase.from('profiles').select('*').eq('id', currentUser.id).single();
-        if (data) { currentProfile = data; currentBalance = data.balance || 50000; }
-    }
+        async function loadProfile() {
+            if (!currentUser) return;
+            const { data } = await supabase.from('profiles').select('*').eq('id', currentUser.id).single();
+            if (data) { currentProfile = data; currentBalance = data.balance || 50000; }
+        }
 
-    async function loadFriends() {
-        if (!currentUser) return;
-        const { data } = await supabase.from('friends').select('friend_id, profiles!friends_friend_id_fkey (username, tag)').eq('user_id', currentUser.id).eq('status', 'accepted');
-        friendsList = data?.map(f => ({ id: f.friend_id, username: f.profiles.username, tag: f.profiles.tag })) || [];
-    }
+        async function loadFriends() {
+            if (!currentUser) return;
+            const { data } = await supabase.from('friends').select('friend_id, profiles!friends_friend_id_fkey (username, tag)').eq('user_id', currentUser.id).eq('status', 'accepted');
+            friendsList = data?.map(f => ({ id: f.friend_id, username: f.profiles.username, tag: f.profiles.tag })) || [];
+        }
 
-    async function buyPrivilege(key, price, serverNick) {
-        if (!serverNick) { showToast('❌ Введи ник на сервере!', '#ef4444'); return false; }
-        if (currentBalance < price) { showToast(`❌ Не хватает GM! Нужно: ${price}`, '#ef4444'); return false; }
-        const newBalance = currentBalance - price;
-        await supabase.from('profiles').update({ balance: newBalance }).eq('id', currentUser.id);
-        currentBalance = newBalance;
-        showToast(`✅ ${key} выдана! Донат в течение 10 минут.`, '#22c55e');
-        return true;
-    }
+        async function buyPrivilege(key, price, serverNick) {
+            if (!serverNick) { showToast('❌ Введи ник на сервере!', '#ef4444'); return false; }
+            if (currentBalance < price) { showToast(`❌ Не хватает GM! Нужно: ${price}`, '#ef4444'); return false; }
+            const newBalance = currentBalance - price;
+            await supabase.from('profiles').update({ balance: newBalance }).eq('id', currentUser.id);
+            currentBalance = newBalance;
+            showToast(`✅ ${key} выдана! Донат в течение 10 минут.`, '#22c55e');
+            return true;
+        }
 
-    async function renderMainPage() {
-        if (!currentUser) return;
-        await loadProfile(); await loadFriends();
+        async function renderMainPage() {
+            if (!currentUser) return;
+            await loadProfile(); await loadFriends();
 
-        let storeHtml = privileges.map(p => `
-            <div class="privilege-card">
-                <h3>${p.name}</h3>
-                <div>💰 ${p.price} GM</div>
-                <input type="text" id="nick_${p.key}" placeholder="Ваш ник на сервере">
-                <button onclick="buy('${p.key}', ${p.price})">🎁 Купить</button>
-            </div>
-        `).join('');
-
-        let friendsHtml = friendsList.map(f => `
-            <div class="friend-card">
-                <div><b>${f.username}</b> <span style="font-size:12px;">${f.tag}</span></div>
-                <button onclick="openChat('${f.id}', '${f.username}')">💬 Чат</button>
-            </div>
-        `).join('');
-        if (!friendsHtml) friendsHtml = '<p>У вас пока нет друзей</p>';
-
-        document.getElementById('app').innerHTML = `
-            <div class="glass-card">
-                <div class="logo">GRIF LAUNCHER</div>
-                <div class="flex" style="justify-content: space-between;">
-                    <div>👤 ${currentProfile?.username || ''} <span style="color:#8b9dc3;">${currentProfile?.tag || ''}</span></div>
-                    <div class="balance">💰 ${currentBalance} GM</div>
+            let storeHtml = privileges.map(p => `
+                <div class="privilege-card">
+                    <h3>${p.name}</h3>
+                    <div>💰 ${p.price} GM</div>
+                    <input type="text" id="nick_${p.key}" placeholder="Ваш ник на сервере">
+                    <button onclick="buy('${p.key}', ${p.price})">🎁 Купить</button>
                 </div>
-            </div>
-            <div class="glass-card">
-                <h3>🎁 МАГАЗИН</h3>
-                <div class="store-grid">${storeHtml}</div>
-            </div>
-            <div class="glass-card">
-                <h3>👥 ДРУЗЬЯ</h3>
-                <div id="friendsListDiv">${friendsHtml}</div>
-                <div class="flex" style="margin-top: 15px;">
-                    <input type="text" id="searchInput" placeholder="Поиск по нику или @tag">
-                    <button id="searchBtn">🔍</button>
+            `).join('');
+
+            let friendsHtml = friendsList.map(f => `
+                <div class="friend-card">
+                    <div><b>${f.username}</b> <span style="font-size:12px;">${f.tag}</span></div>
+                    <button onclick="openChat('${f.id}', '${f.username}')">💬 Чат</button>
                 </div>
-                <div id="searchResults"></div>
-            </div>
-            <div id="chatArea" class="glass-card hidden">
-                <div class="flex" style="justify-content: space-between;"><h3>💬 Чат с <span id="chatWithName"></span></h3><button id="closeChat">✖</button></div>
-                <div id="chatMessages" class="chat-messages"></div>
-                <div class="flex"><input type="text" id="chatInput" placeholder="Сообщение..."><button id="sendMsg">📤</button></div>
-            </div>
-        `;
+            `).join('');
+            if (!friendsHtml) friendsHtml = '<p>У вас пока нет друзей</p>';
 
-        document.getElementById('searchBtn')?.addEventListener('click', async () => {
-            const query = document.getElementById('searchInput').value;
-            const { data } = await supabase.from('profiles').select('id, username, tag').or(`username.ilike.%${query}%,tag.ilike.%${query}%`).neq('id', currentUser.id).limit(10);
-            document.getElementById('searchResults').innerHTML = data?.map(u => `<div class="friend-card"><div><b>${u.username}</b> ${u.tag}</div><button onclick="addFriend('${u.id}')">➕ Добавить</button></div>`).join('') || '<p>Не найдено</p>';
-        });
-        document.getElementById('closeChat')?.addEventListener('click', () => { document.getElementById('chatArea').classList.add('hidden'); currentChatWith = null; });
-        document.getElementById('sendMsg')?.addEventListener('click', async () => {
-            const input = document.getElementById('chatInput');
-            if (currentChatWith && input.value.trim()) {
-                await supabase.from('messages').insert({ from_user_id: currentUser.id, to_user_id: currentChatWith.id, message: input.value });
-                input.value = '';
-                await renderChatWindow(currentChatWith);
-            }
-        });
-    }
+            document.getElementById('app').innerHTML = `
+                <div class="glass-card">
+                    <div class="logo">GRIF LAUNCHER</div>
+                    <div class="flex" style="justify-content: space-between;">
+                        <div>👤 ${currentProfile?.username || ''} <span style="color:#8b9dc3;">${currentProfile?.tag || ''}</span></div>
+                        <div class="balance">💰 ${currentBalance} GM</div>
+                    </div>
+                </div>
+                <div class="glass-card">
+                    <h3>🎁 МАГАЗИН</h3>
+                    <div class="store-grid">${storeHtml}</div>
+                </div>
+                <div class="glass-card">
+                    <h3>👥 ДРУЗЬЯ</h3>
+                    <div id="friendsListDiv">${friendsHtml}</div>
+                    <div class="flex" style="margin-top: 15px;">
+                        <input type="text" id="searchInput" placeholder="Поиск по нику или @tag">
+                        <button id="searchBtn">🔍</button>
+                    </div>
+                    <div id="searchResults"></div>
+                </div>
+                <div id="chatArea" class="glass-card hidden">
+                    <div class="flex" style="justify-content: space-between;"><h3>💬 Чат с <span id="chatWithName"></span></h3><button id="closeChat">✖</button></div>
+                    <div id="chatMessages" class="chat-messages"></div>
+                    <div class="flex"><input type="text" id="chatInput" placeholder="Сообщение..."><button id="sendMsg">📤</button></div>
+                </div>
+            `;
 
-    window.buy = async (key, price) => { const nick = document.getElementById(`nick_${key}`)?.value; await buyPrivilege(key, price, nick); await renderMainPage(); };
-    window.openChat = async (id, name) => { await renderChatWindow({ id, username: name }); };
-    window.addFriend = async (id) => { await supabase.from('friends').insert({ user_id: currentUser.id, friend_id: id, status: 'accepted' }); showToast('Друг добавлен!'); document.getElementById('searchResults').innerHTML = ''; await renderMainPage(); };
+            document.getElementById('searchBtn')?.addEventListener('click', async () => {
+                const query = document.getElementById('searchInput').value;
+                const { data } = await supabase.from('profiles').select('id, username, tag').or(`username.ilike.%${query}%,tag.ilike.%${query}%`).neq('id', currentUser.id).limit(10);
+                document.getElementById('searchResults').innerHTML = data?.map(u => `<div class="friend-card"><div><b>${u.username}</b> ${u.tag}</div><button onclick="addFriend('${u.id}')">➕ Добавить</button></div>`).join('') || '<p>Не найдено</p>';
+            });
+            document.getElementById('closeChat')?.addEventListener('click', () => { document.getElementById('chatArea').classList.add('hidden'); currentChatWith = null; });
+            document.getElementById('sendMsg')?.addEventListener('click', async () => {
+                const input = document.getElementById('chatInput');
+                if (currentChatWith && input.value.trim()) {
+                    await supabase.from('messages').insert({ from_user_id: currentUser.id, to_user_id: currentChatWith.id, message: input.value });
+                    input.value = '';
+                    await renderChatWindow(currentChatWith);
+                }
+            });
+        }
 
-    async function renderChatWindow(friend) {
-        currentChatWith = friend;
-        const { data } = await supabase.from('messages').select('*').or(`and(from_user_id.eq.${currentUser.id},to_user_id.eq.${friend.id}),and(from_user_id.eq.${friend.id},to_user_id.eq.${currentUser.id})`).order('created_at');
-        const chatDiv = document.getElementById('chatMessages');
-        document.getElementById('chatArea').classList.remove('hidden');
-        document.getElementById('chatWithName').innerText = friend.username;
-        chatDiv.innerHTML = data?.map(m => `<div class="message"><b>${m.from_user_id === currentUser.id ? 'Вы' : friend.username}:</b> ${m.message}<br><small>${new Date(m.created_at).toLocaleTimeString()}</small></div>`).join('') || '';
-        chatDiv.scrollTop = chatDiv.scrollHeight;
-    }
+        window.buy = async (key, price) => { const nick = document.getElementById(`nick_${key}`)?.value; await buyPrivilege(key, price, nick); await renderMainPage(); };
+        window.openChat = async (id, name) => { await renderChatWindow({ id, username: name }); };
+        window.addFriend = async (id) => { await supabase.from('friends').insert({ user_id: currentUser.id, friend_id: id, status: 'accepted' }); showToast('Друг добавлен!'); document.getElementById('searchResults').innerHTML = ''; await renderMainPage(); };
 
-    async function renderAuthPage() {
-        document.getElementById('app').innerHTML = `
-            <div class="glass-card" style="max-width: 400px; margin: 50px auto;">
-                <div class="logo">GRIF LAUNCHER</div>
-                <div class="flex" style="margin-bottom: 20px;"><button class="tab-btn active" id="loginTab">Вход</button><button class="tab-btn" id="registerTab">Регистрация</button></div>
-                <div id="loginForm"><input type="email" id="loginEmail" placeholder="Email"><input type="password" id="loginPass" placeholder="Пароль"><button id="doLogin">Войти</button></div>
-                <div id="registerForm" style="display:none;"><input type="text" id="regUsername" placeholder="Никнейм"><input type="email" id="regEmail" placeholder="Email"><input type="password" id="regPass" placeholder="Пароль"><input type="text" id="regTag" placeholder="@username"><button id="doRegister">Зарегистрироваться</button></div>
-            </div>
-        `;
-        document.getElementById('loginTab').onclick = () => { document.getElementById('loginForm').style.display = 'block'; document.getElementById('registerForm').style.display = 'none'; document.getElementById('loginTab').classList.add('active'); document.getElementById('registerTab').classList.remove('active'); };
-        document.getElementById('registerTab').onclick = () => { document.getElementById('loginForm').style.display = 'none'; document.getElementById('registerForm').style.display = 'block'; document.getElementById('registerTab').classList.add('active'); document.getElementById('loginTab').classList.remove('active'); };
-        document.getElementById('doLogin').onclick = async () => { const { data, error } = await supabase.auth.signInWithPassword({ email: document.getElementById('loginEmail').value, password: document.getElementById('loginPass').value }); if (error) { showToast(error.message, '#ef4444'); return; } currentUser = data.user; await renderMainPage(); };
-        document.getElementById('doRegister').onclick = async () => { const { error } = await supabase.auth.signUp({ email: document.getElementById('regEmail').value, password: document.getElementById('regPass').value, options: { data: { username: document.getElementById('regUsername').value, tag: document.getElementById('regTag').value } } }); if (error) { showToast(error.message, '#ef4444'); return; } showToast('Регистрация успешна! Войдите.', '#22c55e'); };
-    }
+        async function renderChatWindow(friend) {
+            currentChatWith = friend;
+            const { data } = await supabase.from('messages').select('*').or(`and(from_user_id.eq.${currentUser.id},to_user_id.eq.${friend.id}),and(from_user_id.eq.${friend.id},to_user_id.eq.${currentUser.id})`).order('created_at');
+            const chatDiv = document.getElementById('chatMessages');
+            document.getElementById('chatArea').classList.remove('hidden');
+            document.getElementById('chatWithName').innerText = friend.username;
+            chatDiv.innerHTML = data?.map(m => `<div class="message"><b>${m.from_user_id === currentUser.id ? 'Вы' : friend.username}:</b> ${m.message}<br><small>${new Date(m.created_at).toLocaleTimeString()}</small></div>`).join('') || '';
+            chatDiv.scrollTop = chatDiv.scrollHeight;
+        }
 
-    supabase.auth.onAuthStateChange(async (event, session) => { if (session?.user) { currentUser = session.user; await renderMainPage(); } else { currentUser = null; await renderAuthPage(); } });
-    (async () => { const { data } = await supabase.auth.getSession(); if (data.session?.user) { currentUser = data.session.user; await renderMainPage(); } else { await renderAuthPage(); } })();
+        async function renderAuthPage() {
+            document.getElementById('app').innerHTML = `
+                <div class="glass-card" style="max-width: 400px; margin: 50px auto;">
+                    <div class="logo">GRIF LAUNCHER</div>
+                    <div class="flex" style="margin-bottom: 20px;"><button class="tab-btn active" id="loginTab">Вход</button><button class="tab-btn" id="registerTab">Регистрация</button></div>
+                    <div id="loginForm"><input type="email" id="loginEmail" placeholder="Email"><input type="password" id="loginPass" placeholder="Пароль"><button id="doLogin">Войти</button></div>
+                    <div id="registerForm" style="display:none;"><input type="text" id="regUsername" placeholder="Никнейм"><input type="email" id="regEmail" placeholder="Email"><input type="password" id="regPass" placeholder="Пароль"><input type="text" id="regTag" placeholder="@username"><button id="doRegister">Зарегистрироваться</button></div>
+                </div>
+            `;
+            document.getElementById('loginTab').onclick = () => { document.getElementById('loginForm').style.display = 'block'; document.getElementById('registerForm').style.display = 'none'; document.getElementById('loginTab').classList.add('active'); document.getElementById('registerTab').classList.remove('active'); };
+            document.getElementById('registerTab').onclick = () => { document.getElementById('loginForm').style.display = 'none'; document.getElementById('registerForm').style.display = 'block'; document.getElementById('registerTab').classList.add('active'); document.getElementById('loginTab').classList.remove('active'); };
+            document.getElementById('doLogin').onclick = async () => { const { data, error } = await supabase.auth.signInWithPassword({ email: document.getElementById('loginEmail').value, password: document.getElementById('loginPass').value }); if (error) { showToast(error.message, '#ef4444'); return; } currentUser = data.user; await renderMainPage(); };
+            document.getElementById('doRegister').onclick = async () => { const { error } = await supabase.auth.signUp({ email: document.getElementById('regEmail').value, password: document.getElementById('regPass').value, options: { data: { username: document.getElementById('regUsername').value, tag: document.getElementById('regTag').value } } }); if (error) { showToast(error.message, '#ef4444'); return; } showToast('Регистрация успешна! Войдите.', '#22c55e'); };
+        }
+
+        supabase.auth.onAuthStateChange(async (event, session) => { if (session?.user) { currentUser = session.user; await renderMainPage(); } else { currentUser = null; await renderAuthPage(); } });
+        (async () => { const { data } = await supabase.auth.getSession(); if (data.session?.user) { currentUser = data.session.user; await renderMainPage(); } else { await renderAuthPage(); } })();
+    })();
 </script>
 </body>
 </html>
