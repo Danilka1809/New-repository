@@ -4,79 +4,380 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>GrifLauncher | Главная</title>
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;500;600;700;800;900&family=Montserrat:wght@400;500;600;700&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
-    <link rel="stylesheet" href="style.css">
-    <script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-app-compat.js"></script>
-    <script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-auth-compat.js"></script>
-    <script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore-compat.js"></script>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        body {
+            background: #0a0a0a;
+            font-family: 'Montserrat', sans-serif;
+            color: #e0e0e0;
+            overflow-x: hidden;
+        }
+        /* ВИДЕО ФОН */
+        .hero-video {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            z-index: -2;
+        }
+        .hero-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0,0,0,0.7);
+            z-index: -1;
+        }
+        /* ГЛАВНЫЙ БАННЕР */
+        .hero {
+            height: 100vh;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            text-align: center;
+            padding: 20px;
+        }
+        .hero h1 {
+            font-family: 'Orbitron', monospace;
+            font-size: 80px;
+            font-weight: 900;
+            letter-spacing: 4px;
+            background: linear-gradient(135deg, #fff, #ffd700);
+            -webkit-background-clip: text;
+            background-clip: text;
+            color: transparent;
+            text-shadow: 0 0 30px rgba(255,215,0,0.3);
+            animation: fadeInUp 1s ease-out;
+        }
+        .hero p {
+            font-size: 20px;
+            margin-top: 20px;
+            color: #ccc;
+            animation: fadeInUp 1s ease-out 0.2s both;
+        }
+        .hero .btn-main {
+            margin-top: 40px;
+            background: linear-gradient(135deg, #ffd700, #ffaa00);
+            color: #0a0a0a;
+            font-family: 'Orbitron', monospace;
+            font-weight: bold;
+            padding: 18px 48px;
+            font-size: 22px;
+            border-radius: 60px;
+            text-decoration: none;
+            display: inline-block;
+            transition: all 0.3s;
+            box-shadow: 0 0 20px rgba(255,215,0,0.5);
+            animation: fadeInUp 1s ease-out 0.4s both;
+        }
+        .hero .btn-main:hover {
+            transform: scale(1.05);
+            box-shadow: 0 0 35px rgba(255,215,0,0.8);
+        }
+        @keyframes fadeInUp {
+            from { opacity: 0; transform: translateY(30px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+        /* ОБЩИЕ БЛОКИ */
+        .container {
+            position: relative;
+            z-index: 2;
+            background: #0a0a0a;
+            padding: 60px 20px;
+        }
+        .section-title {
+            font-family: 'Orbitron', monospace;
+            font-size: 36px;
+            text-align: center;
+            margin-bottom: 40px;
+            color: #ffd700;
+            letter-spacing: 2px;
+        }
+        /* ИГРОКИ ОНЛАЙН */
+        .online-players {
+            text-align: center;
+            margin-bottom: 60px;
+        }
+        .online-count {
+            font-size: 48px;
+            font-weight: bold;
+            color: #ffd700;
+            font-family: 'Orbitron', monospace;
+        }
+        .avatars-grid {
+            display: flex;
+            justify-content: center;
+            gap: 20px;
+            flex-wrap: wrap;
+            margin-top: 30px;
+        }
+        .avatar {
+            position: relative;
+            width: 80px;
+            height: 80px;
+            border-radius: 50%;
+            background: #1a1a1a;
+            border: 2px solid #ffd700;
+            overflow: hidden;
+            transition: 0.2s;
+            cursor: pointer;
+            animation: pulse 2s infinite;
+        }
+        .avatar img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+        }
+        .avatar:hover {
+            transform: scale(1.1);
+            border-color: #fff;
+        }
+        .avatar .tooltip {
+            position: absolute;
+            bottom: -30px;
+            left: 50%;
+            transform: translateX(-50%);
+            background: #1a1a1a;
+            color: #ffd700;
+            padding: 4px 8px;
+            border-radius: 20px;
+            font-size: 12px;
+            white-space: nowrap;
+            opacity: 0;
+            transition: 0.2s;
+            pointer-events: none;
+        }
+        .avatar:hover .tooltip {
+            opacity: 1;
+            bottom: -25px;
+        }
+        @keyframes pulse {
+            0% { box-shadow: 0 0 0 0 rgba(255,215,0,0.4); }
+            70% { box-shadow: 0 0 0 10px rgba(255,215,0,0); }
+            100% { box-shadow: 0 0 0 0 rgba(255,215,0,0); }
+        }
+        /* ЛЕНТА ПОБЕД */
+        .achievements-list {
+            background: #111;
+            border-radius: 24px;
+            padding: 20px;
+            margin-bottom: 60px;
+        }
+        .achievement-item {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            padding: 12px;
+            border-bottom: 1px solid #222;
+        }
+        .achievement-item i {
+            font-size: 24px;
+            color: #ffd700;
+        }
+        .achievement-item .vip { color: #ffd700; font-weight: bold; }
+        .achievement-item .mvp { color: #00bfff; font-weight: bold; }
+        /* ВИТРИНА ПРИВИЛЕГИЙ */
+        .shop-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+            gap: 30px;
+            margin-bottom: 60px;
+        }
+        .product-card {
+            background: #111;
+            border-radius: 24px;
+            padding: 24px;
+            text-align: center;
+            transition: 0.3s;
+            border: 1px solid #222;
+        }
+        .product-card:hover {
+            transform: translateY(-8px);
+            border-color: #ffd700;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.5);
+        }
+        .product-icon i {
+            font-size: 48px;
+            color: #ffd700;
+            margin-bottom: 16px;
+        }
+        .product-card h3 {
+            font-size: 24px;
+            margin-bottom: 12px;
+        }
+        .price {
+            font-size: 28px;
+            font-weight: bold;
+            color: #ffd700;
+            margin: 16px 0;
+        }
+        .product-card ul {
+            list-style: none;
+            margin: 20px 0;
+            text-align: left;
+        }
+        .product-card li {
+            padding: 6px 0;
+        }
+        .product-card li i {
+            font-size: 14px;
+            margin-right: 8px;
+            color: #ffd700;
+        }
+        .buy-btn {
+            background: #ffd700;
+            color: #0a0a0a;
+            border: none;
+            padding: 12px;
+            border-radius: 60px;
+            font-weight: bold;
+            cursor: pointer;
+            width: 100%;
+            font-family: 'Orbitron', monospace;
+            transition: 0.2s;
+        }
+        .buy-btn:hover {
+            background: #ffaa00;
+            transform: scale(1.02);
+        }
+        /* КАЛЕНДАРЬ ИВЕНТОВ */
+        .events-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+            gap: 20px;
+        }
+        .event-card {
+            background: #111;
+            border-radius: 20px;
+            padding: 20px;
+            border-left: 4px solid #ffd700;
+        }
+        .event-date {
+            color: #ffd700;
+            font-weight: bold;
+            margin-bottom: 8px;
+        }
+        .event-card h4 {
+            font-size: 18px;
+            margin-bottom: 8px;
+        }
+        .remind-btn {
+            background: transparent;
+            border: 1px solid #ffd700;
+            color: #ffd700;
+            padding: 8px 16px;
+            border-radius: 40px;
+            cursor: pointer;
+            margin-top: 12px;
+            transition: 0.2s;
+        }
+        .remind-btn:hover {
+            background: #ffd700;
+            color: #0a0a0a;
+        }
+        @media (max-width: 768px) {
+            .hero h1 { font-size: 48px; }
+            .section-title { font-size: 28px; }
+        }
+    </style>
 </head>
 <body>
-    <div class="sidebar">
-        <div class="sidebar-header">GRIF LAUNCHER</div>
-        <div class="sidebar-menu">
-            <a href="index.html" class="menu-item active"><i class="fas fa-home"></i> Главная</a>
-            <a href="shop.html" class="menu-item"><i class="fas fa-store"></i> Магазин</a>
-            <a href="chat.html" class="menu-item"><i class="fas fa-comments"></i> Чат</a>
-            <a href="profile.html" class="menu-item"><i class="fas fa-user"></i> Профиль</a>
-            <a href="gallery.html" class="menu-item"><i class="fas fa-image"></i> Галерея</a>
-            <a href="support.html" class="menu-item"><i class="fas fa-ticket-alt"></i> Поддержка</a>
-        </div>
-        <div class="sidebar-footer">
-            <div id="authStatus"></div>
-            <button id="logoutBtn" class="logout-btn"><i class="fas fa-sign-out-alt"></i> Выйти</button>
-        </div>
+    <video class="hero-video" autoplay loop muted playsinline>
+        <source src="https://cdn.pixabay.com/video/2022/11/20/140315-774259399_large.mp4" type="video/mp4">
+    </video>
+    <div class="hero-overlay"></div>
+
+    <div class="hero">
+        <h1>GRIF LAUNCHER</h1>
+        <p>Лучший игровой опыт с привилегиями, поддержкой и активным сообществом</p>
+        <a href="shop.html" class="btn-main">🔥 КУПИТЬ ДОНАТ</a>
     </div>
 
-    <div class="main-content">
-        <div class="top-bar">
-            <div class="user-info" id="userInfo">
-                <img id="userAvatar" src="https://ui-avatars.com/api/?background=ff6b6b&color=fff" alt="">
-                <span id="userName">Гость</span>
+    <div class="container">
+        <!-- ИГРОКИ ОНЛАЙН -->
+        <div class="online-players">
+            <div class="online-count" id="onlineCount">128 ИГРОКОВ ОНЛАЙН</div>
+            <div class="avatars-grid">
+                <div class="avatar"><img src="https://ui-avatars.com/api/?background=ffd700&color=000&name=Player1"><span class="tooltip">GrifMcPro</span></div>
+                <div class="avatar"><img src="https://ui-avatars.com/api/?background=ffd700&color=000&name=Player2"><span class="tooltip">DarkKnight</span></div>
+                <div class="avatar"><img src="https://ui-avatars.com/api/?background=ffd700&color=000&name=Player3"><span class="tooltip">PlayerPro</span></div>
+                <div class="avatar"><img src="https://ui-avatars.com/api/?background=ffd700&color=000&name=Player4"><span class="tooltip">MegaCraft</span></div>
+                <div class="avatar"><img src="https://ui-avatars.com/api/?background=ffd700&color=000&name=Player5"><span class="tooltip">BuildMaster</span></div>
+                <div class="avatar"><img src="https://ui-avatars.com/api/?background=ffd700&color=000&name=Player6"><span class="tooltip">PvPKing</span></div>
             </div>
         </div>
-        <div class="hero">
-            <h1>GRIF LAUNCHER</h1>
-            <p>Лучший игровой опыт с привилегиями, поддержкой и активным сообществом</p>
-            <a href="shop.html" class="btn-main">🔥 ПРИОБРЕСТИ ДОНАТ</a>
+
+        <!-- СВЕЖИЕ ПОБЕДЫ -->
+        <div class="section-title">🏆 СВЕЖИЕ ПОБЕДЫ</div>
+        <div class="achievements-list">
+            <div class="achievement-item"><i class="fas fa-trophy"></i> Игрок <span class="vip">GrifMcPro</span> победил в дуэли! 👑</div>
+            <div class="achievement-item"><i class="fas fa-crown"></i> Клан <span class="mvp">Dragons</span> захватил новую территорию! 🏰</div>
+            <div class="achievement-item"><i class="fas fa-star"></i> Игрок <span class="vip">PlayerPro</span> получил достижение "Мастер крафта"! ⭐</div>
+            <div class="achievement-item"><i class="fas fa-gem"></i> Игрок <span class="mvp">DarkKnight</span> купил привилегию MVP! 💎</div>
+        </div>
+
+        <!-- ТОПОВЫЕ ПРИВИЛЕГИИ -->
+        <div class="section-title">⚡ СТАНЬ ЛУЧШИМ</div>
+        <div class="shop-grid">
+            <div class="product-card">
+                <div class="product-icon"><i class="fas fa-crown"></i></div>
+                <h3>VIP Стандарт</h3>
+                <div class="price">150 ₽</div>
+                <ul><li><i class="fas fa-check-circle"></i> Цветной ник</li><li><i class="fas fa-check-circle"></i> Команда /kit</li><li><i class="fas fa-check-circle"></i> Доступ к /fly</li></ul>
+                <button class="buy-btn" onclick="alert('Покупка VIP')">КУПИТЬ ЗА 150 ₽</button>
+            </div>
+            <div class="product-card">
+                <div class="product-icon"><i class="fas fa-gem"></i></div>
+                <h3>VIP+ Продвинутый</h3>
+                <div class="price">350 ₽</div>
+                <ul><li><i class="fas fa-check-circle"></i> Всё из VIP</li><li><i class="fas fa-check-circle"></i> VIP-чат</li><li><i class="fas fa-check-circle"></i> Команда /heal</li></ul>
+                <button class="buy-btn" onclick="alert('Покупка VIP+')">КУПИТЬ ЗА 350 ₽</button>
+            </div>
+            <div class="product-card">
+                <div class="product-icon"><i class="fas fa-star"></i></div>
+                <h3>MVP Вечный</h3>
+                <div class="price">1000 ₽</div>
+                <ul><li><i class="fas fa-check-circle"></i> Всё из VIP+</li><li><i class="fas fa-check-circle"></i> Префикс [KING]</li><li><i class="fas fa-check-circle"></i> Команда /god</li></ul>
+                <button class="buy-btn" onclick="alert('Покупка MVP')">КУПИТЬ ЗА 1000 ₽</button>
+            </div>
         </div>
 
         <!-- КАЛЕНДАРЬ ИВЕНТОВ -->
-        <div class="card"><h3><i class="fas fa-calendar-alt"></i> Календарь ивентов</h3>
-            <div class="timeline" id="eventCalendar">
-                <div class="event-item"><div class="event-date">15 июня</div><div class="event-info"><h4>🔥 Турнир по PvP</h4><p>Призовой фонд 50 000 ₽</p></div></div>
-                <div class="event-item"><div class="event-date">20 июня</div><div class="event-info"><h4>🏰 Клановая война</h4><p>Сброс рейтинга, новый сезон</p></div></div>
-                <div class="event-item"><div class="event-date">25 июня</div><div class="event-info"><h4>✨ Ивент "Охота на дракона"</h4><p>Эксклюзивные награды</p></div></div>
-            </div>
-        </div>
-
-        <!-- КОНСТРУКТОР АВАТАРОВ -->
-        <div class="card"><h3><i class="fas fa-user-astronaut"></i> Конструктор аватаров</h3>
-            <div class="avatar-builder">
-                <div class="avatar-preview" id="avatarPreview"><i class="fas fa-user-circle"></i></div>
-                <div class="avatar-parts">
-                    <button class="part-btn" data-part="hair1">Причёска 1</button>
-                    <button class="part-btn" data-part="hair2">Причёска 2</button>
-                    <button class="part-btn" data-part="eyes1">Глаза 1</button>
-                    <button class="part-btn" data-part="eyes2">Глаза 2</button>
-                    <button class="part-btn" data-part="outfit1">Одежда 1</button>
-                    <button class="part-btn" data-part="outfit2">Одежда 2</button>
-                </div>
-                <button id="saveAvatarBtn" class="btn-primary">Сохранить аватар</button>
-            </div>
+        <div class="section-title">📅 СОБЫТИЯ</div>
+        <div class="events-grid">
+            <div class="event-card"><div class="event-date">15 июня, 20:00</div><h4>🔥 Турнир на выживание</h4><p>Призовой фонд: 500 000 GM</p><button class="remind-btn" onclick="alert('Напоминание установлено!')">📢 НАПОМНИТЬ МНЕ</button></div>
+            <div class="event-card"><div class="event-date">20 июня, 19:00</div><h4>🏰 Клановая война</h4><p>Сброс рейтинга, новый сезон</p><button class="remind-btn" onclick="alert('Напоминание установлено!')">📢 НАПОМНИТЬ МНЕ</button></div>
+            <div class="event-card"><div class="event-date">25 июня, 18:00</div><h4>✨ Охота на дракона</h4><p>Эксклюзивные награды</p><button class="remind-btn" onclick="alert('Напоминание установлено!')">📢 НАПОМНИТЬ МНЕ</button></div>
         </div>
     </div>
 
-    <div id="loginModal" class="modal">
-        <div class="modal-content">
-            <span class="close">&times;</span>
-            <h2>Вход / Регистрация</h2>
-            <input type="email" id="loginEmail" placeholder="Email">
-            <input type="password" id="loginPassword" placeholder="Пароль">
-            <button id="doLogin">Войти</button>
-            <button id="doRegister">Регистрация</button>
-        </div>
-    </div>
-    <script src="script.js"></script>
+    <script>
+        // Анимация появления при скролле
+        const cards = document.querySelectorAll('.product-card, .event-card, .achievement-item');
+        const observer = new IntersectionObserver((entries) => {
+            entries.forEach(entry => {
+                if (entry.isIntersecting) {
+                    entry.target.style.opacity = '1';
+                    entry.target.style.transform = 'translateY(0)';
+                }
+            });
+        }, { threshold: 0.1 });
+        cards.forEach(card => {
+            card.style.opacity = '0';
+            card.style.transform = 'translateY(20px)';
+            card.style.transition = '0.4s';
+            observer.observe(card);
+        });
+    </script>
 </body>
 </html>
