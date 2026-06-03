@@ -4,21 +4,70 @@
     box-sizing: border-box;
 }
 body {
-    background: #121212;
-    font-family: 'Inter', 'Segoe UI', sans-serif;
+    background: #0a0a0a;
+    font-family: 'Montserrat', 'Segoe UI', sans-serif;
     color: #e0e0e0;
-    display: flex;
-    flex-direction: column;
     min-height: 100vh;
 }
+.hero-section {
+    height: 100vh;
+    position: relative;
+    background: url('https://picsum.photos/id/15/1920/1080') center/cover no-repeat;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    text-align: center;
+}
+.overlay {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: rgba(0,0,0,0.6);
+}
+.hero-content {
+    position: relative;
+    z-index: 2;
+    max-width: 800px;
+    padding: 20px;
+}
+.hero-content h1 {
+    font-size: 80px;
+    font-weight: 900;
+    background: linear-gradient(135deg, #fff, #ff6b6b);
+    -webkit-background-clip: text;
+    background-clip: text;
+    color: transparent;
+    margin-bottom: 20px;
+    letter-spacing: 2px;
+}
+.hero-content p {
+    font-size: 20px;
+    margin-bottom: 30px;
+    color: #ccc;
+}
+.btn-main {
+    background: #ff6b6b;
+    color: white;
+    padding: 16px 48px;
+    font-size: 18px;
+    font-weight: bold;
+    border-radius: 60px;
+    text-decoration: none;
+    display: inline-block;
+    transition: 0.2s;
+    box-shadow: 0 0 20px rgba(255,107,107,0.4);
+}
+.btn-main:hover { transform: scale(1.05); background: #ff5252; }
 .header {
     position: sticky;
     top: 0;
-    background: rgba(18, 18, 18, 0.95);
-    backdrop-filter: blur(12px);
+    background: rgba(10, 10, 10, 0.95);
+    backdrop-filter: blur(10px);
     z-index: 100;
     padding: 16px 24px;
-    border-bottom: 1px solid rgba(255, 107, 107, 0.3);
+    border-bottom: 1px solid rgba(255,107,107,0.3);
 }
 .nav {
     max-width: 1300px;
@@ -27,7 +76,7 @@ body {
     justify-content: space-between;
     align-items: center;
     flex-wrap: wrap;
-    gap: 16px;
+    gap: 20px;
 }
 .logo {
     font-size: 28px;
@@ -39,146 +88,58 @@ body {
 }
 .nav-links {
     display: flex;
-    gap: 28px;
-    flex-wrap: wrap;
+    gap: 32px;
 }
 .nav-links a {
     color: #e0e0e0;
     text-decoration: none;
     font-weight: 500;
     transition: 0.2s;
-    font-size: 16px;
 }
 .nav-links a:hover { color: #ff6b6b; }
-.auth-status button {
-    background: #ff6b6b;
-    border: none;
-    padding: 6px 16px;
+.login-link {
+    background: transparent;
+    border: 1px solid #ff6b6b;
+    padding: 8px 20px;
     border-radius: 40px;
-    color: white;
-    cursor: pointer;
-}
-.hero {
-    text-align: center;
-    padding: 80px 20px;
-    background: radial-gradient(ellipse at 70% 30%, rgba(255,107,107,0.15), transparent);
-}
-.hero h1 {
-    font-size: 64px;
-    font-weight: 800;
-    background: linear-gradient(135deg, #fff, #ff6b6b);
-    -webkit-background-clip: text;
-    background-clip: text;
-    color: transparent;
-    margin-bottom: 20px;
-}
-.hero p {
-    font-size: 20px;
-    color: #aaa;
-    max-width: 700px;
-    margin: 0 auto 32px;
-}
-.btn-primary {
-    background: #ff6b6b;
-    color: white;
-    padding: 14px 48px;
-    font-size: 18px;
-    font-weight: bold;
-    border-radius: 60px;
+    color: #ff6b6b;
     text-decoration: none;
-    display: inline-block;
     transition: 0.2s;
-    box-shadow: 0 0 15px rgba(255,107,107,0.3);
 }
-.btn-primary:hover {
-    transform: scale(1.02);
-    background: #ff5252;
-    box-shadow: 0 0 25px rgba(255,107,107,0.5);
-}
+.login-link:hover { background: #ff6b6b; color: #0a0a0a; }
 .container {
     max-width: 1300px;
     margin: 0 auto;
-    padding: 40px 20px;
-    flex: 1;
-}
-.video-block {
-    margin-bottom: 50px;
-    border-radius: 28px;
-    overflow: hidden;
-    box-shadow: 0 10px 30px rgba(0,0,0,0.5);
+    padding: 60px 20px;
 }
 .section-title {
-    font-size: 32px;
+    font-size: 36px;
     font-weight: 800;
-    margin-bottom: 30px;
+    text-align: center;
+    margin: 40px 0 40px;
     color: #fff;
 }
-.two-columns {
+.shop-grid, .news-grid, .wiki-grid, .gallery-grid {
     display: grid;
-    grid-template-columns: 1fr 320px;
-    gap: 40px;
-}
-.sidebar {
-    display: flex;
-    flex-direction: column;
+    grid-template-columns: repeat(auto-fill, minmax(350px, 1fr));
     gap: 30px;
 }
-.card {
-    background: #1e1e1e;
+.product-card {
+    background: #1a1a1a;
     border-radius: 28px;
-    padding: 24px;
-    border: 1px solid rgba(255,107,107,0.2);
+    padding: 28px;
     transition: 0.2s;
+    border: 1px solid rgba(255,107,107,0.2);
 }
-.card h3 {
-    margin-bottom: 16px;
-    color: #ff6b6b;
-}
-.chat-messages {
-    height: 300px;
-    overflow-y: auto;
-    background: #0a0a0a;
-    border-radius: 20px;
-    padding: 12px;
-    margin-bottom: 12px;
-}
-.chat-messages div {
-    padding: 6px 12px;
-    border-bottom: 1px solid #2a2a2a;
-}
-.news-list .news-item {
-    background: #1e1e1e;
-    border-radius: 20px;
-    padding: 20px;
-    margin-bottom: 20px;
-    border-left: 4px solid #ff6b6b;
-}
-.news-item h3 {
-    color: #ff6b6b;
-    margin-bottom: 8px;
-}
-.news-item p {
-    color: #aaa;
-}
-.store-grid {
-    display: grid;
-    grid-template-columns: repeat(auto-fill, minmax(320px, 1fr));
-    gap: 30px;
-}
-.card .price {
-    font-size: 28px;
-    font-weight: 800;
-    color: #ff6b6b;
-    margin: 16px 0;
-}
-.card ul {
-    list-style: none;
-    margin: 16px 0;
-}
-.card li {
-    padding: 4px 0;
-}
+.product-card:hover { transform: translateY(-8px); border-color: #ff6b6b; }
+.product-header { text-align: center; margin-bottom: 20px; }
+.price { font-size: 32px; font-weight: 800; color: #ff6b6b; }
+.duration { color: #888; margin-top: 5px; }
+.product-card ul { list-style: none; margin: 20px 0; }
+.product-card li { padding: 8px 0; }
+.product-card li i { color: #ff6b6b; margin-right: 10px; }
 .buy-btn {
+    display: inline-block;
     width: 100%;
     background: #ff6b6b;
     border: none;
@@ -186,83 +147,40 @@ body {
     border-radius: 60px;
     font-weight: bold;
     color: white;
+    text-align: center;
+    text-decoration: none;
     cursor: pointer;
     transition: 0.2s;
-    margin-top: 16px;
 }
 .buy-btn:hover { background: #ff5252; }
-.profile-card {
-    background: #1e1e1e;
-    border-radius: 28px;
+.news-card {
+    background: #1a1a1a;
+    border-radius: 24px;
+    overflow: hidden;
+    transition: 0.2s;
+}
+.news-card:hover { transform: translateY(-5px); }
+.news-card img { width: 100%; height: 200px; object-fit: cover; }
+.news-content { padding: 20px; }
+.news-content h3 { color: #ff6b6b; margin-bottom: 10px; }
+.wiki-card, .gallery-item {
+    background: #1a1a1a;
+    border-radius: 24px;
     padding: 30px;
     text-align: center;
-    margin-bottom: 30px;
 }
-.orders-list .order-item {
-    background: #1e1e1e;
-    border-radius: 20px;
-    padding: 16px 24px;
-    margin-bottom: 12px;
-    display: flex;
-    justify-content: space-between;
-}
-.wiki-grid {
-    display: grid;
-    grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
-    gap: 30px;
-}
-.wiki-card {
-    background: #1e1e1e;
-    border-radius: 24px;
-    padding: 24px;
-    text-align: center;
-}
-.wiki-card a {
-    color: #ff6b6b;
-    text-decoration: none;
-    display: inline-block;
-    margin-top: 12px;
-}
-.gallery-grid {
-    display: grid;
-    grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
-    gap: 25px;
-}
-.gallery-item {
-    background: #1e1e1e;
-    border-radius: 20px;
-    overflow: hidden;
-    text-align: center;
-}
-.gallery-item img {
-    width: 100%;
-    height: 200px;
-    object-fit: cover;
-}
-.gallery-item p {
-    padding: 12px;
-}
-input {
-    width: 100%;
-    padding: 12px;
-    background: #0a0a0a;
-    border: 1px solid #ff6b6b;
-    border-radius: 40px;
-    color: white;
-    margin: 8px 0;
-}
-button {
-    cursor: pointer;
-}
+.wiki-card i { font-size: 48px; color: #ff6b6b; margin-bottom: 20px; }
+.wiki-card h3 { margin-bottom: 12px; }
+.wiki-card a { color: #ff6b6b; text-decoration: none; display: inline-block; margin-top: 16px; }
+.gallery-item img { width: 100%; border-radius: 16px; margin-bottom: 12px; }
 .footer {
     text-align: center;
     padding: 30px;
     border-top: 1px solid rgba(255,107,107,0.2);
     color: #666;
-    margin-top: auto;
 }
 @media (max-width: 768px) {
-    .hero h1 { font-size: 40px; }
-    .two-columns { grid-template-columns: 1fr; }
+    .hero-content h1 { font-size: 48px; }
     .nav { flex-direction: column; }
+    .shop-grid, .news-grid, .wiki-grid, .gallery-grid { grid-template-columns: 1fr; }
 }
