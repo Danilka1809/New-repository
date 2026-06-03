@@ -1,0 +1,98 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>GrifLauncher | Донат магазин</title>
+    <link rel="stylesheet" href="style.css">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+</head>
+<body>
+    <!-- Анимированный фон -->
+    <div class="gradient-bg"></div>
+    <div class="stars"></div>
+
+    <div class="container">
+        <!-- ШАПКА -->
+        <header class="header">
+            <div class="logo">
+                <h1 class="glow-text">GRIF LAUNCHER</h1>
+                <div class="logo-glow"></div>
+            </div>
+            <div class="online-badge" id="statusBadge">
+                <span class="pulse-dot"></span>
+                <span id="statusText">Проверка...</span>
+            </div>
+        </header>
+
+        <!-- ВЫБОР СЕРВЕРА -->
+        <div class="glass-card server-section">
+            <h3>🎮 ВЫБЕРИ СЕРВЕР</h3>
+            <div class="server-buttons" id="serverButtons">
+                <button class="server-btn active" data-server="survival">🏔️ Выживание #1</button>
+                <button class="server-btn" data-server="creative">🎨 Креатив</button>
+                <button class="server-btn" data-server="anarchy">⚔️ Анархия</button>
+            </div>
+        </div>
+
+        <!-- БАЛАНС -->
+        <div class="glass-card balance-card">
+            <div class="balance-icon">💰</div>
+            <div class="balance-info">
+                <span class="balance-label">Ваш баланс GM</span>
+                <span class="balance-value" id="userBalance">50 000</span>
+            </div>
+            <button class="btn-gradient" onclick="topUpBalance()">➕ Пополнить</button>
+        </div>
+
+        <!-- СТАТУС СЕРВЕРА -->
+        <div class="glass-card status-card">
+            <div class="status-row">🌐 Сервер: <span id="serverOnline">—</span></div>
+            <div class="status-row">👥 Игроки: <span id="serverPlayers">—</span></div>
+            <div class="status-row">🎮 Версия: <span id="serverVersion">—</span></div>
+        </div>
+
+        <!-- МАГАЗИН -->
+        <div class="section-title">
+            <span class="title-gradient">✨ ДОСТУПНЫЕ ПРИВИЛЕГИИ</span>
+        </div>
+        <div class="store-grid" id="storeGrid"></div>
+
+        <!-- ИНФО КАРТОЧКА -->
+        <div class="glass-card info-card">
+            <div class="info-icon">⏰</div>
+            <div class="info-text">
+                <strong>Важная информация!</strong><br>
+                После покупки привилегия будет выдана в течение 10 минут.<br>
+                Проверьте никнейм перед покупкой! Валюту GM можно заработать в игре.
+            </div>
+        </div>
+
+        <footer class="footer">
+            💰 Валюта: <strong>GM</strong> | Начальный баланс: 50 000 GM | Все донаты выдаются автоматически
+        </footer>
+    </div>
+
+    <div id="toast"></div>
+    <div class="modal" id="buyModal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h3>Подтверждение покупки</h3>
+                <button class="modal-close" onclick="closeModal()">✖</button>
+            </div>
+            <div class="modal-body">
+                <p>Вы покупаете: <strong id="modalPrivName"></strong></p>
+                <p>Цена: <strong id="modalPrice"></strong> GM</p>
+                <p>Никнейм: <strong id="modalNick"></strong></p>
+                <p>Сервер: <strong id="modalServer"></strong></p>
+            </div>
+            <div class="modal-footer">
+                <button class="btn-cancel" onclick="closeModal()">Отмена</button>
+                <button class="btn-confirm" onclick="confirmPurchase()">Подтвердить</button>
+            </div>
+        </div>
+    </div>
+
+    <script src="script.js"></script>
+</body>
+</html>
