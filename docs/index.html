@@ -6,516 +6,82 @@
     <title>GrifLauncher | Главная</title>
     <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;500;600;700;800;900&family=Montserrat:wght@400;500;600;700&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
-    <style>
-        * {
-            margin: 0;
-            padding: 0;
-            box-sizing: border-box;
-        }
-        body {
-            background: linear-gradient(135deg, #0a0a0a 0%, #1a1a0a 100%);
-            font-family: 'Montserrat', sans-serif;
-            color: #e0e0e0;
-            overflow-x: hidden;
-        }
-        /* ГЛАВНЫЙ БАННЕР */
-        .hero {
-            height: 100vh;
-            display: flex;
-            flex-direction: column;
-            justify-content: center;
-            align-items: center;
-            text-align: center;
-            padding: 20px;
-        }
-        .hero h1 {
-            font-family: 'Orbitron', monospace;
-            font-size: 80px;
-            font-weight: 900;
-            letter-spacing: 4px;
-            background: linear-gradient(135deg, #fff, #ffd700);
-            -webkit-background-clip: text;
-            background-clip: text;
-            color: transparent;
-            text-shadow: 0 0 30px rgba(255,215,0,0.3);
-            animation: fadeInUp 1s ease-out;
-        }
-        .hero p {
-            font-size: 20px;
-            margin-top: 20px;
-            color: #ccc;
-            animation: fadeInUp 1s ease-out 0.2s both;
-        }
-        .hero .btn-main {
-            margin-top: 40px;
-            background: linear-gradient(135deg, #ffd700, #ffaa00);
-            color: #0a0a0a;
-            font-family: 'Orbitron', monospace;
-            font-weight: bold;
-            padding: 18px 48px;
-            font-size: 22px;
-            border-radius: 60px;
-            text-decoration: none;
-            display: inline-block;
-            transition: all 0.3s;
-            box-shadow: 0 0 20px rgba(255,215,0,0.5);
-            animation: fadeInUp 1s ease-out 0.4s both;
-            cursor: pointer;
-            border: none;
-        }
-        .hero .btn-main:hover {
-            transform: scale(1.05);
-            box-shadow: 0 0 35px rgba(255,215,0,0.8);
-        }
-        @keyframes fadeInUp {
-            from { opacity: 0; transform: translateY(30px); }
-            to { opacity: 1; transform: translateY(0); }
-        }
-        /* ОБЩИЕ БЛОКИ */
-        .container {
-            background: linear-gradient(135deg, #0a0a0a 0%, #1a1a0a 100%);
-            padding: 60px 20px;
-        }
-        .section-title {
-            font-family: 'Orbitron', monospace;
-            font-size: 36px;
-            text-align: center;
-            margin-bottom: 40px;
-            background: linear-gradient(135deg, #fff, #ffd700);
-            -webkit-background-clip: text;
-            background-clip: text;
-            color: transparent;
-            letter-spacing: 2px;
-        }
-        /* ИГРОКИ ОНЛАЙН */
-        .online-players {
-            text-align: center;
-            margin-bottom: 60px;
-        }
-        .online-count {
-            font-size: 48px;
-            font-weight: bold;
-            background: linear-gradient(135deg, #fff, #ffd700);
-            -webkit-background-clip: text;
-            background-clip: text;
-            color: transparent;
-            font-family: 'Orbitron', monospace;
-        }
-        .avatars-grid {
-            display: flex;
-            justify-content: center;
-            gap: 20px;
-            flex-wrap: wrap;
-            margin-top: 30px;
-        }
-        .avatar {
-            position: relative;
-            width: 80px;
-            height: 80px;
-            border-radius: 50%;
-            background: #1a1a1a;
-            border: 2px solid #ffd700;
-            overflow: hidden;
-            transition: 0.2s;
-            cursor: pointer;
-            animation: pulse 2s infinite;
-        }
-        .avatar img {
-            width: 100%;
-            height: 100%;
-            object-fit: cover;
-        }
-        .avatar:hover {
-            transform: scale(1.1);
-            border-color: #fff;
-        }
-        .avatar .tooltip {
-            position: absolute;
-            bottom: -30px;
-            left: 50%;
-            transform: translateX(-50%);
-            background: #1a1a1a;
-            color: #ffd700;
-            padding: 4px 8px;
-            border-radius: 20px;
-            font-size: 12px;
-            white-space: nowrap;
-            opacity: 0;
-            transition: 0.2s;
-            pointer-events: none;
-        }
-        .avatar:hover .tooltip {
-            opacity: 1;
-            bottom: -25px;
-        }
-        @keyframes pulse {
-            0% { box-shadow: 0 0 0 0 rgba(255,215,0,0.4); }
-            70% { box-shadow: 0 0 0 10px rgba(255,215,0,0); }
-            100% { box-shadow: 0 0 0 0 rgba(255,215,0,0); }
-        }
-        /* ЛЕНТА ПОБЕД */
-        .achievements-list {
-            background: rgba(0,0,0,0.5);
-            backdrop-filter: blur(10px);
-            border-radius: 24px;
-            padding: 20px;
-            margin-bottom: 60px;
-            border: 1px solid rgba(255,215,0,0.2);
-        }
-        .achievement-item {
-            display: flex;
-            align-items: center;
-            gap: 12px;
-            padding: 12px;
-            border-bottom: 1px solid rgba(255,215,0,0.1);
-        }
-        .achievement-item i {
-            font-size: 24px;
-            color: #ffd700;
-        }
-        .achievement-item .vip { color: #ffd700; font-weight: bold; }
-        .achievement-item .mvp { color: #00bfff; font-weight: bold; }
-        /* ВИТРИНА ПРИВИЛЕГИЙ */
-        .shop-grid {
-            display: grid;
-            grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
-            gap: 30px;
-            margin-bottom: 60px;
-        }
-        .product-card {
-            background: rgba(0,0,0,0.5);
-            backdrop-filter: blur(10px);
-            border-radius: 24px;
-            padding: 24px;
-            text-align: center;
-            transition: 0.3s;
-            border: 1px solid rgba(255,215,0,0.2);
-        }
-        .product-card:hover {
-            transform: translateY(-8px);
-            border-color: #ffd700;
-            box-shadow: 0 10px 30px rgba(0,0,0,0.5);
-        }
-        .product-icon i {
-            font-size: 48px;
-            color: #ffd700;
-            margin-bottom: 16px;
-        }
-        .product-card h3 {
-            font-size: 24px;
-            margin-bottom: 12px;
-        }
-        .price {
-            font-size: 28px;
-            font-weight: bold;
-            color: #ffd700;
-            margin: 16px 0;
-        }
-        .product-card ul {
-            list-style: none;
-            margin: 20px 0;
-            text-align: left;
-        }
-        .product-card li {
-            padding: 6px 0;
-        }
-        .product-card li i {
-            font-size: 14px;
-            margin-right: 8px;
-            color: #ffd700;
-        }
-        .buy-btn {
-            background: linear-gradient(135deg, #ffd700, #ffaa00);
-            color: #0a0a0a;
-            border: none;
-            padding: 12px;
-            border-radius: 60px;
-            font-weight: bold;
-            cursor: pointer;
-            width: 100%;
-            font-family: 'Orbitron', monospace;
-            transition: 0.2s;
-        }
-        .buy-btn:hover {
-            background: linear-gradient(135deg, #ffaa00, #ff8800);
-            transform: scale(1.02);
-        }
-        /* КАЛЕНДАРЬ ИВЕНТОВ */
-        .events-grid {
-            display: grid;
-            grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
-            gap: 20px;
-        }
-        .event-card {
-            background: rgba(0,0,0,0.5);
-            backdrop-filter: blur(10px);
-            border-radius: 20px;
-            padding: 20px;
-            border-left: 4px solid #ffd700;
-        }
-        .event-date {
-            color: #ffd700;
-            font-weight: bold;
-            margin-bottom: 8px;
-        }
-        .event-card h4 {
-            font-size: 18px;
-            margin-bottom: 8px;
-        }
-        .remind-btn {
-            background: transparent;
-            border: 1px solid #ffd700;
-            color: #ffd700;
-            padding: 8px 16px;
-            border-radius: 40px;
-            cursor: pointer;
-            margin-top: 12px;
-            transition: 0.2s;
-        }
-        .remind-btn:hover {
-            background: #ffd700;
-            color: #0a0a0a;
-        }
-        /* МОДАЛЬНОЕ ОКНО */
-        .modal {
-            display: none;
-            position: fixed;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            background: rgba(0,0,0,0.85);
-            backdrop-filter: blur(8px);
-            justify-content: center;
-            align-items: center;
-            z-index: 2000;
-        }
-        .modal-content {
-            background: linear-gradient(135deg, #1a1a1a, #0a0a0a);
-            border-radius: 32px;
-            padding: 32px;
-            width: 450px;
-            max-width: 90%;
-            border: 1px solid rgba(255,215,0,0.3);
-            box-shadow: 0 0 40px rgba(255,215,0,0.2);
-        }
-        .tabs {
-            display: flex;
-            gap: 16px;
-            margin-bottom: 24px;
-            border-bottom: 1px solid rgba(255,215,0,0.3);
-            padding-bottom: 12px;
-        }
-        .tab-btn {
-            background: none;
-            border: none;
-            color: #fff;
-            font-size: 18px;
-            cursor: pointer;
-            padding: 8px 20px;
-            border-radius: 40px;
-            transition: 0.2s;
-            font-family: 'Orbitron', monospace;
-        }
-        .tab-btn.active {
-            background: linear-gradient(135deg, #ffd700, #ffaa00);
-            color: #0a0a0a;
-        }
-        .tab-pane {
-            display: none;
-        }
-        .tab-pane.active {
-            display: block;
-        }
-        .input-group {
-            margin-bottom: 20px;
-            position: relative;
-        }
-        .input-group input {
-            width: 100%;
-            padding: 14px 16px;
-            background: rgba(0,0,0,0.5);
-            border: 1px solid rgba(255,215,0,0.3);
-            border-radius: 60px;
-            color: white;
-            font-size: 16px;
-            transition: 0.2s;
-        }
-        .input-group input:focus {
-            outline: none;
-            border-color: #ffd700;
-            box-shadow: 0 0 10px rgba(255,215,0,0.3);
-        }
-        .input-group .hint {
-            position: absolute;
-            bottom: -20px;
-            left: 16px;
-            font-size: 11px;
-            color: #ffd700;
-            opacity: 0;
-            transition: 0.2s;
-            pointer-events: none;
-        }
-        .input-group input:focus + .hint {
-            opacity: 1;
-            bottom: -18px;
-        }
-        .password-strength {
-            height: 4px;
-            background: #333;
-            border-radius: 4px;
-            margin-top: 8px;
-            transition: 0.2s;
-        }
-        .strength-bar {
-            height: 100%;
-            width: 0%;
-            border-radius: 4px;
-            transition: 0.3s;
-        }
-        .submit-btn {
-            width: 100%;
-            background: linear-gradient(135deg, #ffd700, #ffaa00);
-            color: #0a0a0a;
-            font-family: 'Orbitron', monospace;
-            font-weight: bold;
-            padding: 14px;
-            font-size: 18px;
-            border-radius: 60px;
-            border: none;
-            cursor: pointer;
-            transition: all 0.3s;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            gap: 10px;
-        }
-        .submit-btn .spinner {
-            display: none;
-            width: 20px;
-            height: 20px;
-            border: 2px solid rgba(0,0,0,0.3);
-            border-top: 2px solid #0a0a0a;
-            border-radius: 50%;
-            animation: spin 0.8s linear infinite;
-        }
-        .submit-btn.loading .spinner {
-            display: inline-block;
-        }
-        .submit-btn.loading .btn-text {
-            display: none;
-        }
-        @keyframes spin {
-            0% { transform: rotate(0deg); }
-            100% { transform: rotate(360deg); }
-        }
-        .close-modal {
-            float: right;
-            font-size: 28px;
-            cursor: pointer;
-            color: #ffd700;
-            transition: 0.2s;
-        }
-        .close-modal:hover {
-            color: #fff;
-        }
-        @media (max-width: 768px) {
-            .hero h1 { font-size: 48px; }
-            .section-title { font-size: 28px; }
-            .online-count { font-size: 32px; }
-        }
-    </style>
+    <link rel="stylesheet" href="style.css">
 </head>
 <body>
-    <div class="hero">
-        <h1>GRIF LAUNCHER</h1>
-        <p>Лучший игровой опыт с привилегиями, поддержкой и активным сообществом</p>
-        <button class="btn-main" id="showAuthBtn">🔥 ВХОД / РЕГИСТРАЦИЯ</button>
+    <!-- ВИДЕО ФОН -->
+    <video class="hero-video" autoplay loop muted playsinline>
+        <source src="https://cdn.pixabay.com/video/2022/11/20/140315-774259399_large.mp4" type="video/mp4">
+    </video>
+    <div class="hero-overlay"></div>
+
+    <!-- БОКОВОЕ МЕНЮ -->
+    <div class="sidebar">
+        <div class="sidebar-header">GRIF LAUNCHER</div>
+        <div class="sidebar-menu">
+            <a href="index.html" class="menu-item active"><i class="fas fa-home"></i> Главная</a>
+            <a href="shop.html" class="menu-item"><i class="fas fa-store"></i> Магазин</a>
+            <a href="profile.html" class="menu-item"><i class="fas fa-user"></i> Профиль</a>
+            <a href="gallery.html" class="menu-item"><i class="fas fa-image"></i> Галерея</a>
+        </div>
+        <div class="sidebar-footer">
+            <div class="auth-status">Гость</div>
+            <button class="logout-btn"><i class="fas fa-sign-out-alt"></i> Выйти</button>
+        </div>
     </div>
 
-    <div class="container">
-        <!-- ИГРОКИ ОНЛАЙН -->
-        <div class="online-players">
-            <div class="online-count" id="onlineCount">128 ИГРОКОВ ОНЛАЙН</div>
-            <div class="avatars-grid">
-                <div class="avatar"><img src="https://ui-avatars.com/api/?background=ffd700&color=000&name=Player1"><span class="tooltip">GrifMcPro</span></div>
-                <div class="avatar"><img src="https://ui-avatars.com/api/?background=ffd700&color=000&name=Player2"><span class="tooltip">DarkKnight</span></div>
-                <div class="avatar"><img src="https://ui-avatars.com/api/?background=ffd700&color=000&name=Player3"><span class="tooltip">PlayerPro</span></div>
-                <div class="avatar"><img src="https://ui-avatars.com/api/?background=ffd700&color=000&name=Player4"><span class="tooltip">MegaCraft</span></div>
-                <div class="avatar"><img src="https://ui-avatars.com/api/?background=ffd700&color=000&name=Player5"><span class="tooltip">BuildMaster</span></div>
-                <div class="avatar"><img src="https://ui-avatars.com/api/?background=ffd700&color=000&name=Player6"><span class="tooltip">PvPKing</span></div>
+    <!-- ОСНОВНОЙ КОНТЕНТ -->
+    <div class="main-content">
+        <div class="top-bar">
+            <div class="user-info" id="userInfo">
+                <img src="https://ui-avatars.com/api/?background=ffd700&color=000&name=Гость">
+                <span>Гость</span>
             </div>
         </div>
 
-        <!-- СВЕЖИЕ ПОБЕДЫ -->
-        <div class="section-title">🏆 СВЕЖИЕ ПОБЕДЫ</div>
-        <div class="achievements-list">
-            <div class="achievement-item"><i class="fas fa-trophy"></i> Игрок <span class="vip">GrifMcPro</span> победил в дуэли! 👑</div>
-            <div class="achievement-item"><i class="fas fa-crown"></i> Клан <span class="mvp">Dragons</span> захватил новую территорию! 🏰</div>
-            <div class="achievement-item"><i class="fas fa-star"></i> Игрок <span class="vip">PlayerPro</span> получил достижение "Мастер крафта"! ⭐</div>
-            <div class="achievement-item"><i class="fas fa-gem"></i> Игрок <span class="mvp">DarkKnight</span> купил привилегию MVP! 💎</div>
+        <div class="hero">
+            <h1>GRIF LAUNCHER</h1>
+            <p>Лучший игровой опыт с привилегиями, поддержкой и активным сообществом</p>
+            <button class="btn-main" id="showAuthBtn">🔥 КУПИТЬ ДОНАТ</button>
         </div>
 
-        <!-- НОВОСТИ -->
-        <div class="section-title">📰 ПОСЛЕДНИЕ НОВОСТИ</div>
-        <div class="news-grid">
-            <div class="news-card"><img class="news-img" src="https://picsum.photos/id/104/400/250"><div class="news-content"><div class="news-date">01.06.2026</div><div class="news-title">Обновление 2.0</div><div class="news-desc">Новые мини-игры и уникальные привилегии</div></div></div>
-            <div class="news-card"><img class="news-img" src="https://picsum.photos/id/106/400/250"><div class="news-content"><div class="news-date">25.05.2026</div><div class="news-title">Новый сезон</div><div class="news-desc">Сезонные награды и эксклюзивные скины</div></div></div>
-            <div class="news-card"><img class="news-img" src="https://picsum.photos/id/107/400/250"><div class="news-content"><div class="news-date">20.05.2026</div><div class="news-title">Розыгрыш VIP</div><div class="news-desc">Участвуй в розыгрыше VIP-статусов</div></div></div>
-        </div>
+        <div class="container">
+            <!-- НОВОСТИ -->
+            <div class="section-title">📰 ПОСЛЕДНИЕ НОВОСТИ</div>
+            <div class="news-grid">
+                <div class="news-card"><img src="https://picsum.photos/id/104/400/250" alt=""><div class="news-content"><div class="news-date">01.06.2026</div><div class="news-title">Обновление 2.0</div><div class="news-desc">Новые мини-игры и уникальные привилегии</div></div></div>
+                <div class="news-card"><img src="https://picsum.photos/id/106/400/250" alt=""><div class="news-content"><div class="news-date">25.05.2026</div><div class="news-title">Новый сезон</div><div class="news-desc">Сезонные награды и эксклюзивные скины</div></div></div>
+                <div class="news-card"><img src="https://picsum.photos/id/107/400/250" alt=""><div class="news-content"><div class="news-date">20.05.2026</div><div class="news-title">Розыгрыш VIP</div><div class="news-desc">Участвуй в розыгрыше VIP-статусов</div></div></div>
+            </div>
 
-        <!-- ТОПОВЫЕ ПРИВИЛЕГИИ -->
-        <div class="section-title">⚡ СТАНЬ ЛУЧШИМ</div>
-        <div class="shop-grid">
-            <div class="product-card"><div class="product-icon"><i class="fas fa-crown"></i></div><h3>VIP Стандарт</h3><div class="price">150 ₽</div><ul><li><i class="fas fa-check-circle"></i> Цветной ник</li><li><i class="fas fa-check-circle"></i> Команда /kit</li><li><i class="fas fa-check-circle"></i> Доступ к /fly</li></ul><button class="buy-btn" onclick="alert('Покупка VIP')">КУПИТЬ ЗА 150 ₽</button></div>
-            <div class="product-card"><div class="product-icon"><i class="fas fa-gem"></i></div><h3>VIP+ Продвинутый</h3><div class="price">350 ₽</div><ul><li><i class="fas fa-check-circle"></i> Всё из VIP</li><li><i class="fas fa-check-circle"></i> VIP-чат</li><li><i class="fas fa-check-circle"></i> Команда /heal</li></ul><button class="buy-btn" onclick="alert('Покупка VIP+')">КУПИТЬ ЗА 350 ₽</button></div>
-            <div class="product-card"><div class="product-icon"><i class="fas fa-star"></i></div><h3>MVP Вечный</h3><div class="price">1000 ₽</div><ul><li><i class="fas fa-check-circle"></i> Всё из VIP+</li><li><i class="fas fa-check-circle"></i> Префикс [KING]</li><li><i class="fas fa-check-circle"></i> Команда /god</li></ul><button class="buy-btn" onclick="alert('Покупка MVP')">КУПИТЬ ЗА 1000 ₽</button></div>
-        </div>
-
-        <!-- КАЛЕНДАРЬ ИВЕНТОВ -->
-        <div class="section-title">📅 СОБЫТИЯ</div>
-        <div class="events-grid">
-            <div class="event-card"><div class="event-date">15 июня, 20:00</div><h4>🔥 Турнир на выживание</h4><p>Призовой фонд: 500 000 GM</p><button class="remind-btn" onclick="alert('Напоминание установлено!')">📢 НАПОМНИТЬ МНЕ</button></div>
-            <div class="event-card"><div class="event-date">20 июня, 19:00</div><h4>🏰 Клановая война</h4><p>Сброс рейтинга, новый сезон</p><button class="remind-btn" onclick="alert('Напоминание установлено!')">📢 НАПОМНИТЬ МНЕ</button></div>
-            <div class="event-card"><div class="event-date">25 июня, 18:00</div><h4>✨ Охота на дракона</h4><p>Эксклюзивные награды</p><button class="remind-btn" onclick="alert('Напоминание установлено!')">📢 НАПОМНИТЬ МНЕ</button></div>
+            <!-- ВИТРИНА ТОВАРОВ -->
+            <div class="section-title">⚡ ТОПОВЫЕ ПРИВИЛЕГИИ</div>
+            <div class="shop-grid">
+                <div class="product-card"><div class="product-icon"><i class="fas fa-crown"></i></div><h3>VIP Стандарт</h3><div class="price">150 ₽</div><ul><li><i class="fas fa-check-circle"></i> Цветной ник</li><li><i class="fas fa-check-circle"></i> /kit</li><li><i class="fas fa-check-circle"></i> /fly</li></ul><button class="buy-btn">КУПИТЬ</button></div>
+                <div class="product-card"><div class="product-icon"><i class="fas fa-gem"></i></div><h3>VIP+ Продвинутый</h3><div class="price">350 ₽</div><ul><li><i class="fas fa-check-circle"></i> Всё из VIP</li><li><i class="fas fa-check-circle"></i> VIP-чат</li><li><i class="fas fa-check-circle"></i> /heal</li></ul><button class="buy-btn">КУПИТЬ</button></div>
+                <div class="product-card"><div class="product-icon"><i class="fas fa-star"></i></div><h3>MVP Вечный</h3><div class="price">1000 ₽</div><ul><li><i class="fas fa-check-circle"></i> Всё из VIP+</li><li><i class="fas fa-check-circle"></i> Префикс [KING]</li><li><i class="fas fa-check-circle"></i> /god</li></ul><button class="buy-btn">КУПИТЬ</button></div>
+            </div>
         </div>
     </div>
 
-    <!-- МОДАЛЬНОЕ ОКНО ВХОДА/РЕГИСТРАЦИИ -->
+    <!-- МОДАЛКА ВХОДА -->
     <div id="authModal" class="modal">
         <div class="modal-content">
-            <span class="close-modal" id="closeModalBtn">&times;</span>
+            <span class="close-modal">&times;</span>
             <div class="tabs">
                 <button class="tab-btn active" data-tab="login">ВХОД</button>
                 <button class="tab-btn" data-tab="register">РЕГИСТРАЦИЯ</button>
             </div>
-            
-            <!-- ВХОД -->
             <div id="loginPane" class="tab-pane active">
-                <div class="input-group">
-                    <input type="text" id="loginUsername" placeholder="Логин">
-                    <div class="hint">Только латинские буквы и цифры</div>
-                </div>
-                <div class="input-group">
-                    <input type="password" id="loginPassword" placeholder="Пароль">
-                </div>
-                <button class="submit-btn" id="doLoginBtn"><span class="btn-text">ВОЙТИ</span><span class="spinner"></span></button>
+                <div class="input-group"><input type="text" placeholder="Логин"></div>
+                <div class="input-group"><input type="password" placeholder="Пароль"></div>
+                <button class="submit-btn">ВОЙТИ</button>
             </div>
-            
-            <!-- РЕГИСТРАЦИЯ -->
             <div id="registerPane" class="tab-pane">
-                <div class="input-group">
-                    <input type="text" id="regUsername" placeholder="Логин">
-                    <div class="hint">Только латинские буквы и цифры</div>
-                </div>
-                <div class="input-group">
-                    <input type="email" id="regEmail" placeholder="Email">
-                </div>
-                <div class="input-group">
-                    <input type="password" id="regPassword" placeholder="Пароль">
-                    <div class="password-strength"><div class="strength-bar" id="strengthBar"></div></div>
-                </div>
-                <button class="submit-btn" id="doRegisterBtn"><span class="btn-text">ЗАРЕГИСТРИРОВАТЬСЯ</span><span class="spinner"></span></button>
+                <div class="input-group"><input type="text" placeholder="Логин"></div>
+                <div class="input-group"><input type="email" placeholder="Email"></div>
+                <div class="input-group"><input type="password" placeholder="Пароль"></div>
+                <button class="submit-btn">ЗАРЕГИСТРИРОВАТЬСЯ</button>
             </div>
         </div>
     </div>
@@ -523,75 +89,22 @@
     <script>
         // МОДАЛКА
         const modal = document.getElementById('authModal');
-        const showBtn = document.getElementById('showAuthBtn');
-        const closeBtn = document.getElementById('closeModalBtn');
-        
-        showBtn.onclick = () => modal.style.display = 'flex';
-        closeBtn.onclick = () => modal.style.display = 'none';
-        window.onclick = (e) => { if (e.target == modal) modal.style.display = 'none'; };
+        document.getElementById('showAuthBtn').onclick = () => modal.style.display = 'flex';
+        document.querySelector('.close-modal').onclick = () => modal.style.display = 'none';
+        window.onclick = (e) => { if (e.target === modal) modal.style.display = 'none'; };
         
         // ВКЛАДКИ
-        const tabs = document.querySelectorAll('.tab-btn');
-        const panes = {
-            login: document.getElementById('loginPane'),
-            register: document.getElementById('registerPane')
-        };
-        tabs.forEach(tab => {
-            tab.onclick = () => {
-                tabs.forEach(t => t.classList.remove('active'));
-                tab.classList.add('active');
-                const target = tab.dataset.tab;
-                Object.values(panes).forEach(p => p.classList.remove('active'));
-                panes[target].classList.add('active');
+        document.querySelectorAll('.tab-btn').forEach(btn => {
+            btn.onclick = () => {
+                document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
+                btn.classList.add('active');
+                document.getElementById('loginPane').classList.toggle('active', btn.dataset.tab === 'login');
+                document.getElementById('registerPane').classList.toggle('active', btn.dataset.tab === 'register');
             };
         });
         
-        // ИНДИКАТОР СЛОЖНОСТИ ПАРОЛЯ
-        const passInput = document.getElementById('regPassword');
-        const strengthBar = document.getElementById('strengthBar');
-        if (passInput) {
-            passInput.addEventListener('input', () => {
-                const val = passInput.value;
-                let strength = 0;
-                if (val.length >= 6) strength += 20;
-                if (val.match(/[a-z]/)) strength += 20;
-                if (val.match(/[A-Z]/)) strength += 20;
-                if (val.match(/[0-9]/)) strength += 20;
-                if (val.match(/[^a-zA-Z0-9]/)) strength += 20;
-                strengthBar.style.width = strength + '%';
-                if (strength < 40) strengthBar.style.background = '#ff4444';
-                else if (strength < 70) strengthBar.style.background = '#ffaa00';
-                else strengthBar.style.background = '#22c55e';
-            });
-        }
-        
-        // АНИМАЦИЯ КНОПОК
-        function animateButton(btn) {
-            btn.classList.add('loading');
-            setTimeout(() => btn.classList.remove('loading'), 1500);
-        }
-        
-        const loginBtn = document.getElementById('doLoginBtn');
-        const registerBtn = document.getElementById('doRegisterBtn');
-        if (loginBtn) loginBtn.onclick = () => { animateButton(loginBtn); alert('Демо-вход (Firebase будет позже)'); };
-        if (registerBtn) registerBtn.onclick = () => { animateButton(registerBtn); alert('Демо-регистрация (Firebase будет позже)'); };
-        
-        // АНИМАЦИЯ ПРИ СКРОЛЛЕ
-        const cards = document.querySelectorAll('.product-card, .event-card, .achievement-item, .avatar');
-        const observer = new IntersectionObserver((entries) => {
-            entries.forEach(entry => {
-                if (entry.isIntersecting) {
-                    entry.target.style.opacity = '1';
-                    entry.target.style.transform = 'translateY(0)';
-                }
-            });
-        }, { threshold: 0.1 });
-        cards.forEach(card => {
-            card.style.opacity = '0';
-            card.style.transform = 'translateY(20px)';
-            card.style.transition = '0.4s';
-            observer.observe(card);
-        });
+        // ДЕМО
+        document.querySelectorAll('.buy-btn, .submit-btn').forEach(btn => btn.onclick = () => alert('Демо-режим'));
     </script>
 </body>
 </html>
