@@ -6,57 +6,313 @@
     <title>GrifLauncher | Главная</title>
     <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;500;600;700;800;900&family=Montserrat:wght@400;500;600;700&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
-    <link rel="stylesheet" href="style.css">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        body {
+            background: linear-gradient(135deg, #0a0a0a 0%, #1a1a0a 100%);
+            font-family: 'Montserrat', sans-serif;
+            color: #e0e0e0;
+            overflow-x: hidden;
+            min-height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+        }
+        /* ВИДЕО ФОН */
+        .hero-video {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            z-index: -2;
+            opacity: 0.4;
+        }
+        .hero-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(135deg, rgba(0,0,0,0.7), rgba(30,30,0,0.6));
+            z-index: -1;
+        }
+        /* ГЛАВНЫЙ КОНТЕЙНЕР — ВСЁ ПО ЦЕНТРУ */
+        .main-container {
+            max-width: 1300px;
+            width: 100%;
+            margin: 0 auto;
+            padding: 20px;
+        }
+        /* ГЛАВНЫЙ БАННЕР */
+        .hero {
+            text-align: center;
+            padding: 80px 20px;
+            background: radial-gradient(ellipse at 70% 30%, rgba(255,215,0,0.1), transparent);
+            border-radius: 40px;
+            margin-bottom: 40px;
+        }
+        .hero h1 {
+            font-family: 'Orbitron', monospace;
+            font-size: 80px;
+            font-weight: 900;
+            letter-spacing: 4px;
+            background: linear-gradient(135deg, #fff, #ffd700);
+            -webkit-background-clip: text;
+            background-clip: text;
+            color: transparent;
+            animation: fadeInUp 0.8s ease-out;
+        }
+        .hero p {
+            font-size: 20px;
+            margin-top: 20px;
+            color: #ccc;
+            animation: fadeInUp 0.8s ease-out 0.2s both;
+        }
+        .hero .btn-main {
+            margin-top: 30px;
+            background: linear-gradient(135deg, #ffd700, #ffaa00);
+            color: #0a0a0a;
+            font-family: 'Orbitron', monospace;
+            font-weight: bold;
+            padding: 16px 48px;
+            font-size: 20px;
+            border-radius: 60px;
+            border: none;
+            cursor: pointer;
+            transition: all 0.3s;
+            animation: fadeInUp 0.8s ease-out 0.4s both;
+        }
+        .hero .btn-main:hover {
+            transform: scale(1.02);
+            box-shadow: 0 0 25px rgba(255,215,0,0.5);
+        }
+        @keyframes fadeInUp {
+            from { opacity: 0; transform: translateY(30px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+        /* СЕКЦИИ */
+        .section-title {
+            font-family: 'Orbitron', monospace;
+            font-size: 36px;
+            text-align: center;
+            margin: 50px 0 30px;
+            background: linear-gradient(135deg, #fff, #ffd700);
+            -webkit-background-clip: text;
+            background-clip: text;
+            color: transparent;
+        }
+        /* НОВОСТИ */
+        .news-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(320px, 1fr));
+            gap: 25px;
+            margin-bottom: 50px;
+        }
+        .news-card {
+            background: rgba(0,0,0,0.5);
+            backdrop-filter: blur(10px);
+            border-radius: 24px;
+            overflow: hidden;
+            transition: 0.3s;
+            border: 1px solid rgba(255,215,0,0.2);
+        }
+        .news-card:hover {
+            transform: translateY(-5px);
+            border-color: #ffd700;
+        }
+        .news-card img {
+            width: 100%;
+            height: 180px;
+            object-fit: cover;
+        }
+        .news-content {
+            padding: 20px;
+        }
+        .news-date {
+            color: #ffd700;
+            font-size: 12px;
+        }
+        .news-title {
+            font-size: 18px;
+            font-weight: bold;
+            margin: 8px 0;
+        }
+        /* ТОВАРЫ */
+        .shop-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(320px, 1fr));
+            gap: 25px;
+        }
+        .product-card {
+            background: rgba(0,0,0,0.5);
+            backdrop-filter: blur(10px);
+            border-radius: 24px;
+            padding: 24px;
+            text-align: center;
+            transition: 0.3s;
+            border: 1px solid rgba(255,215,0,0.2);
+        }
+        .product-card:hover {
+            transform: translateY(-5px);
+            border-color: #ffd700;
+        }
+        .product-icon i {
+            font-size: 48px;
+            color: #ffd700;
+            margin-bottom: 16px;
+        }
+        .price {
+            font-size: 28px;
+            font-weight: bold;
+            color: #ffd700;
+            margin: 16px 0;
+        }
+        .product-card ul {
+            list-style: none;
+            margin: 20px 0;
+            text-align: left;
+        }
+        .product-card li {
+            padding: 8px 0;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+        .buy-btn {
+            background: linear-gradient(135deg, #ffd700, #ffaa00);
+            color: #0a0a0a;
+            border: none;
+            padding: 12px;
+            border-radius: 60px;
+            font-weight: bold;
+            cursor: pointer;
+            width: 100%;
+            transition: 0.2s;
+        }
+        .buy-btn:hover {
+            transform: scale(1.02);
+        }
+        /* МОДАЛКА */
+        .modal {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0,0,0,0.85);
+            backdrop-filter: blur(8px);
+            justify-content: center;
+            align-items: center;
+            z-index: 2000;
+        }
+        .modal-content {
+            background: linear-gradient(135deg, #1a1a1a, #0a0a0a);
+            border-radius: 32px;
+            padding: 32px;
+            width: 450px;
+            max-width: 90%;
+            border: 1px solid rgba(255,215,0,0.3);
+            position: relative;
+            margin: 0 auto;
+        }
+        .tabs {
+            display: flex;
+            gap: 16px;
+            margin-bottom: 24px;
+            justify-content: center;
+        }
+        .tab-btn {
+            background: none;
+            border: none;
+            color: #fff;
+            font-size: 18px;
+            cursor: pointer;
+            padding: 8px 20px;
+            border-radius: 40px;
+            font-family: 'Orbitron', monospace;
+        }
+        .tab-btn.active {
+            background: linear-gradient(135deg, #ffd700, #ffaa00);
+            color: #0a0a0a;
+        }
+        .tab-pane { display: none; }
+        .tab-pane.active { display: block; }
+        .input-group {
+            margin-bottom: 20px;
+        }
+        .input-group input {
+            width: 100%;
+            padding: 14px 16px;
+            background: rgba(0,0,0,0.5);
+            border: 1px solid rgba(255,215,0,0.3);
+            border-radius: 60px;
+            color: white;
+            font-size: 16px;
+        }
+        .submit-btn {
+            width: 100%;
+            background: linear-gradient(135deg, #ffd700, #ffaa00);
+            color: #0a0a0a;
+            font-family: 'Orbitron', monospace;
+            font-weight: bold;
+            padding: 14px;
+            font-size: 18px;
+            border-radius: 60px;
+            border: none;
+            cursor: pointer;
+        }
+        .close-modal {
+            position: absolute;
+            top: 16px;
+            right: 20px;
+            font-size: 28px;
+            cursor: pointer;
+            color: #ffd700;
+        }
+        @media (max-width: 768px) {
+            .hero h1 { font-size: 48px; }
+            .section-title { font-size: 28px; }
+        }
+    </style>
 </head>
 <body>
-    <!-- ВИДЕО ФОН -->
     <video class="hero-video" autoplay loop muted playsinline>
         <source src="https://cdn.pixabay.com/video/2022/11/20/140315-774259399_large.mp4" type="video/mp4">
     </video>
     <div class="hero-overlay"></div>
 
-    <!-- БОКОВОЕ МЕНЮ -->
-    <div class="sidebar">
-        <div class="sidebar-header">GRIF LAUNCHER</div>
-        <div class="sidebar-menu">
-            <a href="index.html" class="menu-item active"><i class="fas fa-home"></i> Главная</a>
-            <a href="shop.html" class="menu-item"><i class="fas fa-store"></i> Магазин</a>
-            <a href="profile.html" class="menu-item"><i class="fas fa-user"></i> Профиль</a>
-            <a href="gallery.html" class="menu-item"><i class="fas fa-image"></i> Галерея</a>
-        </div>
-        <div class="sidebar-footer">
-            <button class="logout-btn"><i class="fas fa-sign-out-alt"></i> Выйти</button>
-        </div>
-    </div>
-
-    <!-- ОСНОВНОЙ КОНТЕНТ -->
-    <div class="main-content">
+    <div class="main-container">
         <div class="hero">
             <h1>GRIF LAUNCHER</h1>
             <p>Лучший игровой опыт с привилегиями, поддержкой и активным сообществом</p>
             <button class="btn-main" id="showAuthBtn">🔥 КУПИТЬ ДОНАТ</button>
         </div>
 
-        <div class="container">
-            <!-- НОВОСТИ -->
-            <div class="section-title">📰 ПОСЛЕДНИЕ НОВОСТИ</div>
-            <div class="news-grid">
-                <div class="news-card"><img src="https://picsum.photos/id/104/400/250" alt=""><div class="news-content"><div class="news-date">01.06.2026</div><div class="news-title">Обновление 2.0</div><div class="news-desc">Новые мини-игры и уникальные привилегии</div></div></div>
-                <div class="news-card"><img src="https://picsum.photos/id/106/400/250" alt=""><div class="news-content"><div class="news-date">25.05.2026</div><div class="news-title">Новый сезон</div><div class="news-desc">Сезонные награды и эксклюзивные скины</div></div></div>
-                <div class="news-card"><img src="https://picsum.photos/id/107/400/250" alt=""><div class="news-content"><div class="news-date">20.05.2026</div><div class="news-title">Розыгрыш VIP</div><div class="news-desc">Участвуй в розыгрыше VIP-статусов</div></div></div>
-            </div>
+        <!-- НОВОСТИ -->
+        <div class="section-title">📰 ПОСЛЕДНИЕ НОВОСТИ</div>
+        <div class="news-grid">
+            <div class="news-card"><img src="https://picsum.photos/id/104/400/250"><div class="news-content"><div class="news-date">01.06.2026</div><div class="news-title">Обновление 2.0</div><div class="news-desc">Новые мини-игры и уникальные привилегии</div></div></div>
+            <div class="news-card"><img src="https://picsum.photos/id/106/400/250"><div class="news-content"><div class="news-date">25.05.2026</div><div class="news-title">Новый сезон</div><div class="news-desc">Сезонные награды и эксклюзивные скины</div></div></div>
+            <div class="news-card"><img src="https://picsum.photos/id/107/400/250"><div class="news-content"><div class="news-date">20.05.2026</div><div class="news-title">Розыгрыш VIP</div><div class="news-desc">Участвуй в розыгрыше VIP-статусов</div></div></div>
+        </div>
 
-            <!-- ВИТРИНА ТОВАРОВ -->
-            <div class="section-title">⚡ ТОПОВЫЕ ПРИВИЛЕГИИ</div>
-            <div class="shop-grid">
-                <div class="product-card"><div class="product-icon"><i class="fas fa-crown"></i></div><h3>VIP Стандарт</h3><div class="price">150 ₽</div><ul><li><i class="fas fa-check-circle"></i> Цветной ник</li><li><i class="fas fa-check-circle"></i> /kit</li><li><i class="fas fa-check-circle"></i> /fly</li></ul><button class="buy-btn">КУПИТЬ</button></div>
-                <div class="product-card"><div class="product-icon"><i class="fas fa-gem"></i></div><h3>VIP+ Продвинутый</h3><div class="price">350 ₽</div><ul><li><i class="fas fa-check-circle"></i> Всё из VIP</li><li><i class="fas fa-check-circle"></i> VIP-чат</li><li><i class="fas fa-check-circle"></i> /heal</li></ul><button class="buy-btn">КУПИТЬ</button></div>
-                <div class="product-card"><div class="product-icon"><i class="fas fa-star"></i></div><h3>MVP Вечный</h3><div class="price">1000 ₽</div><ul><li><i class="fas fa-check-circle"></i> Всё из VIP+</li><li><i class="fas fa-check-circle"></i> Префикс [KING]</li><li><i class="fas fa-check-circle"></i> /god</li></ul><button class="buy-btn">КУПИТЬ</button></div>
-            </div>
+        <!-- ТОВАРЫ -->
+        <div class="section-title">⚡ ТОПОВЫЕ ПРИВИЛЕГИИ</div>
+        <div class="shop-grid">
+            <div class="product-card"><div class="product-icon"><i class="fas fa-crown"></i></div><h3>VIP Стандарт</h3><div class="price">150 ₽</div><ul><li><i class="fas fa-check-circle"></i> Цветной ник</li><li><i class="fas fa-check-circle"></i> /kit</li><li><i class="fas fa-check-circle"></i> /fly</li></ul><button class="buy-btn">КУПИТЬ</button></div>
+            <div class="product-card"><div class="product-icon"><i class="fas fa-gem"></i></div><h3>VIP+ Продвинутый</h3><div class="price">350 ₽</div><ul><li><i class="fas fa-check-circle"></i> Всё из VIP</li><li><i class="fas fa-check-circle"></i> VIP-чат</li><li><i class="fas fa-check-circle"></i> /heal</li></ul><button class="buy-btn">КУПИТЬ</button></div>
+            <div class="product-card"><div class="product-icon"><i class="fas fa-star"></i></div><h3>MVP Вечный</h3><div class="price">1000 ₽</div><ul><li><i class="fas fa-check-circle"></i> Всё из VIP+</li><li><i class="fas fa-check-circle"></i> Префикс [KING]</li><li><i class="fas fa-check-circle"></i> /god</li></ul><button class="buy-btn">КУПИТЬ</button></div>
         </div>
     </div>
 
-    <!-- МОДАЛКА ВХОДА/РЕГИСТРАЦИИ -->
+    <!-- МОДАЛКА -->
     <div id="authModal" class="modal">
         <div class="modal-content">
             <span class="close-modal">&times;</span>
@@ -79,13 +335,11 @@
     </div>
 
     <script>
-        // МОДАЛКА
         const modal = document.getElementById('authModal');
         document.getElementById('showAuthBtn').onclick = () => modal.style.display = 'flex';
         document.querySelector('.close-modal').onclick = () => modal.style.display = 'none';
         window.onclick = (e) => { if (e.target === modal) modal.style.display = 'none'; };
         
-        // ВКЛАДКИ
         document.querySelectorAll('.tab-btn').forEach(btn => {
             btn.onclick = () => {
                 document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
@@ -95,7 +349,6 @@
             };
         });
         
-        // ДЕМО
         document.querySelectorAll('.buy-btn, .submit-btn').forEach(btn => btn.onclick = () => alert('Демо-режим'));
     </script>
 </body>
