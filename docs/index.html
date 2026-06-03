@@ -4,64 +4,66 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>GrifLauncher | Главная</title>
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;500;600;700;800;900&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="style.css">
-    <script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-app-compat.js"></script>
-    <script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-auth-compat.js"></script>
-    <script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore-compat.js"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
 </head>
 <body>
+    <div class="hero-section">
+        <div class="overlay"></div>
+        <div class="hero-content">
+            <h1>GRIF LAUNCHER</h1>
+            <p>Лучший игровой опыт. Привилегии, уникальный контент и поддержка 24/7</p>
+            <a href="#shop" class="btn-main">🔥 ПРИОБРЕСТИ ДОНАТ</a>
+        </div>
+    </div>
+
     <div class="header">
         <div class="nav">
             <div class="logo">GRIF LAUNCHER</div>
             <div class="nav-links">
                 <a href="index.html">Главная</a>
-                <a href="shop.html">Магазин</a>
-                <a href="profile.html">Профиль</a>
+                <a href="#shop">Магазин</a>
                 <a href="wiki.html">База знаний</a>
-                <a href="chat.html">Чат</a>
                 <a href="gallery.html">Галерея</a>
             </div>
-            <div id="authStatus" class="auth-status"></div>
+            <div class="auth-status">
+                <a href="https://griflauncher.tebex.io/account" class="login-link">Войти / Профиль</a>
+            </div>
         </div>
-    </div>
-
-    <div class="hero">
-        <h1>GRIF LAUNCHER</h1>
-        <p>Стань частью лучшего игрового сообщества. Привилегии, уникальный контент и поддержка 24/7</p>
-        <a href="shop.html" class="btn-primary">🔥 Приобрести донат</a>
     </div>
 
     <div class="container">
-        <div class="video-block">
-            <iframe width="100%" height="450" src="https://www.youtube.com/embed/dQw4w9WgXcQ?autoplay=0" frameborder="0" allowfullscreen></iframe>
+        <div class="section-title">✨ НАШИ ПРИВИЛЕГИИ</div>
+        <div class="shop-grid" id="shop">
+            <div class="product-card">
+                <div class="product-header"><h3>VIP Стандарт</h3><div class="price">150 ₽</div><div class="duration">10 дней</div></div>
+                <ul><li><i class="fas fa-check-circle"></i> Цветной ник</li><li><i class="fas fa-check-circle"></i> Команда /kit</li><li><i class="fas fa-check-circle"></i> Доступ к /fly</li></ul>
+                <a href="https://griflauncher.tebex.io/category/vip" class="buy-btn">Купить</a>
+            </div>
+            <div class="product-card">
+                <div class="product-header"><h3>VIP+ Продвинутый</h3><div class="price">350 ₽</div><div class="duration">30 дней</div></div>
+                <ul><li><i class="fas fa-check-circle"></i> Всё из VIP</li><li><i class="fas fa-check-circle"></i> VIP-чат</li><li><i class="fas fa-check-circle"></i> Команда /heal</li></ul>
+                <a href="https://griflauncher.tebex.io/category/vip-plus" class="buy-btn">Купить</a>
+            </div>
+            <div class="product-card">
+                <div class="product-header"><h3>MVP Вечный</h3><div class="price">1000 ₽</div><div class="duration">Навсегда</div></div>
+                <ul><li><i class="fas fa-check-circle"></i> Всё из VIP+</li><li><i class="fas fa-check-circle"></i> Префикс [KING]</li><li><i class="fas fa-check-circle"></i> Команда /god</li></ul>
+                <a href="https://griflauncher.tebex.io/category/mvp" class="buy-btn">Купить</a>
+            </div>
         </div>
 
-        <div class="two-columns">
-            <div class="main-content">
-                <div class="section-title">📰 ПОСЛЕДНИЕ НОВОСТИ</div>
-                <div id="newsList" class="news-list"></div>
-            </div>
-            <aside class="sidebar">
-                <div class="card">
-                    <h3>💬 Сайт-чат</h3>
-                    <div id="chatMessages" class="chat-messages"></div>
-                    <input type="text" id="chatInput" placeholder="Написать сообщение...">
-                    <button id="sendChatBtn">Отправить</button>
-                </div>
-                <div class="card">
-                    <h3>🤖 Telegram бот</h3>
-                    <p>Напишите <strong>@GrifLauncherBot</strong> в Telegram, чтобы узнать онлайн, получить помощь или задать вопрос.</p>
-                    <p><strong>Команды:</strong> /faq, /online, /site</p>
-                </div>
-            </aside>
+        <div class="section-title">📰 ПОСЛЕДНИЕ НОВОСТИ</div>
+        <div class="news-grid">
+            <div class="news-card"><img src="https://picsum.photos/id/104/400/250" alt=""><div class="news-content"><h3>Обновление 2.0</h3><p>Новые мини-игры, уникальные привилегии и ивенты</p><span>01.06.2026</span></div></div>
+            <div class="news-card"><img src="https://picsum.photos/id/106/400/250" alt=""><div class="news-content"><h3>Новый сезон</h3><p>Сезонные награды и эксклюзивные скины</p><span>25.05.2026</span></div></div>
+            <div class="news-card"><img src="https://picsum.photos/id/107/400/250" alt=""><div class="news-content"><h3>Розыгрыш VIP</h3><p>Участвуй в розыгрыше VIP-статусов в Discord</p><span>20.05.2026</span></div></div>
         </div>
     </div>
 
     <footer class="footer">
         <p>© 2026 GrifLauncher — твой путь к вершине</p>
     </footer>
-
     <script src="script.js"></script>
 </body>
 </html>
