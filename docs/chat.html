@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>GrifLauncher | Чаты</title>
+    <title>GrifLauncher | Чат</title>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
     <link rel="stylesheet" href="style.css">
@@ -17,9 +17,10 @@
         <div class="sidebar-menu">
             <a href="index.html" class="menu-item"><i class="fas fa-home"></i> Главная</a>
             <a href="shop.html" class="menu-item"><i class="fas fa-store"></i> Магазин</a>
-            <a href="chat.html" class="menu-item active"><i class="fas fa-comments"></i> Чаты</a>
+            <a href="chat.html" class="menu-item active"><i class="fas fa-comments"></i> Чат</a>
             <a href="profile.html" class="menu-item"><i class="fas fa-user"></i> Профиль</a>
             <a href="wiki.html" class="menu-item"><i class="fas fa-book"></i> База знаний</a>
+            <a href="gallery.html" class="menu-item"><i class="fas fa-image"></i> Галерея</a>
         </div>
         <div class="sidebar-footer">
             <div id="authStatus"></div>
@@ -29,8 +30,10 @@
 
     <div class="main-content chat-layout">
         <div class="channels-sidebar">
-            <div class="channels-header">💬 Общий чат</div>
-            <div id="channelsList"></div>
+            <div class="channels-header">💬 Каналы</div>
+            <div class="channel active">#общий</div>
+            <div class="channel">#торговля</div>
+            <div class="channel">#помощь</div>
         </div>
         <div class="chat-area">
             <div class="chat-header"><h3>#общий</h3></div>
