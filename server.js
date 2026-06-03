@@ -4,27 +4,20 @@ const path = require('path');
 
 const app = express();
 app.use(express.json());
-app.use(express.static('public'));
+app.use(express.static('.')); // раздаёт index.html, style.css, script.js из корня
 
-// Настройки
 const CONFIG = {
     minecraft: {
         host: 'botcreatortest.aternos.me',
         port: 23209
     },
-    currency: {
-        name: 'GM',
-        startBalance: 50000
-    }
+    currency: { name: 'GM', startBalance: 50000 }
 };
 
-// Балансы (пока в памяти)
 let balances = {};
-
 function getBalance(nick) { return balances[nick] ?? CONFIG.currency.startBalance; }
 function setBalance(nick, amount) { balances[nick] = Math.max(0, amount); }
 
-// Привилегии
 const privileges = {
     'premium':   { price: 1000, name: '⭐ Премиум' },
     'creative':  { price: 2500, name: '🎨 Креатив' },
@@ -35,7 +28,6 @@ const privileges = {
     'ruler':     { price: 100000, name: '👑 ПРАВИТЕЛЬ' }
 };
 
-// API: статус сервера
 app.get('/api/status', async (req, res) => {
     try {
         const response = await fetch(`https://api.mcsrvstat.us/2/${CONFIG.minecraft.host}:${CONFIG.minecraft.port}`);
@@ -51,7 +43,6 @@ app.get('/api/status', async (req, res) => {
     }
 });
 
-// API: покупка
 app.post('/api/buy', (req, res) => {
     const { nick, privilege } = req.body;
     if (!nick || !privilege || !privileges[privilege]) {
@@ -63,10 +54,10 @@ app.post('/api/buy', (req, res) => {
         return res.json({ success: false, message: `Не хватает GM. Нужно: ${price}` });
     }
     setBalance(nick, balance - price);
-    // TODO: вызвать бота для выдачи привилегии (через RCON или mineflayer)
+    // 👇 ТУТ ТЫ ДОБАВИШЬ ВЫЗОВ СВОЕГО БОТА
     console.log(`🎁 Выдана ${privileges[privilege].name} игроку ${nick}. Остаток: ${getBalance(nick)} GM`);
     res.json({ success: true, message: `${privileges[privilege].name} выдана! Остаток: ${getBalance(nick)} GM` });
 });
 
 const PORT = 3000;
-app.listen(PORT, () => console.log(`✅ API и сайт запущены на порту ${PORT}`));
+app.listen(PORT, () => console.log(`✅ Сервер запущен на http://localhost:${PORT}`));
