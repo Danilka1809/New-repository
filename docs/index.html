@@ -7,23 +7,57 @@
     <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
     <style>
         * { margin: 0; padding: 0; box-sizing: border-box; }
-        body { background: #0b0e17; font-family: 'Segoe UI', sans-serif; color: #eef2ff; padding: 20px; }
+        body {
+            background: #0b0e17;
+            font-family: 'Segoe UI', sans-serif;
+            color: #eef2ff;
+            padding: 20px;
+        }
         .container { max-width: 1200px; margin: 0 auto; }
-        .glass-card { background: rgba(18,25,45,0.6); backdrop-filter: blur(12px); border-radius: 24px; padding: 20px; margin-bottom: 20px; border: 1px solid rgba(59,130,246,0.2); }
-        .logo { font-size: 32px; font-weight: 800; text-align: center; margin-bottom: 20px; background: linear-gradient(90deg, #fff, #3b82f6, #8b5cf6); -webkit-background-clip: text; background-clip: text; color: transparent; }
-        input, button { width: 100%; padding: 12px; margin: 8px 0; background: rgba(0,0,0,0.4); border: 1px solid #3b82f6; border-radius: 40px; color: white; }
-        button { background: #3b82f6; cursor: pointer; font-weight: bold; }
-        button:hover { opacity: 0.9; }
-        .balance { font-size: 24px; color: #facc15; }
-        .hidden { display: none; }
+        .glass-card {
+            background: rgba(18,25,45,0.6);
+            backdrop-filter: blur(12px);
+            border-radius: 28px;
+            padding: 24px;
+            margin-bottom: 24px;
+            border: 1px solid rgba(59,130,246,0.2);
+        }
+        .logo {
+            font-size: 36px;
+            font-weight: 800;
+            text-align: center;
+            background: linear-gradient(90deg, #fff, #3b82f6, #8b5cf6);
+            -webkit-background-clip: text;
+            background-clip: text;
+            color: transparent;
+            margin-bottom: 20px;
+        }
+        input, button {
+            width: 100%;
+            padding: 12px;
+            margin: 8px 0;
+            background: rgba(0,0,0,0.4);
+            border: 1px solid #3b82f6;
+            border-radius: 40px;
+            color: white;
+        }
+        button {
+            background: linear-gradient(135deg, #3b82f6, #2563eb);
+            cursor: pointer;
+            font-weight: bold;
+        }
+        .balance { color: #facc15; font-size: 24px; font-weight: bold; }
         .store-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(280px, 1fr)); gap: 20px; }
-        .privilege-card { background: rgba(0,0,0,0.3); border-radius: 20px; padding: 15px; }
-        .friend-card { background: rgba(0,0,0,0.3); border-radius: 16px; padding: 10px; margin-bottom: 10px; display: flex; justify-content: space-between; align-items: center; }
-        .chat-messages { height: 300px; overflow-y: auto; background: rgba(0,0,0,0.3); border-radius: 16px; padding: 10px; margin: 10px 0; }
+        .privilege-card { background: rgba(0,0,0,0.3); border-radius: 20px; padding: 16px; }
+        .friend-card { background: rgba(0,0,0,0.3); border-radius: 16px; padding: 12px; margin-bottom: 8px; display: flex; justify-content: space-between; align-items: center; }
+        .chat-messages { height: 300px; overflow-y: auto; background: rgba(0,0,0,0.3); border-radius: 16px; padding: 12px; margin: 12px 0; }
         .message { background: rgba(59,130,246,0.2); border-radius: 12px; padding: 8px; margin-bottom: 8px; }
-        .flex { display: flex; gap: 10px; }
-        .flex button { width: auto; padding: 10px 20px; }
+        .hidden { display: none; }
+        .flex { display: flex; gap: 12px; flex-wrap: wrap; }
         #toast { position: fixed; bottom: 20px; right: 20px; background: #22c55e; padding: 12px 24px; border-radius: 40px; opacity: 0; transition: 0.2s; z-index: 1000; }
+        .tab-btn { flex: 1; background: rgba(59,130,246,0.2); border: none; padding: 12px; border-radius: 40px; cursor: pointer; color: white; }
+        .tab-btn.active { background: #3b82f6; }
+        .profile-row { display: flex; justify-content: space-between; padding: 8px 0; border-bottom: 1px solid rgba(59,130,246,0.1); }
     </style>
 </head>
 <body>
@@ -31,19 +65,12 @@
 <div id="toast"></div>
 
 <script>
-(function() {
-    // КЛЮЧИ SUPABASE
-    const SUPABASE_URL = 'https://shdvwyaculqqkrwnqlwt.supabase.co';
-    const SUPABASE_KEY = 'sb_publishable_VYWWvPXpsGXkpeUOtcoyOg_5leIFS3w';
+    // ========== НАСТРОЙКИ SUPABASE ==========
+    const SUPABASE_URL = 'https://ikjklkgxrgfumvcyzhfa.supabase.co';
+    const SUPABASE_KEY = 'sb_publishable_BjGrlriGkvA4byQOAbCESw_cjqTPmX8';
     const supabase = window.supabase.createClient(SUPABASE_URL, SUPABASE_KEY);
 
-    let currentUser = null;
-    let currentProfile = null;
-    let currentBalance = 0;
-    let friendsList = [];
-    let currentChatWith = null;
-
-    // ПРИВИЛЕГИИ
+    // ========== ПРИВИЛЕГИИ ==========
     const privileges = [
         { name: '🎨 Креатив', price: 1000, key: 'creative' },
         { name: '🛡️ Модер', price: 2500, key: 'moder' },
@@ -57,6 +84,12 @@
         { name: '👑 ПРАВИТЕЛЬ', price: 100000, key: 'ruler' }
     ];
 
+    let currentUser = null;
+    let currentProfile = null;
+    let currentBalance = 0;
+    let friendsList = [];
+    let currentChatWith = null;
+
     function showToast(msg, color = '#22c55e') {
         const toast = document.getElementById('toast');
         toast.style.backgroundColor = color;
@@ -68,85 +101,28 @@
     async function loadProfile() {
         if (!currentUser) return;
         const { data } = await supabase.from('profiles').select('*').eq('id', currentUser.id).single();
-        if (data) {
-            currentProfile = data;
-            currentBalance = data.balance || 50000;
-        }
+        if (data) { currentProfile = data; currentBalance = data.balance || 50000; }
     }
 
     async function loadFriends() {
         if (!currentUser) return;
-        const { data } = await supabase
-            .from('friends')
-            .select('friend_id, profiles!friends_friend_id_fkey (username, tag)')
-            .eq('user_id', currentUser.id)
-            .eq('status', 'accepted');
+        const { data } = await supabase.from('friends').select('friend_id, profiles!friends_friend_id_fkey (username, tag)').eq('user_id', currentUser.id).eq('status', 'accepted');
         friendsList = data?.map(f => ({ id: f.friend_id, username: f.profiles.username, tag: f.profiles.tag })) || [];
     }
 
-    async function searchUsers(query) {
-        if (!query.trim()) return [];
-        const { data } = await supabase
-            .from('profiles')
-            .select('id, username, tag')
-            .or(`username.ilike.%${query}%,tag.ilike.%${query}%`)
-            .neq('id', currentUser.id)
-            .limit(10);
-        return data || [];
-    }
-
-    async function sendFriendRequest(friendId) {
-        const { error } = await supabase.from('friends').insert({ user_id: currentUser.id, friend_id: friendId, status: 'pending' });
-        showToast(error ? 'Ошибка' : 'Заявка отправлена!', error ? '#ef4444' : '#22c55e');
-    }
-
-    async function loadMessages(withUserId) {
-        if (!withUserId) return [];
-        const { data } = await supabase
-            .from('messages')
-            .select('*')
-            .or(`and(from_user_id.eq.${currentUser.id},to_user_id.eq.${withUserId}),and(from_user_id.eq.${withUserId},to_user_id.eq.${currentUser.id})`)
-            .order('created_at', { ascending: true });
-        return data || [];
-    }
-
-    async function sendMessage(toUserId, message) {
-        if (!message.trim()) return;
-        await supabase.from('messages').insert({ from_user_id: currentUser.id, to_user_id: toUserId, message: message.trim() });
-    }
-
-    async function buyPrivilege(privilegeKey, price, serverNick) {
-        if (!serverNick) { showToast('Введи ник на сервере!', '#ef4444'); return false; }
-        if (currentBalance < price) { showToast(`Не хватает GM! Нужно: ${price}`, '#ef4444'); return false; }
+    async function buyPrivilege(key, price, serverNick) {
+        if (!serverNick) { showToast('❌ Введи ник на сервере!', '#ef4444'); return false; }
+        if (currentBalance < price) { showToast(`❌ Не хватает GM! Нужно: ${price}`, '#ef4444'); return false; }
         const newBalance = currentBalance - price;
         await supabase.from('profiles').update({ balance: newBalance }).eq('id', currentUser.id);
         currentBalance = newBalance;
-        const fd = new FormData();
-        fd.append('access_key', '483fce89-6fa4-4704-bc74-1dac5cfcf0d0');
-        fd.append('email', 'ramonenok@bk.ru');
-        fd.append('subject', `Покупка ${privilegeKey}`);
-        fd.append('message', `${serverNick} купил ${privilegeKey} за ${price} GM`);
-        fetch('https://api.web3forms.com/submit', { method: 'POST', body: fd });
-        showToast(`${privilegeKey} выдана!`, '#22c55e');
+        showToast(`✅ ${key} выдана! Донат в течение 10 минут.`, '#22c55e');
         return true;
-    }
-
-    async function renderChatWindow(friend) {
-        currentChatWith = friend;
-        const messages = await loadMessages(friend.id);
-        const chatDiv = document.getElementById('chatMessages');
-        const chatArea = document.getElementById('chatArea');
-        if (!chatArea) return;
-        chatArea.classList.remove('hidden');
-        document.getElementById('chatWithName').innerText = friend.username;
-        chatDiv.innerHTML = messages.map(m => `<div class="message"><b>${m.from_user_id === currentUser.id ? 'Вы' : friend.username}:</b> ${m.message}<br><small>${new Date(m.created_at).toLocaleTimeString()}</small></div>`).join('');
-        chatDiv.scrollTop = chatDiv.scrollHeight;
     }
 
     async function renderMainPage() {
         if (!currentUser) return;
-        await loadProfile();
-        await loadFriends();
+        await loadProfile(); await loadFriends();
 
         let storeHtml = privileges.map(p => `
             <div class="privilege-card">
@@ -159,7 +135,7 @@
 
         let friendsHtml = friendsList.map(f => `
             <div class="friend-card">
-                <div><b>${f.username}</b> <span style="font-size:12px;color:#8b9dc3;">${f.tag}</span></div>
+                <div><b>${f.username}</b> <span style="font-size:12px;">${f.tag}</span></div>
                 <button onclick="openChat('${f.id}', '${f.username}')">💬 Чат</button>
             </div>
         `).join('');
@@ -168,13 +144,13 @@
         document.getElementById('app').innerHTML = `
             <div class="glass-card">
                 <div class="logo">GRIF LAUNCHER</div>
-                <div class="flex" style="justify-content: space-between; align-items: center;">
+                <div class="flex" style="justify-content: space-between;">
                     <div>👤 ${currentProfile?.username || ''} <span style="color:#8b9dc3;">${currentProfile?.tag || ''}</span></div>
                     <div class="balance">💰 ${currentBalance} GM</div>
                 </div>
             </div>
             <div class="glass-card">
-                <h3>🎁 МАГАЗИН ПРИВИЛЕГИЙ</h3>
+                <h3>🎁 МАГАЗИН</h3>
                 <div class="store-grid">${storeHtml}</div>
             </div>
             <div class="glass-card">
@@ -184,118 +160,62 @@
                     <input type="text" id="searchInput" placeholder="Поиск по нику или @tag">
                     <button id="searchBtn">🔍</button>
                 </div>
-                <div id="searchResults" style="margin-top: 10px;"></div>
+                <div id="searchResults"></div>
             </div>
             <div id="chatArea" class="glass-card hidden">
-                <div class="flex" style="justify-content: space-between;">
-                    <h3>💬 Чат с <span id="chatWithName"></span></h3>
-                    <button id="closeChat" style="width: auto; background:#ef4444;">✖</button>
-                </div>
+                <div class="flex" style="justify-content: space-between;"><h3>💬 Чат с <span id="chatWithName"></span></h3><button id="closeChat">✖</button></div>
                 <div id="chatMessages" class="chat-messages"></div>
-                <div class="flex">
-                    <input type="text" id="chatInput" placeholder="Сообщение...">
-                    <button id="sendMsg">📤</button>
-                </div>
+                <div class="flex"><input type="text" id="chatInput" placeholder="Сообщение..."><button id="sendMsg">📤</button></div>
             </div>
         `;
 
         document.getElementById('searchBtn')?.addEventListener('click', async () => {
             const query = document.getElementById('searchInput').value;
-            const results = await searchUsers(query);
-            const resultsDiv = document.getElementById('searchResults');
-            if (!results.length) { resultsDiv.innerHTML = '<p>Не найдено</p>'; return; }
-            resultsDiv.innerHTML = results.map(u => `
-                <div class="friend-card">
-                    <div><b>${u.username}</b> <span style="font-size:12px;">${u.tag}</span></div>
-                    <button onclick="addFriendById('${u.id}')">➕ Добавить</button>
-                </div>
-            `).join('');
+            const { data } = await supabase.from('profiles').select('id, username, tag').or(`username.ilike.%${query}%,tag.ilike.%${query}%`).neq('id', currentUser.id).limit(10);
+            document.getElementById('searchResults').innerHTML = data?.map(u => `<div class="friend-card"><div><b>${u.username}</b> ${u.tag}</div><button onclick="addFriend('${u.id}')">➕ Добавить</button></div>`).join('') || '<p>Не найдено</p>';
         });
-
-        document.getElementById('closeChat')?.addEventListener('click', () => {
-            document.getElementById('chatArea').classList.add('hidden');
-            currentChatWith = null;
-        });
-
+        document.getElementById('closeChat')?.addEventListener('click', () => { document.getElementById('chatArea').classList.add('hidden'); currentChatWith = null; });
         document.getElementById('sendMsg')?.addEventListener('click', async () => {
             const input = document.getElementById('chatInput');
             if (currentChatWith && input.value.trim()) {
-                await sendMessage(currentChatWith.id, input.value);
+                await supabase.from('messages').insert({ from_user_id: currentUser.id, to_user_id: currentChatWith.id, message: input.value });
                 input.value = '';
                 await renderChatWindow(currentChatWith);
             }
         });
     }
 
-    window.buy = async (key, price) => {
-        const nick = document.getElementById(`nick_${key}`)?.value;
-        await buyPrivilege(key, price, nick);
-        await renderMainPage();
-    };
+    window.buy = async (key, price) => { const nick = document.getElementById(`nick_${key}`)?.value; await buyPrivilege(key, price, nick); await renderMainPage(); };
+    window.openChat = async (id, name) => { await renderChatWindow({ id, username: name }); };
+    window.addFriend = async (id) => { await supabase.from('friends').insert({ user_id: currentUser.id, friend_id: id, status: 'accepted' }); showToast('Друг добавлен!'); document.getElementById('searchResults').innerHTML = ''; await renderMainPage(); };
 
-    window.openChat = async (id, name) => {
-        await renderChatWindow({ id, username: name });
-    };
-
-    window.addFriendById = async (id) => {
-        await sendFriendRequest(id);
-        document.getElementById('searchResults').innerHTML = '';
-        document.getElementById('searchInput').value = '';
-        await renderMainPage();
-    };
+    async function renderChatWindow(friend) {
+        currentChatWith = friend;
+        const { data } = await supabase.from('messages').select('*').or(`and(from_user_id.eq.${currentUser.id},to_user_id.eq.${friend.id}),and(from_user_id.eq.${friend.id},to_user_id.eq.${currentUser.id})`).order('created_at');
+        const chatDiv = document.getElementById('chatMessages');
+        document.getElementById('chatArea').classList.remove('hidden');
+        document.getElementById('chatWithName').innerText = friend.username;
+        chatDiv.innerHTML = data?.map(m => `<div class="message"><b>${m.from_user_id === currentUser.id ? 'Вы' : friend.username}:</b> ${m.message}<br><small>${new Date(m.created_at).toLocaleTimeString()}</small></div>`).join('') || '';
+        chatDiv.scrollTop = chatDiv.scrollHeight;
+    }
 
     async function renderAuthPage() {
         document.getElementById('app').innerHTML = `
             <div class="glass-card" style="max-width: 400px; margin: 50px auto;">
                 <div class="logo">GRIF LAUNCHER</div>
-                <div id="loginForm">
-                    <input type="email" id="loginEmail" placeholder="Email">
-                    <input type="password" id="loginPass" placeholder="Пароль">
-                    <button id="loginBtn">Войти</button>
-                </div>
-                <div id="registerForm" style="margin-top: 20px;">
-                    <input type="text" id="regUsername" placeholder="Никнейм">
-                    <input type="email" id="regEmail" placeholder="Email">
-                    <input type="password" id="regPass" placeholder="Пароль">
-                    <input type="text" id="regTag" placeholder="@username">
-                    <button id="registerBtn">Зарегистрироваться</button>
-                </div>
+                <div class="flex" style="margin-bottom: 20px;"><button class="tab-btn active" id="loginTab">Вход</button><button class="tab-btn" id="registerTab">Регистрация</button></div>
+                <div id="loginForm"><input type="email" id="loginEmail" placeholder="Email"><input type="password" id="loginPass" placeholder="Пароль"><button id="doLogin">Войти</button></div>
+                <div id="registerForm" style="display:none;"><input type="text" id="regUsername" placeholder="Никнейм"><input type="email" id="regEmail" placeholder="Email"><input type="password" id="regPass" placeholder="Пароль"><input type="text" id="regTag" placeholder="@username"><button id="doRegister">Зарегистрироваться</button></div>
             </div>
         `;
-
-        document.getElementById('loginBtn')?.addEventListener('click', async () => {
-            const email = document.getElementById('loginEmail').value;
-            const pass = document.getElementById('loginPass').value;
-            const { data, error } = await supabase.auth.signInWithPassword({ email, password: pass });
-            if (error) { showToast(error.message, '#ef4444'); return; }
-            currentUser = data.user;
-            await renderMainPage();
-        });
-
-        document.getElementById('registerBtn')?.addEventListener('click', async () => {
-            const username = document.getElementById('regUsername').value;
-            const email = document.getElementById('regEmail').value;
-            const pass = document.getElementById('regPass').value;
-            const tag = document.getElementById('regTag').value;
-            if (!username || !email || !pass || !tag) { showToast('Заполните все поля', '#ef4444'); return; }
-            const { error } = await supabase.auth.signUp({ email, password: pass, options: { data: { username, tag } } });
-            if (error) { showToast(error.message, '#ef4444'); return; }
-            showToast('Регистрация успешна! Войдите.', '#22c55e');
-        });
+        document.getElementById('loginTab').onclick = () => { document.getElementById('loginForm').style.display = 'block'; document.getElementById('registerForm').style.display = 'none'; document.getElementById('loginTab').classList.add('active'); document.getElementById('registerTab').classList.remove('active'); };
+        document.getElementById('registerTab').onclick = () => { document.getElementById('loginForm').style.display = 'none'; document.getElementById('registerForm').style.display = 'block'; document.getElementById('registerTab').classList.add('active'); document.getElementById('loginTab').classList.remove('active'); };
+        document.getElementById('doLogin').onclick = async () => { const { data, error } = await supabase.auth.signInWithPassword({ email: document.getElementById('loginEmail').value, password: document.getElementById('loginPass').value }); if (error) { showToast(error.message, '#ef4444'); return; } currentUser = data.user; await renderMainPage(); };
+        document.getElementById('doRegister').onclick = async () => { const { error } = await supabase.auth.signUp({ email: document.getElementById('regEmail').value, password: document.getElementById('regPass').value, options: { data: { username: document.getElementById('regUsername').value, tag: document.getElementById('regTag').value } } }); if (error) { showToast(error.message, '#ef4444'); return; } showToast('Регистрация успешна! Войдите.', '#22c55e'); };
     }
 
-    supabase.auth.onAuthStateChange(async (event, session) => {
-        if (session?.user) { currentUser = session.user; await loadProfile(); await renderMainPage(); }
-        else { currentUser = null; await renderAuthPage(); }
-    });
-
-    async function init() {
-        const { data } = await supabase.auth.getSession();
-        if (data.session?.user) { currentUser = data.session.user; await loadProfile(); await renderMainPage(); }
-        else { await renderAuthPage(); }
-    }
-    init();
-})();
+    supabase.auth.onAuthStateChange(async (event, session) => { if (session?.user) { currentUser = session.user; await renderMainPage(); } else { currentUser = null; await renderAuthPage(); } });
+    (async () => { const { data } = await supabase.auth.getSession(); if (data.session?.user) { currentUser = data.session.user; await renderMainPage(); } else { await renderAuthPage(); } })();
 </script>
 </body>
 </html>
