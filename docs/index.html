@@ -13,10 +13,11 @@
             box-sizing: border-box;
         }
         body {
-            background: linear-gradient(135deg, #0a0a0a 0%, #1a1a0a 100%);
+            background: linear-gradient(135deg, #0a0a0a, #121212);
             font-family: 'Montserrat', sans-serif;
             color: #e0e0e0;
             overflow-x: hidden;
+            line-height: 1.6;
         }
         /* ВИДЕО ФОН */
         .hero-video {
@@ -27,7 +28,7 @@
             height: 100%;
             object-fit: cover;
             z-index: -2;
-            opacity: 0.4;
+            opacity: 0.5;
         }
         .hero-overlay {
             position: fixed;
@@ -35,7 +36,7 @@
             left: 0;
             width: 100%;
             height: 100%;
-            background: linear-gradient(135deg, rgba(0,0,0,0.7), rgba(30,30,0,0.6));
+            background: linear-gradient(135deg, rgba(0,0,0,0.8), rgba(0,0,0,0.6));
             z-index: -1;
         }
         /* ГЛАВНЫЙ БАННЕР */
@@ -57,60 +58,114 @@
             -webkit-background-clip: text;
             background-clip: text;
             color: transparent;
-            text-shadow: 0 0 30px rgba(255,215,0,0.3);
-            animation: fadeInUp 1s ease-out;
+            text-shadow: 0 0 30px rgba(255,215,0,0.2);
+            animation: fadeInUp 0.8s ease-out;
         }
         .hero p {
             font-size: 20px;
             margin-top: 20px;
-            color: #ccc;
-            animation: fadeInUp 1s ease-out 0.2s both;
+            color: rgba(255,255,255,0.8);
+            animation: fadeInUp 0.8s ease-out 0.2s both;
         }
         .hero .btn-main {
             margin-top: 40px;
-            background: linear-gradient(135deg, #ffd700, #ffaa00);
-            color: #0a0a0a;
+            background: rgba(255,215,0,0.15);
+            backdrop-filter: blur(12px);
+            color: #ffd700;
             font-family: 'Orbitron', monospace;
             font-weight: bold;
-            padding: 18px 48px;
-            font-size: 22px;
+            padding: 16px 48px;
+            font-size: 20px;
             border-radius: 60px;
             text-decoration: none;
             display: inline-block;
-            transition: all 0.3s;
-            box-shadow: 0 0 20px rgba(255,215,0,0.5);
-            animation: fadeInUp 1s ease-out 0.4s both;
+            transition: all 0.3s cubic-bezier(0.2, 0.9, 0.4, 1.1);
+            box-shadow: 0 4px 15px rgba(0,0,0,0.3);
+            border: 1px solid rgba(255,215,0,0.3);
             cursor: pointer;
-            border: none;
         }
         .hero .btn-main:hover {
-            transform: scale(1.05);
-            box-shadow: 0 0 35px rgba(255,215,0,0.8);
+            transform: translateY(-3px) scale(1.02);
+            background: rgba(255,215,0,0.3);
+            box-shadow: 0 8px 25px rgba(0,0,0,0.4);
+            border-color: rgba(255,215,0,0.6);
         }
         @keyframes fadeInUp {
             from { opacity: 0; transform: translateY(30px); }
             to { opacity: 1; transform: translateY(0); }
         }
-        /* ОБЩИЕ БЛОКИ */
+        /* КОНТЕЙНЕР */
         .container {
-            background: linear-gradient(135deg, #0a0a0a 0%, #1a1a0a 100%);
-            padding: 60px 20px;
+            max-width: 1400px;
+            margin: 0 auto;
+            padding: 80px 20px;
         }
         .section-title {
             font-family: 'Orbitron', monospace;
             font-size: 36px;
             text-align: center;
-            margin-bottom: 40px;
+            margin-bottom: 50px;
             background: linear-gradient(135deg, #fff, #ffd700);
             -webkit-background-clip: text;
             background-clip: text;
             color: transparent;
             letter-spacing: 2px;
+            position: relative;
+            display: inline-block;
+            width: 100%;
+        }
+        /* НОВОСТИ (КАРТОЧКИ) */
+        .news-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(350px, 1fr));
+            gap: 30px;
+            margin-bottom: 80px;
+        }
+        .news-card {
+            background: rgba(20,20,30,0.6);
+            backdrop-filter: blur(8px);
+            border-radius: 24px;
+            overflow: hidden;
+            transition: all 0.3s cubic-bezier(0.2, 0.9, 0.4, 1.1);
+            border: 1px solid rgba(255,215,0,0.15);
+        }
+        .news-card:hover {
+            transform: translateY(-8px);
+            box-shadow: 0 20px 30px -15px rgba(0,0,0,0.5);
+            border-color: rgba(255,215,0,0.4);
+        }
+        .news-img {
+            width: 100%;
+            height: 200px;
+            object-fit: cover;
+            transition: 0.3s;
+        }
+        .news-card:hover .news-img {
+            transform: scale(1.02);
+        }
+        .news-content {
+            padding: 20px;
+        }
+        .news-date {
+            font-size: 12px;
+            color: #ffd700;
+            margin-bottom: 8px;
+        }
+        .news-title {
+            font-size: 20px;
+            font-weight: bold;
+            margin-bottom: 12px;
+            font-family: 'Orbitron', monospace;
+        }
+        .news-desc {
+            font-size: 14px;
+            color: #bbb;
+            line-height: 1.5;
         }
         /* ИГРОКИ ОНЛАЙН */
         .online-players {
             text-align: center;
-            margin-bottom: 60px;
+            margin-bottom: 80px;
         }
         .online-count {
             font-size: 48px;
@@ -120,13 +175,13 @@
             background-clip: text;
             color: transparent;
             font-family: 'Orbitron', monospace;
+            margin-bottom: 30px;
         }
         .avatars-grid {
             display: flex;
             justify-content: center;
             gap: 20px;
             flex-wrap: wrap;
-            margin-top: 30px;
         }
         .avatar {
             position: relative;
@@ -136,7 +191,7 @@
             background: #1a1a1a;
             border: 2px solid #ffd700;
             overflow: hidden;
-            transition: 0.2s;
+            transition: all 0.2s;
             cursor: pointer;
             animation: pulse 2s infinite;
         }
@@ -175,19 +230,24 @@
         }
         /* ЛЕНТА ПОБЕД */
         .achievements-list {
-            background: rgba(0,0,0,0.5);
-            backdrop-filter: blur(10px);
-            border-radius: 24px;
-            padding: 20px;
-            margin-bottom: 60px;
-            border: 1px solid rgba(255,215,0,0.2);
+            background: rgba(0,0,0,0.4);
+            backdrop-filter: blur(8px);
+            border-radius: 28px;
+            padding: 24px;
+            margin-bottom: 80px;
+            border: 1px solid rgba(255,215,0,0.15);
         }
         .achievement-item {
             display: flex;
             align-items: center;
-            gap: 12px;
-            padding: 12px;
-            border-bottom: 1px solid rgba(255,215,0,0.1);
+            gap: 15px;
+            padding: 14px;
+            border-bottom: 1px solid rgba(255,215,0,0.08);
+            transition: 0.2s;
+        }
+        .achievement-item:hover {
+            background: rgba(255,215,0,0.05);
+            transform: translateX(8px);
         }
         .achievement-item i {
             font-size: 24px;
@@ -198,32 +258,33 @@
         /* ВИТРИНА ПРИВИЛЕГИЙ */
         .shop-grid {
             display: grid;
-            grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+            grid-template-columns: repeat(auto-fill, minmax(320px, 1fr));
             gap: 30px;
-            margin-bottom: 60px;
+            margin-bottom: 80px;
         }
         .product-card {
-            background: rgba(0,0,0,0.5);
-            backdrop-filter: blur(10px);
-            border-radius: 24px;
-            padding: 24px;
+            background: rgba(20,20,30,0.6);
+            backdrop-filter: blur(8px);
+            border-radius: 28px;
+            padding: 28px;
             text-align: center;
-            transition: 0.3s;
-            border: 1px solid rgba(255,215,0,0.2);
+            transition: all 0.3s cubic-bezier(0.2, 0.9, 0.4, 1.1);
+            border: 1px solid rgba(255,215,0,0.15);
         }
         .product-card:hover {
             transform: translateY(-8px);
             border-color: #ffd700;
-            box-shadow: 0 10px 30px rgba(0,0,0,0.5);
+            box-shadow: 0 20px 30px -15px rgba(0,0,0,0.5);
         }
         .product-icon i {
             font-size: 48px;
             color: #ffd700;
-            margin-bottom: 16px;
+            margin-bottom: 20px;
         }
         .product-card h3 {
             font-size: 24px;
             margin-bottom: 12px;
+            font-family: 'Orbitron', monospace;
         }
         .price {
             font-size: 28px;
@@ -237,212 +298,82 @@
             text-align: left;
         }
         .product-card li {
-            padding: 6px 0;
+            padding: 8px 0;
+            display: flex;
+            align-items: center;
+            gap: 10px;
         }
         .product-card li i {
             font-size: 14px;
-            margin-right: 8px;
             color: #ffd700;
+            width: 20px;
         }
         .buy-btn {
-            background: linear-gradient(135deg, #ffd700, #ffaa00);
-            color: #0a0a0a;
-            border: none;
+            background: rgba(255,215,0,0.15);
+            backdrop-filter: blur(8px);
+            color: #ffd700;
+            border: 1px solid rgba(255,215,0,0.3);
             padding: 12px;
             border-radius: 60px;
             font-weight: bold;
             cursor: pointer;
             width: 100%;
             font-family: 'Orbitron', monospace;
-            transition: 0.2s;
+            transition: all 0.3s;
+            margin-top: 20px;
         }
         .buy-btn:hover {
-            background: linear-gradient(135deg, #ffaa00, #ff8800);
-            transform: scale(1.02);
+            background: rgba(255,215,0,0.3);
+            transform: translateY(-2px);
+            border-color: rgba(255,215,0,0.6);
         }
         /* КАЛЕНДАРЬ ИВЕНТОВ */
         .events-grid {
             display: grid;
-            grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
-            gap: 20px;
+            grid-template-columns: repeat(auto-fill, minmax(320px, 1fr));
+            gap: 25px;
         }
         .event-card {
-            background: rgba(0,0,0,0.5);
-            backdrop-filter: blur(10px);
-            border-radius: 20px;
-            padding: 20px;
+            background: rgba(20,20,30,0.6);
+            backdrop-filter: blur(8px);
+            border-radius: 24px;
+            padding: 24px;
             border-left: 4px solid #ffd700;
+            transition: all 0.3s;
+        }
+        .event-card:hover {
+            transform: translateX(8px);
+            background: rgba(255,215,0,0.08);
         }
         .event-date {
             color: #ffd700;
             font-weight: bold;
-            margin-bottom: 8px;
+            margin-bottom: 12px;
         }
         .event-card h4 {
-            font-size: 18px;
-            margin-bottom: 8px;
+            font-size: 20px;
+            margin-bottom: 10px;
         }
         .remind-btn {
             background: transparent;
             border: 1px solid #ffd700;
             color: #ffd700;
-            padding: 8px 16px;
+            padding: 8px 20px;
             border-radius: 40px;
             cursor: pointer;
-            margin-top: 12px;
-            transition: 0.2s;
+            margin-top: 16px;
+            transition: all 0.3s;
         }
         .remind-btn:hover {
             background: #ffd700;
             color: #0a0a0a;
-        }
-        /* МОДАЛЬНОЕ ОКНО */
-        .modal {
-            display: none;
-            position: fixed;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            background: rgba(0,0,0,0.85);
-            backdrop-filter: blur(8px);
-            justify-content: center;
-            align-items: center;
-            z-index: 2000;
-        }
-        .modal-content {
-            background: linear-gradient(135deg, #1a1a1a, #0a0a0a);
-            border-radius: 32px;
-            padding: 32px;
-            width: 450px;
-            max-width: 90%;
-            border: 1px solid rgba(255,215,0,0.3);
-            box-shadow: 0 0 40px rgba(255,215,0,0.2);
-        }
-        .tabs {
-            display: flex;
-            gap: 16px;
-            margin-bottom: 24px;
-            border-bottom: 1px solid rgba(255,215,0,0.3);
-            padding-bottom: 12px;
-        }
-        .tab-btn {
-            background: none;
-            border: none;
-            color: #fff;
-            font-size: 18px;
-            cursor: pointer;
-            padding: 8px 20px;
-            border-radius: 40px;
-            transition: 0.2s;
-            font-family: 'Orbitron', monospace;
-        }
-        .tab-btn.active {
-            background: linear-gradient(135deg, #ffd700, #ffaa00);
-            color: #0a0a0a;
-        }
-        .tab-pane {
-            display: none;
-        }
-        .tab-pane.active {
-            display: block;
-        }
-        .input-group {
-            margin-bottom: 20px;
-            position: relative;
-        }
-        .input-group input {
-            width: 100%;
-            padding: 14px 16px;
-            background: rgba(0,0,0,0.5);
-            border: 1px solid rgba(255,215,0,0.3);
-            border-radius: 60px;
-            color: white;
-            font-size: 16px;
-            transition: 0.2s;
-        }
-        .input-group input:focus {
-            outline: none;
-            border-color: #ffd700;
-            box-shadow: 0 0 10px rgba(255,215,0,0.3);
-        }
-        .input-group .hint {
-            position: absolute;
-            bottom: -20px;
-            left: 16px;
-            font-size: 11px;
-            color: #ffd700;
-            opacity: 0;
-            transition: 0.2s;
-            pointer-events: none;
-        }
-        .input-group input:focus + .hint {
-            opacity: 1;
-            bottom: -18px;
-        }
-        .password-strength {
-            height: 4px;
-            background: #333;
-            border-radius: 4px;
-            margin-top: 8px;
-            transition: 0.2s;
-        }
-        .strength-bar {
-            height: 100%;
-            width: 0%;
-            border-radius: 4px;
-            transition: 0.3s;
-        }
-        .submit-btn {
-            width: 100%;
-            background: linear-gradient(135deg, #ffd700, #ffaa00);
-            color: #0a0a0a;
-            font-family: 'Orbitron', monospace;
-            font-weight: bold;
-            padding: 14px;
-            font-size: 18px;
-            border-radius: 60px;
-            border: none;
-            cursor: pointer;
-            transition: all 0.3s;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            gap: 10px;
-        }
-        .submit-btn .spinner {
-            display: none;
-            width: 20px;
-            height: 20px;
-            border: 2px solid rgba(0,0,0,0.3);
-            border-top: 2px solid #0a0a0a;
-            border-radius: 50%;
-            animation: spin 0.8s linear infinite;
-        }
-        .submit-btn.loading .spinner {
-            display: inline-block;
-        }
-        .submit-btn.loading .btn-text {
-            display: none;
-        }
-        @keyframes spin {
-            0% { transform: rotate(0deg); }
-            100% { transform: rotate(360deg); }
-        }
-        .close-modal {
-            float: right;
-            font-size: 28px;
-            cursor: pointer;
-            color: #ffd700;
-            transition: 0.2s;
-        }
-        .close-modal:hover {
-            color: #fff;
+            transform: translateY(-2px);
         }
         @media (max-width: 768px) {
             .hero h1 { font-size: 48px; }
             .section-title { font-size: 28px; }
             .online-count { font-size: 32px; }
+            .news-grid, .shop-grid, .events-grid { grid-template-columns: 1fr; }
         }
     </style>
 </head>
@@ -455,7 +386,7 @@
     <div class="hero">
         <h1>GRIF LAUNCHER</h1>
         <p>Лучший игровой опыт с привилегиями, поддержкой и активным сообществом</p>
-        <button class="btn-main" id="showAuthBtn">🔥 ВХОД / РЕГИСТРАЦИЯ</button>
+        <button class="btn-main" onclick="alert('Магазин откроется позже')">🔥 КУПИТЬ ДОНАТ</button>
     </div>
 
     <div class="container">
@@ -470,6 +401,14 @@
                 <div class="avatar"><img src="https://ui-avatars.com/api/?background=ffd700&color=000&name=Player5"><span class="tooltip">BuildMaster</span></div>
                 <div class="avatar"><img src="https://ui-avatars.com/api/?background=ffd700&color=000&name=Player6"><span class="tooltip">PvPKing</span></div>
             </div>
+        </div>
+
+        <!-- НОВОСТИ (КАРТОЧКИ) -->
+        <div class="section-title">📰 ПОСЛЕДНИЕ НОВОСТИ</div>
+        <div class="news-grid">
+            <div class="news-card"><img class="news-img" src="https://picsum.photos/id/104/400/250" alt=""><div class="news-content"><div class="news-date">01.06.2026</div><div class="news-title">Обновление 2.0</div><div class="news-desc">Добавлены новые мини-игры и уникальные привилегии для лидеров.</div></div></div>
+            <div class="news-card"><img class="news-img" src="https://picsum.photos/id/106/400/250" alt=""><div class="news-content"><div class="news-date">25.05.2026</div><div class="news-title">Новый сезон</div><div class="news-desc">Сезонные награды, специальные ивенты и эксклюзивные скины.</div></div></div>
+            <div class="news-card"><img class="news-img" src="https://picsum.photos/id/107/400/250" alt=""><div class="news-content"><div class="news-date">20.05.2026</div><div class="news-title">Розыгрыш привилегий</div><div class="news-desc">Участвуй в розыгрыше VIP-статусов в нашем Discord-канале.</div></div></div>
         </div>
 
         <!-- СВЕЖИЕ ПОБЕДЫ -->
@@ -498,103 +437,9 @@
         </div>
     </div>
 
-    <!-- МОДАЛЬНОЕ ОКНО ВХОДА/РЕГИСТРАЦИИ -->
-    <div id="authModal" class="modal">
-        <div class="modal-content">
-            <span class="close-modal" id="closeModalBtn">&times;</span>
-            <div class="tabs">
-                <button class="tab-btn active" data-tab="login">ВХОД</button>
-                <button class="tab-btn" data-tab="register">РЕГИСТРАЦИЯ</button>
-            </div>
-            
-            <!-- ВХОД -->
-            <div id="loginPane" class="tab-pane active">
-                <div class="input-group">
-                    <input type="text" id="loginUsername" placeholder="Логин">
-                    <div class="hint">Только латинские буквы и цифры</div>
-                </div>
-                <div class="input-group">
-                    <input type="password" id="loginPassword" placeholder="Пароль">
-                </div>
-                <button class="submit-btn" id="doLoginBtn"><span class="btn-text">ВОЙТИ</span><span class="spinner"></span></button>
-            </div>
-            
-            <!-- РЕГИСТРАЦИЯ -->
-            <div id="registerPane" class="tab-pane">
-                <div class="input-group">
-                    <input type="text" id="regUsername" placeholder="Логин">
-                    <div class="hint">Только латинские буквы и цифры</div>
-                </div>
-                <div class="input-group">
-                    <input type="email" id="regEmail" placeholder="Email">
-                </div>
-                <div class="input-group">
-                    <input type="password" id="regPassword" placeholder="Пароль">
-                    <div class="password-strength"><div class="strength-bar" id="strengthBar"></div></div>
-                </div>
-                <button class="submit-btn" id="doRegisterBtn"><span class="btn-text">ЗАРЕГИСТРИРОВАТЬСЯ</span><span class="spinner"></span></button>
-            </div>
-        </div>
-    </div>
-
     <script>
-        // МОДАЛКА
-        const modal = document.getElementById('authModal');
-        const showBtn = document.getElementById('showAuthBtn');
-        const closeBtn = document.getElementById('closeModalBtn');
-        
-        showBtn.onclick = () => modal.style.display = 'flex';
-        closeBtn.onclick = () => modal.style.display = 'none';
-        window.onclick = (e) => { if (e.target == modal) modal.style.display = 'none'; };
-        
-        // ВКЛАДКИ
-        const tabs = document.querySelectorAll('.tab-btn');
-        const panes = {
-            login: document.getElementById('loginPane'),
-            register: document.getElementById('registerPane')
-        };
-        tabs.forEach(tab => {
-            tab.onclick = () => {
-                tabs.forEach(t => t.classList.remove('active'));
-                tab.classList.add('active');
-                const target = tab.dataset.tab;
-                Object.values(panes).forEach(p => p.classList.remove('active'));
-                panes[target].classList.add('active');
-            };
-        });
-        
-        // ИНДИКАТОР СЛОЖНОСТИ ПАРОЛЯ
-        const passInput = document.getElementById('regPassword');
-        const strengthBar = document.getElementById('strengthBar');
-        if (passInput) {
-            passInput.addEventListener('input', () => {
-                const val = passInput.value;
-                let strength = 0;
-                if (val.length >= 6) strength += 20;
-                if (val.match(/[a-z]/)) strength += 20;
-                if (val.match(/[A-Z]/)) strength += 20;
-                if (val.match(/[0-9]/)) strength += 20;
-                if (val.match(/[^a-zA-Z0-9]/)) strength += 20;
-                strengthBar.style.width = strength + '%';
-                if (strength < 40) strengthBar.style.background = '#ff4444';
-                else if (strength < 70) strengthBar.style.background = '#ffaa00';
-                else strengthBar.style.background = '#22c55e';
-            });
-        }
-        
-        // АНИМАЦИЯ КНОПОК
-        function animateButton(btn) {
-            btn.classList.add('loading');
-            setTimeout(() => btn.classList.remove('loading'), 1500);
-        }
-        
-        const loginBtn = document.getElementById('doLoginBtn');
-        const registerBtn = document.getElementById('doRegisterBtn');
-        if (loginBtn) loginBtn.onclick = () => { animateButton(loginBtn); alert('Демо-вход (Firebase будет позже)'); };
-        if (registerBtn) registerBtn.onclick = () => { animateButton(registerBtn); alert('Демо-регистрация (Firebase будет позже)'); };
-        
-        // АНИМАЦИЯ ПРИ СКРОЛЛЕ
-        const cards = document.querySelectorAll('.product-card, .event-card, .achievement-item, .avatar');
+        // АНИМАЦИЯ ПОЯВЛЕНИЯ ПРИ СКРОЛЛЕ
+        const animatedElements = document.querySelectorAll('.news-card, .product-card, .event-card, .achievement-item, .avatar');
         const observer = new IntersectionObserver((entries) => {
             entries.forEach(entry => {
                 if (entry.isIntersecting) {
@@ -602,12 +447,13 @@
                     entry.target.style.transform = 'translateY(0)';
                 }
             });
-        }, { threshold: 0.1 });
-        cards.forEach(card => {
-            card.style.opacity = '0';
-            card.style.transform = 'translateY(20px)';
-            card.style.transition = '0.4s';
-            observer.observe(card);
+        }, { threshold: 0.1, rootMargin: '0px 0px -50px 0px' });
+        
+        animatedElements.forEach(el => {
+            el.style.opacity = '0';
+            el.style.transform = 'translateY(25px)';
+            el.style.transition = 'opacity 0.6s cubic-bezier(0.2, 0.9, 0.4, 1.1), transform 0.6s cubic-bezier(0.2, 0.9, 0.4, 1.1)';
+            observer.observe(el);
         });
     </script>
 </body>
