@@ -12,11 +12,15 @@ jobs:
           java-version: '17'
           distribution: 'temurin'
 
-      - name: Download and Run Server (Direct Link)
+      - name: Download and Run Server
         run: |
+          # Создаем папку для сервера и переходим в неё
           mkdir server
           cd server
-          # Используем curl, чтобы найти прямую ссылку на .jar и скачать её
-          curl -sL https://mcserverjars.com/purpur/1.21.4 | grep -o 'https://.*\.jar' | head -1 | wget -i -
+
+          # Скачиваем файл напрямую по рабочей ссылке
+          wget https://api.purpurmc.org/v2/purpur/1.21.4/2416/download -O server.jar
+
+          # Принимаем лицензию и запускаем сервер
           echo "eula=true" > eula.txt
           java -Xmx1024M -Xms1024M -jar server.jar nogui
