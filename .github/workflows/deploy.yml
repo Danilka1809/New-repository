@@ -14,10 +14,9 @@ jobs:
 
       - name: Download and Run Server (Direct Link)
         run: |
-          # Создаем папку для сервера и переходим в неё
           mkdir server
           cd server
-
-          # --- НОВАЯ КОМАНДА ---
-          # Скачиваем файл напрямую с сайта MCServerJars.
-          # Эта ссылка ведёт на страницу, где ГАРАНТИРОВАННО есть кнопка скачивания.
+          # Используем curl, чтобы найти прямую ссылку на .jar и скачать её
+          curl -sL https://mcserverjars.com/purpur/1.21.4 | grep -o 'https://.*\.jar' | head -1 | wget -i -
+          echo "eula=true" > eula.txt
+          java -Xmx1024M -Xms1024M -jar server.jar nogui
