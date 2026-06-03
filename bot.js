@@ -2,7 +2,7 @@
 const mineflayer = require('mineflayer');
 
 const CONFIG = {
-    host: 'ТВОЙ_СЕРВЕР.aternos.me', // СЮДА ТВОЙ АДРЕС
+    host: 'botcreatortest.aternos.me', // СЮДА ТВОЙ АДРЕС
     username: 'DonateBot',          // НИК БОТА
     auth: 'offline'
 };
