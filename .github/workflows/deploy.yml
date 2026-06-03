@@ -1,7 +1,7 @@
 name: Запуск Minecraft
 
 # Этот workflow будет запускаться при каждой загрузке файлов
-on: [push]
+on: [workflow_dispatch]
 
 jobs:
   build-and-run-server:
