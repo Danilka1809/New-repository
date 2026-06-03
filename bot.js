@@ -4,9 +4,9 @@ const express = require('express');
 // ========== НАСТРОЙКИ (меняешь здесь) ==========
 const CONFIG = {
     minecraft: {
-        host: 'ТВОЙ_СЕРВЕР.aternos.me',  // IP Aternos сервера
-        port: 25565,
-        username: 'DonateBot',           // ник бота
+        host: 'botcreatortest.aternos.me',  // IP Aternos сервера
+        port: 23209,
+        username: 'NpcBot1',           // ник бота
         version: '1.20.1',               // версия Minecraft
         auth: 'offline'                  // для пиратки
     },
