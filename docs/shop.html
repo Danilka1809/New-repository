@@ -7,30 +7,29 @@
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
     <link rel="stylesheet" href="style.css">
+    <script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-app-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-auth-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore-compat.js"></script>
 </head>
 <body>
     <div class="sidebar">
         <div class="sidebar-header">GRIF LAUNCHER</div>
         <div class="sidebar-menu">
             <a href="index.html" class="menu-item"><i class="fas fa-home"></i> Главная</a>
-            <a href="chat.html" class="menu-item"><i class="fas fa-comments"></i> Чаты</a>
             <a href="shop.html" class="menu-item active"><i class="fas fa-store"></i> Магазин</a>
+            <a href="chat.html" class="menu-item"><i class="fas fa-comments"></i> Чаты</a>
             <a href="profile.html" class="menu-item"><i class="fas fa-user"></i> Профиль</a>
             <a href="wiki.html" class="menu-item"><i class="fas fa-book"></i> База знаний</a>
         </div>
         <div class="sidebar-footer">
+            <div id="authStatus"></div>
             <button id="logoutBtn" class="logout-btn"><i class="fas fa-sign-out-alt"></i> Выйти</button>
         </div>
     </div>
 
     <div class="main-content">
-        <div class="top-bar"><div class="user-info"><img id="userAvatar" src="https://ui-avatars.com/api/?background=ff6b6b&color=fff"><span id="userName">Гость</span></div></div>
-        <div class="shop-header"><h1>✨ ПРИВИЛЕГИИ</h1></div>
-        <div class="shop-grid">
-            <div class="product-card"><div class="product-icon"><i class="fas fa-crown"></i></div><h3>VIP Стандарт</h3><div class="price">150 ₽</div><div class="duration">10 дней</div><ul><li><i class="fas fa-check-circle"></i> Цветной ник</li><li><i class="fas fa-check-circle"></i> Команда /kit</li><li><i class="fas fa-check-circle"></i> Доступ к /fly</li></ul><button class="buy-btn" data-product="vip" data-price="150">Купить</button></div>
-            <div class="product-card"><div class="product-icon"><i class="fas fa-gem"></i></div><h3>VIP+ Продвинутый</h3><div class="price">350 ₽</div><div class="duration">30 дней</div><ul><li><i class="fas fa-check-circle"></i> Всё из VIP</li><li><i class="fas fa-check-circle"></i> VIP-чат</li><li><i class="fas fa-check-circle"></i> Команда /heal</li></ul><button class="buy-btn" data-product="vip_plus" data-price="350">Купить</button></div>
-            <div class="product-card"><div class="product-icon"><i class="fas fa-star"></i></div><h3>MVP Вечный</h3><div class="price">1000 ₽</div><div class="duration">Навсегда</div><ul><li><i class="fas fa-check-circle"></i> Всё из VIP+</li><li><i class="fas fa-check-circle"></i> Префикс [KING]</li><li><i class="fas fa-check-circle"></i> Команда /god</li></ul><button class="buy-btn" data-product="mvp" data-price="1000">Купить</button></div>
-        </div>
+        <div class="shop-header"><h1>✨ МАГАЗИН ПРИВИЛЕГИЙ</h1></div>
+        <div class="shop-grid" id="shopGrid"></div>
     </div>
     <script src="script.js"></script>
 </body>
