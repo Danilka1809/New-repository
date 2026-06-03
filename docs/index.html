@@ -6,40 +6,9 @@
     <title>GrifLauncher | Главная</title>
     <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;500;600;700;800;900&family=Montserrat:wght@400;500;600;700&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    <link rel="stylesheet" href="global.css">
     <style>
-        * {
-            margin: 0;
-            padding: 0;
-            box-sizing: border-box;
-        }
-        body {
-            background: linear-gradient(135deg, #0a0a0a, #121212);
-            font-family: 'Montserrat', sans-serif;
-            color: #e0e0e0;
-            overflow-x: hidden;
-            line-height: 1.6;
-        }
-        /* ВИДЕО ФОН */
-        .hero-video {
-            position: fixed;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            object-fit: cover;
-            z-index: -2;
-            opacity: 0.5;
-        }
-        .hero-overlay {
-            position: fixed;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            background: linear-gradient(135deg, rgba(0,0,0,0.8), rgba(0,0,0,0.6));
-            z-index: -1;
-        }
-        /* ГЛАВНЫЙ БАННЕР */
+        /* ДОПОЛНИТЕЛЬНЫЕ СТИЛИ ТОЛЬКО ДЛЯ ГЛАВНОЙ */
         .hero {
             height: 100vh;
             display: flex;
@@ -50,22 +19,18 @@
             padding: 20px;
         }
         .hero h1 {
-            font-family: 'Orbitron', monospace;
             font-size: 80px;
             font-weight: 900;
-            letter-spacing: 4px;
             background: linear-gradient(135deg, #fff, #ffd700);
             -webkit-background-clip: text;
             background-clip: text;
             color: transparent;
             text-shadow: 0 0 30px rgba(255,215,0,0.2);
-            animation: fadeInUp 0.8s ease-out;
         }
         .hero p {
             font-size: 20px;
             margin-top: 20px;
             color: rgba(255,255,255,0.8);
-            animation: fadeInUp 0.8s ease-out 0.2s both;
         }
         .hero .btn-main {
             margin-top: 40px;
@@ -73,137 +38,37 @@
             backdrop-filter: blur(12px);
             color: #ffd700;
             font-family: 'Orbitron', monospace;
-            font-weight: bold;
             padding: 16px 48px;
             font-size: 20px;
             border-radius: 60px;
-            text-decoration: none;
-            display: inline-block;
-            transition: all 0.3s cubic-bezier(0.2, 0.9, 0.4, 1.1);
-            box-shadow: 0 4px 15px rgba(0,0,0,0.3);
             border: 1px solid rgba(255,215,0,0.3);
+            transition: all 0.3s;
             cursor: pointer;
         }
         .hero .btn-main:hover {
             transform: translateY(-3px) scale(1.02);
             background: rgba(255,215,0,0.3);
-            box-shadow: 0 8px 25px rgba(0,0,0,0.4);
-            border-color: rgba(255,215,0,0.6);
-        }
-        @keyframes fadeInUp {
-            from { opacity: 0; transform: translateY(30px); }
-            to { opacity: 1; transform: translateY(0); }
-        }
-        /* КОНТЕЙНЕР */
-        .container {
-            max-width: 1400px;
-            margin: 0 auto;
-            padding: 80px 20px;
-        }
-        .section-title {
-            font-family: 'Orbitron', monospace;
-            font-size: 36px;
-            text-align: center;
-            margin-bottom: 50px;
-            background: linear-gradient(135deg, #fff, #ffd700);
-            -webkit-background-clip: text;
-            background-clip: text;
-            color: transparent;
-            letter-spacing: 2px;
-            position: relative;
-            display: inline-block;
-            width: 100%;
-        }
-        /* НОВОСТИ (КАРТОЧКИ) */
-        .news-grid {
-            display: grid;
-            grid-template-columns: repeat(auto-fill, minmax(350px, 1fr));
-            gap: 30px;
-            margin-bottom: 80px;
-        }
-        .news-card {
-            background: rgba(20,20,30,0.6);
-            backdrop-filter: blur(8px);
-            border-radius: 24px;
-            overflow: hidden;
-            transition: all 0.3s cubic-bezier(0.2, 0.9, 0.4, 1.1);
-            border: 1px solid rgba(255,215,0,0.15);
-        }
-        .news-card:hover {
-            transform: translateY(-8px);
-            box-shadow: 0 20px 30px -15px rgba(0,0,0,0.5);
-            border-color: rgba(255,215,0,0.4);
-        }
-        .news-img {
-            width: 100%;
-            height: 200px;
-            object-fit: cover;
-            transition: 0.3s;
-        }
-        .news-card:hover .news-img {
-            transform: scale(1.02);
-        }
-        .news-content {
-            padding: 20px;
-        }
-        .news-date {
-            font-size: 12px;
-            color: #ffd700;
-            margin-bottom: 8px;
-        }
-        .news-title {
-            font-size: 20px;
-            font-weight: bold;
-            margin-bottom: 12px;
-            font-family: 'Orbitron', monospace;
-        }
-        .news-desc {
-            font-size: 14px;
-            color: #bbb;
-            line-height: 1.5;
-        }
-        /* ИГРОКИ ОНЛАЙН */
-        .online-players {
-            text-align: center;
-            margin-bottom: 80px;
-        }
-        .online-count {
-            font-size: 48px;
-            font-weight: bold;
-            background: linear-gradient(135deg, #fff, #ffd700);
-            -webkit-background-clip: text;
-            background-clip: text;
-            color: transparent;
-            font-family: 'Orbitron', monospace;
-            margin-bottom: 30px;
         }
         .avatars-grid {
             display: flex;
             justify-content: center;
             gap: 20px;
             flex-wrap: wrap;
+            margin-top: 30px;
         }
         .avatar {
             position: relative;
             width: 80px;
             height: 80px;
             border-radius: 50%;
-            background: #1a1a1a;
             border: 2px solid #ffd700;
             overflow: hidden;
-            transition: all 0.2s;
+            transition: 0.2s;
             cursor: pointer;
             animation: pulse 2s infinite;
         }
-        .avatar img {
-            width: 100%;
-            height: 100%;
-            object-fit: cover;
-        }
-        .avatar:hover {
-            transform: scale(1.1);
-            border-color: #fff;
-        }
+        .avatar img { width: 100%; height: 100%; object-fit: cover; }
+        .avatar:hover { transform: scale(1.1); border-color: #fff; }
         .avatar .tooltip {
             position: absolute;
             bottom: -30px;
@@ -217,25 +82,60 @@
             white-space: nowrap;
             opacity: 0;
             transition: 0.2s;
-            pointer-events: none;
         }
-        .avatar:hover .tooltip {
-            opacity: 1;
-            bottom: -25px;
-        }
+        .avatar:hover .tooltip { opacity: 1; bottom: -25px; }
         @keyframes pulse {
             0% { box-shadow: 0 0 0 0 rgba(255,215,0,0.4); }
             70% { box-shadow: 0 0 0 10px rgba(255,215,0,0); }
             100% { box-shadow: 0 0 0 0 rgba(255,215,0,0); }
         }
-        /* ЛЕНТА ПОБЕД */
+        .news-grid, .shop-grid, .events-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(320px, 1fr));
+            gap: 30px;
+            margin-bottom: 60px;
+        }
+        .news-card, .product-card, .event-card {
+            background: rgba(20,20,30,0.6);
+            backdrop-filter: blur(8px);
+            border-radius: 24px;
+            overflow: hidden;
+            transition: 0.3s;
+            border: 1px solid rgba(255,215,0,0.15);
+        }
+        .news-card:hover, .product-card:hover, .event-card:hover {
+            transform: translateY(-8px);
+            border-color: #ffd700;
+        }
+        .news-img { width: 100%; height: 200px; object-fit: cover; }
+        .news-content { padding: 20px; }
+        .news-date { color: #ffd700; font-size: 12px; margin-bottom: 8px; }
+        .news-title { font-size: 20px; font-weight: bold; margin-bottom: 12px; }
+        .product-icon i { font-size: 48px; color: #ffd700; margin-bottom: 20px; display: block; }
+        .price { font-size: 28px; font-weight: bold; color: #ffd700; margin: 16px 0; }
+        .product-card ul { list-style: none; margin: 20px 0; text-align: left; }
+        .product-card li { padding: 8px 0; display: flex; align-items: center; gap: 10px; }
+        .buy-btn, .remind-btn {
+            background: rgba(255,215,0,0.15);
+            border: 1px solid rgba(255,215,0,0.3);
+            color: #ffd700;
+            padding: 10px;
+            border-radius: 60px;
+            cursor: pointer;
+            width: 100%;
+            font-weight: bold;
+            transition: 0.3s;
+        }
+        .buy-btn:hover, .remind-btn:hover {
+            background: rgba(255,215,0,0.3);
+            transform: translateY(-2px);
+        }
         .achievements-list {
             background: rgba(0,0,0,0.4);
             backdrop-filter: blur(8px);
             border-radius: 28px;
             padding: 24px;
-            margin-bottom: 80px;
-            border: 1px solid rgba(255,215,0,0.15);
+            margin-bottom: 60px;
         }
         .achievement-item {
             display: flex;
@@ -243,156 +143,52 @@
             gap: 15px;
             padding: 14px;
             border-bottom: 1px solid rgba(255,215,0,0.08);
-            transition: 0.2s;
         }
-        .achievement-item:hover {
-            background: rgba(255,215,0,0.05);
-            transform: translateX(8px);
-        }
-        .achievement-item i {
-            font-size: 24px;
-            color: #ffd700;
-        }
-        .achievement-item .vip { color: #ffd700; font-weight: bold; }
-        .achievement-item .mvp { color: #00bfff; font-weight: bold; }
-        /* ВИТРИНА ПРИВИЛЕГИЙ */
-        .shop-grid {
-            display: grid;
-            grid-template-columns: repeat(auto-fill, minmax(320px, 1fr));
-            gap: 30px;
-            margin-bottom: 80px;
-        }
-        .product-card {
-            background: rgba(20,20,30,0.6);
-            backdrop-filter: blur(8px);
-            border-radius: 28px;
-            padding: 28px;
-            text-align: center;
-            transition: all 0.3s cubic-bezier(0.2, 0.9, 0.4, 1.1);
-            border: 1px solid rgba(255,215,0,0.15);
-        }
-        .product-card:hover {
-            transform: translateY(-8px);
-            border-color: #ffd700;
-            box-shadow: 0 20px 30px -15px rgba(0,0,0,0.5);
-        }
-        .product-icon i {
-            font-size: 48px;
-            color: #ffd700;
-            margin-bottom: 20px;
-        }
-        .product-card h3 {
-            font-size: 24px;
-            margin-bottom: 12px;
-            font-family: 'Orbitron', monospace;
-        }
-        .price {
-            font-size: 28px;
-            font-weight: bold;
-            color: #ffd700;
-            margin: 16px 0;
-        }
-        .product-card ul {
-            list-style: none;
-            margin: 20px 0;
-            text-align: left;
-        }
-        .product-card li {
-            padding: 8px 0;
-            display: flex;
-            align-items: center;
-            gap: 10px;
-        }
-        .product-card li i {
-            font-size: 14px;
-            color: #ffd700;
-            width: 20px;
-        }
-        .buy-btn {
-            background: rgba(255,215,0,0.15);
-            backdrop-filter: blur(8px);
-            color: #ffd700;
-            border: 1px solid rgba(255,215,0,0.3);
-            padding: 12px;
-            border-radius: 60px;
-            font-weight: bold;
-            cursor: pointer;
-            width: 100%;
-            font-family: 'Orbitron', monospace;
-            transition: all 0.3s;
-            margin-top: 20px;
-        }
-        .buy-btn:hover {
-            background: rgba(255,215,0,0.3);
-            transform: translateY(-2px);
-            border-color: rgba(255,215,0,0.6);
-        }
-        /* КАЛЕНДАРЬ ИВЕНТОВ */
-        .events-grid {
-            display: grid;
-            grid-template-columns: repeat(auto-fill, minmax(320px, 1fr));
-            gap: 25px;
-        }
-        .event-card {
-            background: rgba(20,20,30,0.6);
-            backdrop-filter: blur(8px);
-            border-radius: 24px;
-            padding: 24px;
-            border-left: 4px solid #ffd700;
-            transition: all 0.3s;
-        }
-        .event-card:hover {
-            transform: translateX(8px);
-            background: rgba(255,215,0,0.08);
-        }
-        .event-date {
-            color: #ffd700;
-            font-weight: bold;
-            margin-bottom: 12px;
-        }
-        .event-card h4 {
-            font-size: 20px;
-            margin-bottom: 10px;
-        }
-        .remind-btn {
-            background: transparent;
-            border: 1px solid #ffd700;
-            color: #ffd700;
-            padding: 8px 20px;
-            border-radius: 40px;
-            cursor: pointer;
-            margin-top: 16px;
-            transition: all 0.3s;
-        }
-        .remind-btn:hover {
-            background: #ffd700;
-            color: #0a0a0a;
-            transform: translateY(-2px);
-        }
+        .achievement-item i { color: #ffd700; font-size: 24px; }
+        .vip { color: #ffd700; font-weight: bold; }
+        .mvp { color: #00bfff; font-weight: bold; }
         @media (max-width: 768px) {
             .hero h1 { font-size: 48px; }
-            .section-title { font-size: 28px; }
-            .online-count { font-size: 32px; }
-            .news-grid, .shop-grid, .events-grid { grid-template-columns: 1fr; }
+            .hero p { font-size: 16px; }
         }
     </style>
 </head>
 <body>
-    <video class="hero-video" autoplay loop muted playsinline>
+    <video class="video-background" autoplay loop muted playsinline>
         <source src="https://cdn.pixabay.com/video/2022/11/20/140315-774259399_large.mp4" type="video/mp4">
     </video>
-    <div class="hero-overlay"></div>
+    <div class="video-overlay"></div>
 
-    <div class="hero">
-        <h1>GRIF LAUNCHER</h1>
-        <p>Лучший игровой опыт с привилегиями, поддержкой и активным сообществом</p>
-        <button class="btn-main" onclick="alert('Магазин откроется позже')">🔥 КУПИТЬ ДОНАТ</button>
+    <div class="sidebar">
+        <div class="sidebar-header">GRIF LAUNCHER</div>
+        <div class="sidebar-menu">
+            <a href="index.html" class="menu-item active"><i class="fas fa-home"></i> Главная</a>
+            <a href="shop.html" class="menu-item"><i class="fas fa-store"></i> Магазин</a>
+            <a href="profile.html" class="menu-item"><i class="fas fa-user"></i> Профиль</a>
+        </div>
+        <div class="sidebar-footer">
+            <div id="authStatus" class="auth-status">Гость</div>
+            <button id="logoutBtn" class="logout-btn"><i class="fas fa-sign-out-alt"></i> Выйти</button>
+        </div>
     </div>
 
-    <div class="container">
+    <div class="main-content">
+        <div class="top-bar">
+            <div class="user-info" id="userInfo">
+                <img id="userAvatar" src="https://ui-avatars.com/api/?background=ffd700&color=000&name=Гость">
+                <span id="userName">Гость</span>
+            </div>
+        </div>
+
+        <div class="hero">
+            <h1>GRIF LAUNCHER</h1>
+            <p>Лучший игровой опыт с привилегиями, поддержкой и активным сообществом</p>
+            <button class="btn-main" id="showAuthBtn">🔥 КУПИТЬ ДОНАТ</button>
+        </div>
+
         <!-- ИГРОКИ ОНЛАЙН -->
-        <div class="online-players">
-            <div class="online-count" id="onlineCount">128 ИГРОКОВ ОНЛАЙН</div>
+        <div class="online-players" style="text-align: center; margin-bottom: 60px;">
+            <div class="online-count" style="font-size: 48px; font-weight: bold; background: linear-gradient(135deg, #fff, #ffd700); -webkit-background-clip: text; background-clip: text; color: transparent;">128 ИГРОКОВ ОНЛАЙН</div>
             <div class="avatars-grid">
                 <div class="avatar"><img src="https://ui-avatars.com/api/?background=ffd700&color=000&name=Player1"><span class="tooltip">GrifMcPro</span></div>
                 <div class="avatar"><img src="https://ui-avatars.com/api/?background=ffd700&color=000&name=Player2"><span class="tooltip">DarkKnight</span></div>
@@ -403,43 +199,43 @@
             </div>
         </div>
 
-        <!-- НОВОСТИ (КАРТОЧКИ) -->
+        <!-- НОВОСТИ -->
         <div class="section-title">📰 ПОСЛЕДНИЕ НОВОСТИ</div>
         <div class="news-grid">
-            <div class="news-card"><img class="news-img" src="https://picsum.photos/id/104/400/250" alt=""><div class="news-content"><div class="news-date">01.06.2026</div><div class="news-title">Обновление 2.0</div><div class="news-desc">Добавлены новые мини-игры и уникальные привилегии для лидеров.</div></div></div>
-            <div class="news-card"><img class="news-img" src="https://picsum.photos/id/106/400/250" alt=""><div class="news-content"><div class="news-date">25.05.2026</div><div class="news-title">Новый сезон</div><div class="news-desc">Сезонные награды, специальные ивенты и эксклюзивные скины.</div></div></div>
-            <div class="news-card"><img class="news-img" src="https://picsum.photos/id/107/400/250" alt=""><div class="news-content"><div class="news-date">20.05.2026</div><div class="news-title">Розыгрыш привилегий</div><div class="news-desc">Участвуй в розыгрыше VIP-статусов в нашем Discord-канале.</div></div></div>
+            <div class="news-card"><img class="news-img" src="https://picsum.photos/id/104/400/250"><div class="news-content"><div class="news-date">01.06.2026</div><div class="news-title">Обновление 2.0</div><div class="news-desc">Новые мини-игры и уникальные привилегии</div></div></div>
+            <div class="news-card"><img class="news-img" src="https://picsum.photos/id/106/400/250"><div class="news-content"><div class="news-date">25.05.2026</div><div class="news-title">Новый сезон</div><div class="news-desc">Сезонные награды и эксклюзивные скины</div></div></div>
+            <div class="news-card"><img class="news-img" src="https://picsum.photos/id/107/400/250"><div class="news-content"><div class="news-date">20.05.2026</div><div class="news-title">Розыгрыш VIP</div><div class="news-desc">Участвуй в розыгрыше VIP-статусов</div></div></div>
         </div>
 
         <!-- СВЕЖИЕ ПОБЕДЫ -->
         <div class="section-title">🏆 СВЕЖИЕ ПОБЕДЫ</div>
         <div class="achievements-list">
             <div class="achievement-item"><i class="fas fa-trophy"></i> Игрок <span class="vip">GrifMcPro</span> победил в дуэли! 👑</div>
-            <div class="achievement-item"><i class="fas fa-crown"></i> Клан <span class="mvp">Dragons</span> захватил новую территорию! 🏰</div>
+            <div class="achievement-item"><i class="fas fa-crown"></i> Клан <span class="mvp">Dragons</span> захватил территорию! 🏰</div>
             <div class="achievement-item"><i class="fas fa-star"></i> Игрок <span class="vip">PlayerPro</span> получил достижение "Мастер крафта"! ⭐</div>
-            <div class="achievement-item"><i class="fas fa-gem"></i> Игрок <span class="mvp">DarkKnight</span> купил привилегию MVP! 💎</div>
+            <div class="achievement-item"><i class="fas fa-gem"></i> Игрок <span class="mvp">DarkKnight</span> купил MVP! 💎</div>
         </div>
 
         <!-- ТОПОВЫЕ ПРИВИЛЕГИИ -->
         <div class="section-title">⚡ СТАНЬ ЛУЧШИМ</div>
         <div class="shop-grid">
-            <div class="product-card"><div class="product-icon"><i class="fas fa-crown"></i></div><h3>VIP Стандарт</h3><div class="price">150 ₽</div><ul><li><i class="fas fa-check-circle"></i> Цветной ник</li><li><i class="fas fa-check-circle"></i> Команда /kit</li><li><i class="fas fa-check-circle"></i> Доступ к /fly</li></ul><button class="buy-btn" onclick="alert('Покупка VIP')">КУПИТЬ ЗА 150 ₽</button></div>
-            <div class="product-card"><div class="product-icon"><i class="fas fa-gem"></i></div><h3>VIP+ Продвинутый</h3><div class="price">350 ₽</div><ul><li><i class="fas fa-check-circle"></i> Всё из VIP</li><li><i class="fas fa-check-circle"></i> VIP-чат</li><li><i class="fas fa-check-circle"></i> Команда /heal</li></ul><button class="buy-btn" onclick="alert('Покупка VIP+')">КУПИТЬ ЗА 350 ₽</button></div>
-            <div class="product-card"><div class="product-icon"><i class="fas fa-star"></i></div><h3>MVP Вечный</h3><div class="price">1000 ₽</div><ul><li><i class="fas fa-check-circle"></i> Всё из VIP+</li><li><i class="fas fa-check-circle"></i> Префикс [KING]</li><li><i class="fas fa-check-circle"></i> Команда /god</li></ul><button class="buy-btn" onclick="alert('Покупка MVP')">КУПИТЬ ЗА 1000 ₽</button></div>
+            <div class="product-card"><div class="product-icon"><i class="fas fa-crown"></i></div><h3>VIP Стандарт</h3><div class="price">150 ₽</div><ul><li><i class="fas fa-check-circle"></i> Цветной ник</li><li><i class="fas fa-check-circle"></i> /kit</li><li><i class="fas fa-check-circle"></i> /fly</li></ul><button class="buy-btn">КУПИТЬ</button></div>
+            <div class="product-card"><div class="product-icon"><i class="fas fa-gem"></i></div><h3>VIP+ Продвинутый</h3><div class="price">350 ₽</div><ul><li><i class="fas fa-check-circle"></i> Всё из VIP</li><li><i class="fas fa-check-circle"></i> VIP-чат</li><li><i class="fas fa-check-circle"></i> /heal</li></ul><button class="buy-btn">КУПИТЬ</button></div>
+            <div class="product-card"><div class="product-icon"><i class="fas fa-star"></i></div><h3>MVP Вечный</h3><div class="price">1000 ₽</div><ul><li><i class="fas fa-check-circle"></i> Всё из VIP+</li><li><i class="fas fa-check-circle"></i> Префикс [KING]</li><li><i class="fas fa-check-circle"></i> /god</li></ul><button class="buy-btn">КУПИТЬ</button></div>
         </div>
 
         <!-- КАЛЕНДАРЬ ИВЕНТОВ -->
         <div class="section-title">📅 СОБЫТИЯ</div>
         <div class="events-grid">
-            <div class="event-card"><div class="event-date">15 июня, 20:00</div><h4>🔥 Турнир на выживание</h4><p>Призовой фонд: 500 000 GM</p><button class="remind-btn" onclick="alert('Напоминание установлено!')">📢 НАПОМНИТЬ МНЕ</button></div>
-            <div class="event-card"><div class="event-date">20 июня, 19:00</div><h4>🏰 Клановая война</h4><p>Сброс рейтинга, новый сезон</p><button class="remind-btn" onclick="alert('Напоминание установлено!')">📢 НАПОМНИТЬ МНЕ</button></div>
-            <div class="event-card"><div class="event-date">25 июня, 18:00</div><h4>✨ Охота на дракона</h4><p>Эксклюзивные награды</p><button class="remind-btn" onclick="alert('Напоминание установлено!')">📢 НАПОМНИТЬ МНЕ</button></div>
+            <div class="event-card"><div class="event-date">15 июня, 20:00</div><h4>🔥 Турнир на выживание</h4><p>Призовой фонд: 500 000 GM</p><button class="remind-btn">НАПОМНИТЬ</button></div>
+            <div class="event-card"><div class="event-date">20 июня, 19:00</div><h4>🏰 Клановая война</h4><p>Сброс рейтинга</p><button class="remind-btn">НАПОМНИТЬ</button></div>
+            <div class="event-card"><div class="event-date">25 июня, 18:00</div><h4>✨ Охота на дракона</h4><p>Эксклюзивные награды</p><button class="remind-btn">НАПОМНИТЬ</button></div>
         </div>
     </div>
 
     <script>
-        // АНИМАЦИЯ ПОЯВЛЕНИЯ ПРИ СКРОЛЛЕ
-        const animatedElements = document.querySelectorAll('.news-card, .product-card, .event-card, .achievement-item, .avatar');
+        // АНИМАЦИЯ ПОЯВЛЕНИЯ
+        const cards = document.querySelectorAll('.news-card, .product-card, .event-card, .achievement-item, .avatar');
         const observer = new IntersectionObserver((entries) => {
             entries.forEach(entry => {
                 if (entry.isIntersecting) {
@@ -447,14 +243,19 @@
                     entry.target.style.transform = 'translateY(0)';
                 }
             });
-        }, { threshold: 0.1, rootMargin: '0px 0px -50px 0px' });
-        
-        animatedElements.forEach(el => {
+        }, { threshold: 0.1 });
+        cards.forEach(el => {
             el.style.opacity = '0';
             el.style.transform = 'translateY(25px)';
-            el.style.transition = 'opacity 0.6s cubic-bezier(0.2, 0.9, 0.4, 1.1), transform 0.6s cubic-bezier(0.2, 0.9, 0.4, 1.1)';
+            el.style.transition = '0.5s';
             observer.observe(el);
         });
+        
+        // КНОПКИ (ДЕМО)
+        document.querySelectorAll('.buy-btn, .remind-btn').forEach(btn => {
+            btn.onclick = () => alert('Функция в разработке');
+        });
+        document.getElementById('showAuthBtn')?.addEventListener('click', () => alert('Авторизация через Firebase будет позже'));
     </script>
 </body>
 </html>
