@@ -903,4 +903,203 @@
 
             document.getElementById('chatInput')?.addEventListener('keypress', async (e) => {
                 if (e.key === 'Enter') {
-                    const input
+                    const input = document.getElementById('chatInput');
+                    if (currentChatWith && input.value.trim()) {
+                        await sendMessage(currentChatWith.id, input.value);
+                        input.value = '';
+                        await renderChatWindow(currentChatWith);
+                    }
+                }
+            });
+        }
+
+        window.buyPrivilegeHandler = async (privilegeKey, price) => {
+            const nickInput = document.getElementById(`nick_${privilegeKey}`);
+            const nickname = nickInput?.value.trim();
+            await buyPrivilege(privilegeKey, price, nickname);
+            await renderMainPage();
+        };
+
+        window.openChat = async (friendId, friendName) => {
+            const friend = { id: friendId, username: friendName };
+            await renderChatWindow(friend);
+        };
+
+        window.addFriend = async (friendId) => {
+            await sendFriendRequest(friendId);
+            document.getElementById('searchResults').innerHTML = '';
+            document.getElementById('searchFriendInput').value = '';
+        };
+
+        function getBadgeName(style) {
+            if (style === 'blue') return '🔵 Синяя галочка';
+            if (style === 'gold') return '🟡 Золотая галочка';
+            if (style === 'rainbow') return '🌈 Радужная галочка';
+            return 'Нет';
+        }
+
+        async function openShopModal() {
+            const modal = document.getElementById('shopModal');
+            if (!modal) return;
+            
+            const framesHtml = avatarFrames.map(f => `
+                <div class="shop-item" onclick="buyItem('avatar_frame', '${f.style}', ${f.price}, '${f.name}')">
+                    <strong>${f.name}</strong><br>
+                    <span style="color: #facc15;">${f.price.toLocaleString()} GM</span>
+                </div>
+            `).join('');
+
+            const colorsHtml = nicknameColors.map(c => `
+                <div class="shop-item" onclick="buyItem('nickname_color', '${c.code}', ${c.price}, '${c.name} цвет')">
+                    <div style="color: ${c.code};">${c.name}</div>
+                    <span style="color: #facc15;">${c.price.toLocaleString()} GM</span>
+                </div>
+            `).join('');
+
+            const badgesHtml = verifiedBadges.map(b => `
+                <div class="shop-item" onclick="buyItem('verified_badge', '${b.style}', ${b.price}, '${b.name} галочка')">
+                    <strong>${b.name} галочка</strong><br>
+                    <span style="color: #facc15;">${b.price.toLocaleString()} GM</span>
+                </div>
+            `).join('');
+
+            modal.innerHTML = `
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <h3>🛒 Магазин</h3>
+                        <button class="modal-close" onclick="closeShopModal()">✖</button>
+                    </div>
+                    <div class="modal-body">
+                        <h4>Рамки аватара</h4>
+                        <div class="shop-items">${framesHtml}</div>
+                        <h4 style="margin-top: 20px;">Цвета ника</h4>
+                        <div class="shop-items">${colorsHtml}</div>
+                        <h4 style="margin-top: 20px;">Галочки верификации</h4>
+                        <div class="shop-items">${badgesHtml}</div>
+                    </div>
+                    <div class="modal-footer">
+                        <button class="btn-cancel" onclick="closeShopModal()">Закрыть</button>
+                    </div>
+                </div>
+            `;
+            modal.style.display = 'flex';
+        }
+
+        window.buyItem = async (itemType, itemId, price, itemName) => {
+            await purchaseItem(itemType, itemId, price, itemName);
+            await renderMainPage();
+            closeShopModal();
+        };
+
+        window.closeShopModal = () => {
+            const modal = document.getElementById('shopModal');
+            if (modal) modal.style.display = 'none';
+        };
+
+        // ========== РЕНДЕР АВТОРИЗАЦИИ ==========
+        async function renderAuthPage() {
+            const app = document.getElementById('app');
+            app.innerHTML = `
+                <div class="glass-card auth-container">
+                    <div class="logo" style="text-align: center; margin-bottom: 32px;">GRIF LAUNCHER</div>
+                    
+                    <div class="tab-buttons" id="authTabs">
+                        <button class="tab-btn active" data-tab="login">🔐 Вход</button>
+                        <button class="tab-btn" data-tab="register">📝 Регистрация</button>
+                    </div>
+                    
+                    <div id="loginForm">
+                        <input type="email" id="loginEmail" placeholder="Email">
+                        <input type="password" id="loginPassword" placeholder="Пароль">
+                        <button class="btn-gradient" id="doLoginBtn" style="width: 100%;">Войти</button>
+                    </div>
+                    
+                    <div id="registerForm" style="display: none;">
+                        <input type="text" id="regUsername" placeholder="Никнейм">
+                        <input type="email" id="regEmail" placeholder="Email">
+                        <input type="password" id="regPassword" placeholder="Пароль">
+                        <input type="text" id="regTag" placeholder="@username (для поиска)">
+                        <button class="btn-gradient" id="doRegisterBtn" style="width: 100%;">Зарегистрироваться</button>
+                    </div>
+                </div>
+            `;
+
+            // Табы
+            document.querySelectorAll('.tab-btn').forEach(btn => {
+                btn.addEventListener('click', () => {
+                    document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
+                    btn.classList.add('active');
+                    const tab = btn.dataset.tab;
+                    if (tab === 'login') {
+                        document.getElementById('loginForm').style.display = 'block';
+                        document.getElementById('registerForm').style.display = 'none';
+                    } else {
+                        document.getElementById('loginForm').style.display = 'none';
+                        document.getElementById('registerForm').style.display = 'block';
+                    }
+                });
+            });
+
+            // Вход
+            document.getElementById('doLoginBtn')?.addEventListener('click', async () => {
+                const email = document.getElementById('loginEmail').value;
+                const password = document.getElementById('loginPassword').value;
+                const { data, error } = await supabase.auth.signInWithPassword({ email, password });
+                if (error) { showToast(error.message, '#ef4444'); return; }
+                currentUser = data.user;
+                await renderMainPage();
+            });
+
+            // Регистрация
+            document.getElementById('doRegisterBtn')?.addEventListener('click', async () => {
+                const username = document.getElementById('regUsername').value;
+                const email = document.getElementById('regEmail').value;
+                const password = document.getElementById('regPassword').value;
+                const tag = document.getElementById('regTag').value;
+                if (!username || !email || !password || !tag) {
+                    showToast('Заполните все поля!', '#ef4444');
+                    return;
+                }
+                const { data, error } = await supabase.auth.signUp({
+                    email, password,
+                    options: { data: { username, tag } }
+                });
+                if (error) { showToast(error.message, '#ef4444'); return; }
+                showToast('Регистрация успешна! Теперь войдите.', '#22c55e');
+            });
+        }
+
+        // ========== ДОБАВЛЯЕМ МОДАЛЬНОЕ ОКНО В DOM ==========
+        const modalDiv = document.createElement('div');
+        modalDiv.id = 'shopModal';
+        modalDiv.className = 'modal';
+        document.body.appendChild(modalDiv);
+
+        // ========== СЛУШАЕМ ИЗМЕНЕНИЯ АВТОРИЗАЦИИ ==========
+        supabase.auth.onAuthStateChange(async (event, session) => {
+            if (session?.user) {
+                currentUser = session.user;
+                await loadProfile();
+                await renderMainPage();
+            } else {
+                currentUser = null;
+                currentProfile = null;
+                await renderAuthPage();
+            }
+        });
+
+        // ========== ПРОВЕРЯЕМ ТЕКУЩУЮ СЕССИЮ ==========
+        async function init() {
+            const { data: { session } } = await supabase.auth.getSession();
+            if (session?.user) {
+                currentUser = session.user;
+                await loadProfile();
+                await renderMainPage();
+            } else {
+                await renderAuthPage();
+            }
+        }
+        init();
+    </script>
+</body>
+</html>
