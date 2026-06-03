@@ -5,37 +5,41 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>GrifLauncher | Профиль</title>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
     <link rel="stylesheet" href="style.css">
-    <script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-app-compat.js"></script>
-    <script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-auth-compat.js"></script>
-    <script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore-compat.js"></script>
 </head>
 <body>
-    <div class="header">
-        <div class="nav">
-            <div class="logo">GRIF LAUNCHER</div>
-            <div class="nav-links">
-                <a href="index.html">Главная</a>
-                <a href="shop.html">Магазин</a>
-                <a href="profile.html">Профиль</a>
-                <a href="wiki.html">База знаний</a>
-                <a href="chat.html">Чат</a>
-                <a href="gallery.html">Галерея</a>
-            </div>
-            <div id="authStatus" class="auth-status"></div>
+    <div class="sidebar">
+        <div class="sidebar-header">GRIF LAUNCHER</div>
+        <div class="sidebar-menu">
+            <a href="index.html" class="menu-item"><i class="fas fa-home"></i> Главная</a>
+            <a href="chat.html" class="menu-item"><i class="fas fa-comments"></i> Чаты</a>
+            <a href="shop.html" class="menu-item"><i class="fas fa-store"></i> Магазин</a>
+            <a href="profile.html" class="menu-item active"><i class="fas fa-user"></i> Профиль</a>
+            <a href="wiki.html" class="menu-item"><i class="fas fa-book"></i> База знаний</a>
+        </div>
+        <div class="sidebar-footer">
+            <button id="logoutBtn" class="logout-btn"><i class="fas fa-sign-out-alt"></i> Выйти</button>
         </div>
     </div>
 
-    <div class="container">
-        <div id="profileCard" class="profile-card"></div>
-        <div class="section-title">📜 История заказов</div>
-        <div id="ordersList" class="orders-list"></div>
+    <div class="main-content">
+        <div class="profile-container">
+            <div class="profile-card">
+                <div class="profile-avatar"><img id="profileAvatar" src="https://ui-avatars.com/api/?background=ff6b6b&color=fff&size=120" alt=""><button id="changeAvatarBtn"><i class="fas fa-camera"></i></button></div>
+                <div class="profile-info"><h2 id="profileName">GrifMcPro</h2><div class="profile-status"><i class="fas fa-gamepad"></i> Играет на Выживание #1</div><div class="profile-stats"><div class="stat"><i class="fas fa-clock"></i> 320 часов</div><div class="stat"><i class="fas fa-trophy"></i> Уровень 42</div></div></div>
+            </div>
+            <div class="profile-tabs">
+                <button class="tab-btn active">Активные привилегии</button>
+                <button class="tab-btn">История покупок</button>
+                <button class="tab-btn">Друзья</button>
+                <button class="tab-btn">Настройки</button>
+            </div>
+            <div id="tabContent" class="tab-content">
+                <div class="badges-list"><div class="badge-item"><i class="fas fa-crown"></i><div><b>VIP Стандарт</b><div>Истекает: 15.07.2026</div></div></div></div>
+            </div>
+        </div>
     </div>
-
-    <footer class="footer">
-        <p>© 2026 GrifLauncher</p>
-    </footer>
-
     <script src="script.js"></script>
 </body>
 </html>
