@@ -1,1 +1,41 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>GrifLauncher | Чат</title>
+    <link rel="stylesheet" href="style.css">
+    <script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-app-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-auth-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore-compat.js"></script>
+</head>
+<body>
+    <header class="header">
+        <div class="nav">
+            <div class="logo">GRIF LAUNCHER</div>
+            <div class="nav-links">
+                <a href="index.html">Главная</a>
+                <a href="shop.html">Магазин</a>
+                <a href="profile.html">Профиль</a>
+                <a href="wiki.html">База знаний</a>
+                <a href="chat.html">Чат</a>
+                <a href="gallery.html">Галерея</a>
+            </div>
+        </div>
+    </header>
 
+    <div class="container">
+        <div class="section-title">💬 ОБЩИЙ ЧАТ</div>
+        <div id="globalChat" class="chat-messages"></div>
+        <div class="chat-input-area">
+            <input type="text" id="globalChatInput" placeholder="Сообщение...">
+            <button id="sendGlobalChat">📤 Отправить</button>
+        </div>
+    </div>
+
+    <footer class="footer">
+        <p>© 2026 GrifLauncher</p>
+    </footer>
+    <script src="script.js"></script>
+</body>
+</html>
