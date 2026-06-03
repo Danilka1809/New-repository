@@ -8,7 +8,7 @@
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
     <link rel="stylesheet" href="global.css">
     <style>
-        /* ДОПОЛНИТЕЛЬНЫЕ СТИЛИ ТОЛЬКО ДЛЯ ГЛАВНОЙ */
+        /* ДОПОЛНИТЕЛЬНЫЕ СТИЛИ ДЛЯ ГЛАВНОЙ */
         .hero {
             height: 100vh;
             display: flex;
@@ -17,6 +17,7 @@
             align-items: center;
             text-align: center;
             padding: 20px;
+            background: radial-gradient(ellipse at 70% 30%, rgba(255,215,0,0.08), transparent);
         }
         .hero h1 {
             font-size: 80px;
@@ -25,29 +26,36 @@
             -webkit-background-clip: text;
             background-clip: text;
             color: transparent;
-            text-shadow: 0 0 30px rgba(255,215,0,0.2);
+            animation: fadeInUp 0.8s ease-out;
         }
         .hero p {
             font-size: 20px;
             margin-top: 20px;
-            color: rgba(255,255,255,0.8);
+            color: #ccc;
+            animation: fadeInUp 0.8s ease-out 0.2s both;
         }
         .hero .btn-main {
             margin-top: 40px;
-            background: rgba(255,215,0,0.15);
-            backdrop-filter: blur(12px);
-            color: #ffd700;
+            background: linear-gradient(135deg, #ffd700, #ffaa00);
+            color: #0a0a0a;
             font-family: 'Orbitron', monospace;
+            font-weight: bold;
             padding: 16px 48px;
             font-size: 20px;
             border-radius: 60px;
-            border: 1px solid rgba(255,215,0,0.3);
-            transition: all 0.3s;
+            border: none;
             cursor: pointer;
+            transition: all 0.3s;
+            box-shadow: 0 0 20px rgba(255,215,0,0.3);
+            animation: fadeInUp 0.8s ease-out 0.4s both;
         }
         .hero .btn-main:hover {
-            transform: translateY(-3px) scale(1.02);
-            background: rgba(255,215,0,0.3);
+            transform: scale(1.02);
+            box-shadow: 0 0 30px rgba(255,215,0,0.5);
+        }
+        @keyframes fadeInUp {
+            from { opacity: 0; transform: translateY(30px); }
+            to { opacity: 1; transform: translateY(0); }
         }
         .avatars-grid {
             display: flex;
@@ -82,6 +90,7 @@
             white-space: nowrap;
             opacity: 0;
             transition: 0.2s;
+            pointer-events: none;
         }
         .avatar:hover .tooltip { opacity: 1; bottom: -25px; }
         @keyframes pulse {
@@ -110,26 +119,33 @@
         .news-img { width: 100%; height: 200px; object-fit: cover; }
         .news-content { padding: 20px; }
         .news-date { color: #ffd700; font-size: 12px; margin-bottom: 8px; }
-        .news-title { font-size: 20px; font-weight: bold; margin-bottom: 12px; }
         .product-icon i { font-size: 48px; color: #ffd700; margin-bottom: 20px; display: block; }
         .price { font-size: 28px; font-weight: bold; color: #ffd700; margin: 16px 0; }
         .product-card ul { list-style: none; margin: 20px 0; text-align: left; }
         .product-card li { padding: 8px 0; display: flex; align-items: center; gap: 10px; }
-        .buy-btn, .remind-btn {
-            background: rgba(255,215,0,0.15);
-            border: 1px solid rgba(255,215,0,0.3);
-            color: #ffd700;
-            padding: 10px;
+        .buy-btn {
+            background: linear-gradient(135deg, #ffd700, #ffaa00);
+            color: #0a0a0a;
+            border: none;
+            padding: 12px;
             border-radius: 60px;
+            font-weight: bold;
             cursor: pointer;
             width: 100%;
-            font-weight: bold;
-            transition: 0.3s;
+            transition: 0.2s;
         }
-        .buy-btn:hover, .remind-btn:hover {
-            background: rgba(255,215,0,0.3);
-            transform: translateY(-2px);
+        .buy-btn:hover { transform: scale(1.02); background: #ffaa00; }
+        .remind-btn {
+            background: transparent;
+            border: 1px solid #ffd700;
+            color: #ffd700;
+            padding: 8px 16px;
+            border-radius: 40px;
+            cursor: pointer;
+            margin-top: 12px;
+            transition: 0.2s;
         }
+        .remind-btn:hover { background: #ffd700; color: #0a0a0a; }
         .achievements-list {
             background: rgba(0,0,0,0.4);
             backdrop-filter: blur(8px);
@@ -144,30 +160,28 @@
             padding: 14px;
             border-bottom: 1px solid rgba(255,215,0,0.08);
         }
-        .achievement-item i { color: #ffd700; font-size: 24px; }
+        .achievement-item i { font-size: 24px; color: #ffd700; }
         .vip { color: #ffd700; font-weight: bold; }
         .mvp { color: #00bfff; font-weight: bold; }
         @media (max-width: 768px) {
             .hero h1 { font-size: 48px; }
-            .hero p { font-size: 16px; }
+            .section-title { font-size: 28px; }
+            .online-count { font-size: 32px; }
         }
     </style>
 </head>
 <body>
-    <video class="video-background" autoplay loop muted playsinline>
-        <source src="https://cdn.pixabay.com/video/2022/11/20/140315-774259399_large.mp4" type="video/mp4">
-    </video>
-    <div class="video-overlay"></div>
-
+    <!-- САЙДБАР -->
     <div class="sidebar">
         <div class="sidebar-header">GRIF LAUNCHER</div>
         <div class="sidebar-menu">
             <a href="index.html" class="menu-item active"><i class="fas fa-home"></i> Главная</a>
             <a href="shop.html" class="menu-item"><i class="fas fa-store"></i> Магазин</a>
             <a href="profile.html" class="menu-item"><i class="fas fa-user"></i> Профиль</a>
+            <a href="gallery.html" class="menu-item"><i class="fas fa-image"></i> Галерея</a>
         </div>
         <div class="sidebar-footer">
-            <div id="authStatus" class="auth-status">Гость</div>
+            <div id="authStatus" class="auth-status">Не авторизован</div>
             <button id="logoutBtn" class="logout-btn"><i class="fas fa-sign-out-alt"></i> Выйти</button>
         </div>
     </div>
@@ -183,12 +197,12 @@
         <div class="hero">
             <h1>GRIF LAUNCHER</h1>
             <p>Лучший игровой опыт с привилегиями, поддержкой и активным сообществом</p>
-            <button class="btn-main" id="showAuthBtn">🔥 КУПИТЬ ДОНАТ</button>
+            <button class="btn-main" id="showAuthBtn">🔥 ВХОД / РЕГИСТРАЦИЯ</button>
         </div>
 
         <!-- ИГРОКИ ОНЛАЙН -->
-        <div class="online-players" style="text-align: center; margin-bottom: 60px;">
-            <div class="online-count" style="font-size: 48px; font-weight: bold; background: linear-gradient(135deg, #fff, #ffd700); -webkit-background-clip: text; background-clip: text; color: transparent;">128 ИГРОКОВ ОНЛАЙН</div>
+        <div class="online-players">
+            <div class="online-count">128 ИГРОКОВ ОНЛАЙН</div>
             <div class="avatars-grid">
                 <div class="avatar"><img src="https://ui-avatars.com/api/?background=ffd700&color=000&name=Player1"><span class="tooltip">GrifMcPro</span></div>
                 <div class="avatar"><img src="https://ui-avatars.com/api/?background=ffd700&color=000&name=Player2"><span class="tooltip">DarkKnight</span></div>
@@ -199,21 +213,21 @@
             </div>
         </div>
 
+        <!-- СВЕЖИЕ ПОБЕДЫ -->
+        <div class="section-title">🏆 СВЕЖИЕ ПОБЕДЫ</div>
+        <div class="achievements-list">
+            <div class="achievement-item"><i class="fas fa-trophy"></i> Игрок <span class="vip">GrifMcPro</span> победил в дуэли! 👑</div>
+            <div class="achievement-item"><i class="fas fa-crown"></i> Клан <span class="mvp">Dragons</span> захватил новую территорию! 🏰</div>
+            <div class="achievement-item"><i class="fas fa-star"></i> Игрок <span class="vip">PlayerPro</span> получил достижение "Мастер крафта"! ⭐</div>
+            <div class="achievement-item"><i class="fas fa-gem"></i> Игрок <span class="mvp">DarkKnight</span> купил привилегию MVP! 💎</div>
+        </div>
+
         <!-- НОВОСТИ -->
         <div class="section-title">📰 ПОСЛЕДНИЕ НОВОСТИ</div>
         <div class="news-grid">
             <div class="news-card"><img class="news-img" src="https://picsum.photos/id/104/400/250"><div class="news-content"><div class="news-date">01.06.2026</div><div class="news-title">Обновление 2.0</div><div class="news-desc">Новые мини-игры и уникальные привилегии</div></div></div>
             <div class="news-card"><img class="news-img" src="https://picsum.photos/id/106/400/250"><div class="news-content"><div class="news-date">25.05.2026</div><div class="news-title">Новый сезон</div><div class="news-desc">Сезонные награды и эксклюзивные скины</div></div></div>
             <div class="news-card"><img class="news-img" src="https://picsum.photos/id/107/400/250"><div class="news-content"><div class="news-date">20.05.2026</div><div class="news-title">Розыгрыш VIP</div><div class="news-desc">Участвуй в розыгрыше VIP-статусов</div></div></div>
-        </div>
-
-        <!-- СВЕЖИЕ ПОБЕДЫ -->
-        <div class="section-title">🏆 СВЕЖИЕ ПОБЕДЫ</div>
-        <div class="achievements-list">
-            <div class="achievement-item"><i class="fas fa-trophy"></i> Игрок <span class="vip">GrifMcPro</span> победил в дуэли! 👑</div>
-            <div class="achievement-item"><i class="fas fa-crown"></i> Клан <span class="mvp">Dragons</span> захватил территорию! 🏰</div>
-            <div class="achievement-item"><i class="fas fa-star"></i> Игрок <span class="vip">PlayerPro</span> получил достижение "Мастер крафта"! ⭐</div>
-            <div class="achievement-item"><i class="fas fa-gem"></i> Игрок <span class="mvp">DarkKnight</span> купил MVP! 💎</div>
         </div>
 
         <!-- ТОПОВЫЕ ПРИВИЛЕГИИ -->
@@ -233,9 +247,68 @@
         </div>
     </div>
 
+    <!-- МОДАЛКА -->
+    <div id="authModal" class="modal">
+        <div class="modal-content">
+            <span class="close-modal">&times;</span>
+            <div class="tabs">
+                <button class="tab-btn active" data-tab="login">ВХОД</button>
+                <button class="tab-btn" data-tab="register">РЕГИСТРАЦИЯ</button>
+            </div>
+            <div id="loginPane" class="tab-pane active">
+                <div class="input-group"><input type="text" id="loginUsername" placeholder="Логин"><div class="hint">Только латинские буквы и цифры</div></div>
+                <div class="input-group"><input type="password" id="loginPassword" placeholder="Пароль"></div>
+                <button class="submit-btn" id="doLoginBtn"><span class="btn-text">ВОЙТИ</span><span class="spinner"></span></button>
+            </div>
+            <div id="registerPane" class="tab-pane">
+                <div class="input-group"><input type="text" id="regUsername" placeholder="Логин"><div class="hint">Только латинские буквы и цифры</div></div>
+                <div class="input-group"><input type="email" id="regEmail" placeholder="Email"></div>
+                <div class="input-group"><input type="password" id="regPassword" placeholder="Пароль"><div class="password-strength"><div class="strength-bar"></div></div></div>
+                <button class="submit-btn" id="doRegisterBtn"><span class="btn-text">ЗАРЕГИСТРИРОВАТЬСЯ</span><span class="spinner"></span></button>
+            </div>
+        </div>
+    </div>
+
     <script>
+        // МОДАЛКА
+        const modal = document.getElementById('authModal');
+        document.getElementById('showAuthBtn').onclick = () => modal.style.display = 'flex';
+        document.querySelector('.close-modal').onclick = () => modal.style.display = 'none';
+        window.onclick = (e) => { if (e.target == modal) modal.style.display = 'none'; };
+        
+        // ВКЛАДКИ
+        document.querySelectorAll('.tab-btn').forEach(btn => {
+            btn.onclick = () => {
+                document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
+                btn.classList.add('active');
+                document.getElementById('loginPane').classList.toggle('active', btn.dataset.tab === 'login');
+                document.getElementById('registerPane').classList.toggle('active', btn.dataset.tab === 'register');
+            };
+        });
+        
+        // ИНДИКАТОР ПАРОЛЯ
+        const passInput = document.getElementById('regPassword');
+        const strengthBar = document.querySelector('#registerPane .strength-bar');
+        if (passInput) {
+            passInput.addEventListener('input', () => {
+                let val = passInput.value, strength = 0;
+                if (val.length >= 6) strength += 20;
+                if (val.match(/[a-z]/)) strength += 20;
+                if (val.match(/[A-Z]/)) strength += 20;
+                if (val.match(/[0-9]/)) strength += 20;
+                if (val.match(/[^a-zA-Z0-9]/)) strength += 20;
+                strengthBar.style.width = strength + '%';
+                strengthBar.style.background = strength < 40 ? '#ff4444' : (strength < 70 ? '#ffaa00' : '#22c55e');
+            });
+        }
+        
+        // ДЕМО-КНОПКИ
+        document.getElementById('doLoginBtn').onclick = () => alert('Демо-вход');
+        document.getElementById('doRegisterBtn').onclick = () => alert('Демо-регистрация');
+        document.querySelectorAll('.buy-btn, .remind-btn').forEach(btn => btn.onclick = () => alert('Функция в разработке'));
+        
         // АНИМАЦИЯ ПОЯВЛЕНИЯ
-        const cards = document.querySelectorAll('.news-card, .product-card, .event-card, .achievement-item, .avatar');
+        const animated = document.querySelectorAll('.product-card, .news-card, .event-card, .achievement-item, .avatar');
         const observer = new IntersectionObserver((entries) => {
             entries.forEach(entry => {
                 if (entry.isIntersecting) {
@@ -244,18 +317,12 @@
                 }
             });
         }, { threshold: 0.1 });
-        cards.forEach(el => {
+        animated.forEach(el => {
             el.style.opacity = '0';
-            el.style.transform = 'translateY(25px)';
+            el.style.transform = 'translateY(20px)';
             el.style.transition = '0.5s';
             observer.observe(el);
         });
-        
-        // КНОПКИ (ДЕМО)
-        document.querySelectorAll('.buy-btn, .remind-btn').forEach(btn => {
-            btn.onclick = () => alert('Функция в разработке');
-        });
-        document.getElementById('showAuthBtn')?.addEventListener('click', () => alert('Авторизация через Firebase будет позже'));
     </script>
 </body>
 </html>
