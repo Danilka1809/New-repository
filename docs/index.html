@@ -1,0 +1,30 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>GrifLauncher | Донат магазин</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <div class="logo">GRIF LAUNCHER</div>
+            <div class="online-badge" id="statusBadge">🔄 Проверка...</div>
+        </div>
+
+        <div class="status-card" id="serverStatus">
+            <div class="status-row">🌐 Сервер: <span id="serverOnline">—</span></div>
+            <div class="status-row">👥 Игроки: <span id="serverPlayers">—</span></div>
+            <div class="status-row">🎮 Версия: <span id="serverVersion">—</span></div>
+        </div>
+
+        <div class="section-title">🛒 Магазин привилегий</div>
+        <div class="store-grid" id="storeGrid"></div>
+
+        <div class="footer">💰 Валюта: <strong>GM</strong> | Начальный баланс: 50 000 GM</div>
+    </div>
+    <div id="toast"></div>
+    <script src="script.js"></script>
+</body>
+</html>
