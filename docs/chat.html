@@ -4,13 +4,14 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>GrifLauncher | Чат</title>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="style.css">
     <script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-app-compat.js"></script>
     <script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-auth-compat.js"></script>
     <script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore-compat.js"></script>
 </head>
 <body>
-    <header class="header">
+    <div class="header">
         <div class="nav">
             <div class="logo">GRIF LAUNCHER</div>
             <div class="nav-links">
@@ -21,8 +22,9 @@
                 <a href="chat.html">Чат</a>
                 <a href="gallery.html">Галерея</a>
             </div>
+            <div id="authStatus" class="auth-status"></div>
         </div>
-    </header>
+    </div>
 
     <div class="container">
         <div class="section-title">💬 ОБЩИЙ ЧАТ</div>
