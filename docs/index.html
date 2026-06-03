@@ -10,11 +10,7 @@
     <script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-auth-compat.js"></script>
     <script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore-compat.js"></script>
     <style>
-        * {
-            margin: 0;
-            padding: 0;
-            box-sizing: border-box;
-        }
+        * { margin: 0; padding: 0; box-sizing: border-box; }
         body {
             background: linear-gradient(135deg, #0a0a0a 0%, #1a1a0a 100%);
             font-family: 'Montserrat', sans-serif;
@@ -41,20 +37,19 @@
             background: linear-gradient(135deg, rgba(0,0,0,0.75), rgba(30,30,0,0.65));
             z-index: -1;
         }
-        /* АНИМАЦИИ */
         @keyframes fadeInUp {
             from { opacity: 0; transform: translateY(30px); }
             to { opacity: 1; transform: translateY(0); }
         }
-        @keyframes pulse {
-            0%,100% { transform: scale(1); opacity: 0.6; }
-            50% { transform: scale(1.05); opacity: 1; }
-        }
         @keyframes glow {
-            0%,100% { box-shadow: 0 0 20px rgba(255,215,0,0.3); border-color: rgba(255,215,0,0.3); }
-            50% { box-shadow: 0 0 50px rgba(255,215,0,0.6); border-color: #ffd700; }
+            0%,100% { box-shadow: 0 0 20px rgba(255,215,0,0.3); }
+            50% { box-shadow: 0 0 50px rgba(255,215,0,0.6); }
         }
-        /* ЗАГРУЗКА */
+        @keyframes shake {
+            0%,100% { transform: translateX(0); }
+            25% { transform: translateX(-10px); }
+            75% { transform: translateX(10px); }
+        }
         .loading-page {
             min-height: 100vh;
             display: flex;
@@ -72,13 +67,8 @@
             margin-bottom: 25px;
         }
         @keyframes spin { 100% { transform: rotate(360deg); } }
-        .loading-text {
-            font-family: 'Orbitron', monospace;
-            font-size: 22px;
-            color: #ffd700;
-            letter-spacing: 3px;
-        }
-        /* СТРАНИЦА ВХОДА */
+        .loading-text { font-family: 'Orbitron', monospace; font-size: 22px; color: #ffd700; letter-spacing: 3px; }
+        
         .login-page {
             min-height: 100vh;
             display: flex;
@@ -99,12 +89,7 @@
             margin-bottom: 20px;
             animation: fadeInUp 0.8s;
         }
-        .login-page p {
-            font-size: 20px;
-            margin-bottom: 35px;
-            color: #ddd;
-            animation: fadeInUp 0.8s 0.2s both;
-        }
+        .login-page p { font-size: 20px; margin-bottom: 35px; color: #ddd; animation: fadeInUp 0.8s 0.2s both; }
         .btn-login {
             background: linear-gradient(135deg, #ffd700, #ffaa00);
             color: #0a0a0a;
@@ -119,8 +104,9 @@
             animation: fadeInUp 0.8s 0.4s both;
         }
         .btn-login:hover { transform: scale(1.03); box-shadow: 0 0 30px rgba(255,215,0,0.6); }
-        /* ОКНО БАНА */
-        .ban-modal, .closed-modal, .unban-modal, .notify-modal {
+        
+        /* Окна уведомлений */
+        .ban-modal, .closed-modal, .unban-modal, .notify-modal, .kick-modal {
             position: fixed;
             top: 0;
             left: 0;
@@ -133,7 +119,7 @@
             align-items: center;
             z-index: 5000;
         }
-        .ban-content, .closed-content, .unban-content, .notify-content {
+        .ban-content, .closed-content, .unban-content, .notify-content, .kick-content {
             background: linear-gradient(135deg, #1a1a1a, #0a0a0a);
             border-radius: 40px;
             padding: 45px;
@@ -142,15 +128,17 @@
             text-align: center;
             animation: fadeInUp 0.5s;
         }
-        .ban-content { border: 2px solid #ef4444; box-shadow: 0 0 50px rgba(239,68,68,0.3); }
+        .ban-content { border: 2px solid #ef4444; box-shadow: 0 0 50px rgba(239,68,68,0.3); animation: shake 0.5s; }
         .closed-content { border: 2px solid #ff8800; animation: glow 2s infinite; }
         .unban-content { border: 2px solid #22c55e; }
         .notify-content { border: 2px solid #3b82f6; }
-        .ban-content i, .closed-content i, .unban-content i, .notify-content i { font-size: 70px; margin-bottom: 20px; }
+        .kick-content { border: 2px solid #ff6600; animation: shake 0.5s; }
+        .ban-content i, .closed-content i, .unban-content i, .notify-content i, .kick-content i { font-size: 70px; margin-bottom: 20px; }
         .ban-content h2 { color: #ef4444; font-family: 'Orbitron', monospace; }
         .closed-content h2 { color: #ff8800; }
         .unban-content h2 { color: #22c55e; }
         .notify-content h2 { color: #3b82f6; }
+        .kick-content h2 { color: #ff6600; }
         .info-box {
             text-align: left;
             background: rgba(0,0,0,0.5);
@@ -170,7 +158,7 @@
             width: 100%;
             font-size: 16px;
         }
-        /* ОСНОВНОЙ САЙТ */
+        
         .main-container { max-width: 1400px; margin: 0 auto; padding: 20px; }
         .top-bar {
             display: flex;
@@ -194,8 +182,6 @@
             cursor: pointer;
             transition: 0.2s;
         }
-        .btn-logout:hover { background: rgba(239,68,68,0.2); }
-        /* МЕНЮ */
         .menu-tabs {
             display: flex;
             gap: 20px;
@@ -230,7 +216,6 @@
             background-clip: text;
             color: transparent;
         }
-        /* МАГАЗИН - КАРТОЧКИ */
         .shop-grid {
             display: grid;
             grid-template-columns: repeat(auto-fill, minmax(350px, 1fr));
@@ -269,8 +254,6 @@
             font-size: 16px;
             transition: 0.2s;
         }
-        .buy-btn:hover { transform: scale(1.02); box-shadow: 0 5px 20px rgba(255,215,0,0.4); }
-        /* ПРОФИЛЬ */
         .profile-card {
             background: rgba(0,0,0,0.55);
             backdrop-filter: blur(12px);
@@ -291,9 +274,8 @@
             margin: 0 auto 25px;
         }
         .profile-avatar i { font-size: 65px; color: #0a0a0a; }
-        .profile-card h2 { font-size: 28px; margin-bottom: 25px; }
         .profile-info p { padding: 12px 0; border-bottom: 1px solid rgba(255,215,0,0.2); display: flex; align-items: center; gap: 15px; }
-        .profile-info i { width: 30px; color: #ffd700; font-size: 18px; }
+        .profile-info i { width: 30px; color: #ffd700; }
         .admin-btn {
             background: linear-gradient(135deg, #ef4444, #dc2626);
             color: white;
@@ -304,9 +286,8 @@
             cursor: pointer;
             width: 100%;
             margin-top: 25px;
-            font-size: 16px;
         }
-        /* АДМИН МОДАЛКА */
+        /* КРАСИВАЯ АДМИНКА */
         .admin-modal {
             display: none;
             position: fixed;
@@ -324,13 +305,14 @@
             background: linear-gradient(135deg, #1a1a1a, #0a0a0a);
             border-radius: 36px;
             padding: 35px;
-            width: 580px;
+            width: 620px;
             max-width: 95%;
             max-height: 85vh;
             overflow-y: auto;
             border: 1px solid #ffd700;
         }
-        .admin-content h3, .admin-content h4 { color: #ffd700; margin-bottom: 18px; font-family: 'Orbitron', monospace; }
+        .admin-content h3 { color: #ffd700; margin-bottom: 20px; font-family: 'Orbitron', monospace; font-size: 24px; border-bottom: 1px solid rgba(255,215,0,0.3); padding-bottom: 10px; }
+        .admin-content h4 { color: #ffd700; margin: 20px 0 12px; font-family: 'Orbitron', monospace; font-size: 18px; }
         .admin-content input, .admin-content select, .admin-content textarea {
             width: 100%;
             padding: 14px;
@@ -351,18 +333,29 @@
             width: 100%;
             margin-top: 12px;
             font-weight: bold;
+            transition: 0.2s;
         }
+        .admin-content button:hover { transform: scale(1.01); opacity: 0.9; }
         .admin-content .unban-btn { background: #22c55e; }
         .admin-content .give-balance-btn { background: #3b82f6; }
         .admin-content .global-balance-btn { background: #8b5cf6; }
         .admin-content .close-site-btn { background: #ff8800; }
-        .ban-list { margin-top: 20px; max-height: 280px; overflow-y: auto; }
+        .admin-content .kick-btn { background: #ff6600; }
+        .ban-list { margin-top: 20px; max-height: 250px; overflow-y: auto; }
         .ban-item {
             background: rgba(0,0,0,0.5);
             border-radius: 16px;
             padding: 15px;
             margin-bottom: 12px;
             border-left: 4px solid #ef4444;
+        }
+        .kick-list { margin-top: 20px; max-height: 250px; overflow-y: auto; }
+        .kick-item {
+            background: rgba(0,0,0,0.5);
+            border-radius: 16px;
+            padding: 15px;
+            margin-bottom: 12px;
+            border-left: 4px solid #ff6600;
         }
         .close-admin { float: right; font-size: 30px; cursor: pointer; color: #ffd700; transition: 0.2s; }
         .close-admin:hover { color: white; }
@@ -396,20 +389,17 @@
     </video>
     <div class="hero-overlay"></div>
 
-    <!-- ЗАГРУЗКА -->
     <div id="loadingPage" class="loading-page">
         <div class="spinner"></div>
         <div class="loading-text">ЗАГРУЗКА ДАННЫХ...</div>
     </div>
 
-    <!-- ВХОД -->
     <div id="loginPage" class="login-page" style="display: none;">
         <h1>GRIF LAUNCHER</h1>
         <p>Премиум привилегии | Тест-сервера | Активное сообщество</p>
         <button class="btn-login" id="showLoginBtn">🔥 ВОЙТИ В САЙТ</button>
     </div>
 
-    <!-- ОСНОВНОЙ САЙТ -->
     <div id="mainSite" class="main-container" style="display: none;">
         <div class="top-bar">
             <div class="balance">💰 БАЛАНС: <span id="userBalance">0</span> ₽</div>
@@ -453,6 +443,20 @@
                 <p><span class="label">⚠️ Дата выдачи:</span> <span id="banDateText"></span></p>
             </div>
             <button class="exit-btn" id="banExitBtn">🚪 ВЫЙТИ ИЗ АККАУНТА</button>
+        </div>
+    </div>
+
+    <!-- ОКНО КИКА -->
+    <div id="kickWindow" class="kick-modal" style="display: none;">
+        <div class="kick-content">
+            <i class="fas fa-boot"></i>
+            <h2>👢 ВАС КИКНУЛИ С САЙТА</h2>
+            <div class="info-box">
+                <p><span class="label">👮 Модератор:</span> <span id="kickModerator"></span></p>
+                <p><span class="label">📝 Причина:</span> <span id="kickReasonText"></span></p>
+                <p><span class="label">📅 Дата кика:</span> <span id="kickDateText"></span></p>
+            </div>
+            <button class="exit-btn" id="kickExitBtn" style="background:#ff6600;">🚪 ВЫЙТИ ИЗ АККАУНТА</button>
         </div>
     </div>
 
@@ -510,48 +514,55 @@
             <div id="adminPanelContent" style="display: none;">
                 <h3>👑 АДМИН-ПАНЕЛЬ</h3>
                 
-                <h4>🔨 ВЫДАТЬ БАН</h4>
-                <input type="text" id="banNick" placeholder="Никнейм">
-                <input type="email" id="banEmail" placeholder="Email">
-                <textarea id="banReason" rows="2" placeholder="Причина бана"></textarea>
-                <select id="banDuration">
-                    <option value="1">1 час</option>
-                    <option value="6">6 часов</option>
-                    <option value="12">12 часов</option>
-                    <option value="24">1 день</option>
-                    <option value="72">3 дня</option>
-                    <option value="168">7 дней</option>
-                    <option value="720">30 дней</option>
-                    <option value="forever">Навсегда</option>
-                </select>
-                <button id="banUserBtn">⛔ ЗАБАНИТЬ</button>
+                <div style="background:rgba(255,215,0,0.1); border-radius:20px; padding:15px; margin-bottom:15px;">
+                    <h4>🔨 ВЫДАТЬ БАН</h4>
+                    <input type="text" id="banNick" placeholder="Никнейм игрока">
+                    <input type="email" id="banEmail" placeholder="Email">
+                    <textarea id="banReason" rows="2" placeholder="Причина бана"></textarea>
+                    <select id="banDuration">
+                        <option value="1">1 час</option><option value="6">6 часов</option><option value="12">12 часов</option>
+                        <option value="24">1 день</option><option value="72">3 дня</option><option value="168">7 дней</option>
+                        <option value="720">30 дней</option><option value="forever">Навсегда</option>
+                    </select>
+                    <button id="banUserBtn">⛔ ЗАБАНИТЬ</button>
+                </div>
 
-                <h4 style="margin-top:25px;">💰 ВЫДАТЬ РУБЛИ (по нику)</h4>
-                <input type="text" id="giveNick" placeholder="Никнейм игрока">
-                <input type="number" id="giveAmountInput" placeholder="Сумма в рублях">
-                <textarea id="giveReasonInput" rows="2" placeholder="Причина выдачи"></textarea>
-                <button class="give-balance-btn" id="giveBalanceBtn">💸 ВЫДАТЬ РУБЛИ</button>
+                <div style="background:rgba(255,102,0,0.1); border-radius:20px; padding:15px; margin-bottom:15px;">
+                    <h4>👢 КИКНУТЬ ИГРОКА</h4>
+                    <input type="text" id="kickNick" placeholder="Никнейм игрока">
+                    <textarea id="kickReason" rows="2" placeholder="Причина кика"></textarea>
+                    <button class="kick-btn" id="kickUserBtn">👢 КИКНУТЬ</button>
+                    <div id="kicksList" class="kick-list"></div>
+                </div>
 
-                <h4 style="margin-top:25px;">🌍 ГЛОБАЛЬНАЯ ВЫДАЧА (всем)</h4>
-                <input type="number" id="globalAmountInput" placeholder="Сумма для всех">
-                <textarea id="globalReasonInput" rows="2" placeholder="Причина глобальной выдачи"></textarea>
-                <button class="global-balance-btn" id="globalGiveBtn">🌍 ВЫДАТЬ ВСЕМ</button>
+                <div style="background:rgba(59,130,246,0.1); border-radius:20px; padding:15px; margin-bottom:15px;">
+                    <h4>💰 ВЫДАТЬ РУБЛИ (по нику)</h4>
+                    <input type="text" id="giveNick" placeholder="Никнейм игрока">
+                    <input type="number" id="giveAmountInput" placeholder="Сумма в рублях">
+                    <textarea id="giveReasonInput" rows="2" placeholder="Причина выдачи"></textarea>
+                    <button class="give-balance-btn" id="giveBalanceBtn">💸 ВЫДАТЬ РУБЛИ</button>
+                </div>
 
-                <h4 style="margin-top:25px;">🔒 ЗАКРЫТЬ САЙТ</h4>
-                <textarea id="closeReason" rows="2" placeholder="Причина закрытия"></textarea>
-                <select id="closeDuration">
-                    <option value="1">1 час</option>
-                    <option value="3">3 часа</option>
-                    <option value="6">6 часов</option>
-                    <option value="12">12 часов</option>
-                    <option value="24">1 день</option>
-                    <option value="72">3 дня</option>
-                    <option value="168">7 дней</option>
-                </select>
-                <button class="close-site-btn" id="closeSiteBtn">🔒 ЗАКРЫТЬ САЙТ</button>
-                <button class="unban-btn" id="openSiteBtn" style="margin-top:10px; background:#22c55e;">🔓 ОТКРЫТЬ САЙТ</button>
+                <div style="background:rgba(139,92,246,0.1); border-radius:20px; padding:15px; margin-bottom:15px;">
+                    <h4>🌍 ГЛОБАЛЬНАЯ ВЫДАЧА (всем)</h4>
+                    <input type="number" id="globalAmountInput" placeholder="Сумма для всех">
+                    <textarea id="globalReasonInput" rows="2" placeholder="Причина глобальной выдачи"></textarea>
+                    <button class="global-balance-btn" id="globalGiveBtn">🌍 ВЫДАТЬ ВСЕМ</button>
+                </div>
 
-                <h4 style="margin-top:25px;">📋 АКТИВНЫЕ БАНЫ</h4>
+                <div style="background:rgba(255,136,0,0.1); border-radius:20px; padding:15px; margin-bottom:15px;">
+                    <h4>🔒 УПРАВЛЕНИЕ САЙТОМ</h4>
+                    <textarea id="closeReason" rows="2" placeholder="Причина закрытия"></textarea>
+                    <select id="closeDuration">
+                        <option value="1">1 час</option><option value="3">3 часа</option><option value="6">6 часов</option>
+                        <option value="12">12 часов</option><option value="24">1 день</option><option value="72">3 дня</option>
+                        <option value="168">7 дней</option>
+                    </select>
+                    <button class="close-site-btn" id="closeSiteBtn">🔒 ЗАКРЫТЬ САЙТ</button>
+                    <button class="unban-btn" id="openSiteBtn" style="margin-top:10px; background:#22c55e;">🔓 ОТКРЫТЬ САЙТ</button>
+                </div>
+
+                <h4>📋 АКТИВНЫЕ БАНЫ</h4>
                 <div id="bansList" class="ban-list"></div>
             </div>
         </div>
@@ -562,7 +573,7 @@
         <div class="admin-content" style="max-width:500px;">
             <span class="close-admin" id="closeTestModal">&times;</span>
             <h3>🎮 ЗАКАЗ ТЕСТ-СЕРВЕРА</h3>
-            <input type="text" id="testNick" placeholder="Ваш никнейм" style="width:100%;">
+            <input type="text" id="testNick" placeholder="Ваш никнейм">
             <div class="test-buttons">
                 <div class="test-option" data-days="10" data-price="500000">📅 10 дней<br>500 000 ₽</div>
                 <div class="test-option" data-days="20" data-price="1000000">📅 20 дней<br>1 000 000 ₽</div>
@@ -596,7 +607,7 @@
     </div>
 
     <script>
-        // ========== FIREBASE ==========
+        // FIREBASE
         const firebaseConfig = {
             apiKey: "AIzaSyCK9vHX-OQIw48SGi8S_8U7pIjq60gahEA",
             authDomain: "siteorgooo.firebaseapp.com",
@@ -617,7 +628,7 @@
             { name: "Лорд", nameEn: "[LORD]", price: 10000, icon: "fa-crown", features: ["Команда /god", "Неприкосновенность"] },
             { name: "Админ", nameEn: "[ADMIN]", price: 20000, icon: "fa-user-tie", features: ["Баны/кики", "Управление"] },
             { name: "Гл Админ", nameEn: "[GLADMIN]", price: 50000, icon: "fa-users", features: ["Все права", "Управление админами"] },
-            { name: "Создатель", nameEn: "[CREATOR]", price: 100000, icon: "fa-star", features: ["Полный доступ", "Префикс"] },
+            { name: "Создатель", nameEn: "[CREATOR]", price: 100000, icon: "fa-star", features: ["Полный доступ"] },
             { name: "Основатель", nameEn: "[FOUNDER]", price: 200000, icon: "fa-fire", features: ["Управление проектом"] },
             { name: "Консоль", nameEn: "[CONSOLE]", price: 300000, icon: "fa-terminal", features: ["Доступ к консоли"] },
             { name: "Цезарь", nameEn: "[CAESAR]", price: 400000, icon: "fa-landmark", features: ["Префикс [Цезарь]"] },
@@ -629,20 +640,15 @@
         ];
 
         let currentUser = null;
-        let currentUserData = null;
-        let pendingUnban = null;
-        let pendingGiveBalance = null;
+        let currentBalance = 0;
 
-        // ОТПРАВКА НА ПОЧТУ
         async function sendEmail(data) {
             const formData = new FormData();
             formData.append('access_key', '42864224-6df0-4e25-8068-7b486cf314dd');
             formData.append('subject', `[GrifLauncher] ${data.type}`);
             formData.append('to', 'ramonenok@bk.ru');
             formData.append('message', `${data.message}\n\nПользователь: ${data.email}\nВремя: ${new Date().toLocaleString()}`);
-            try {
-                await fetch('https://api.web3forms.com/submit', { method: 'POST', body: formData });
-            } catch(e) { console.log('Email error:', e); }
+            try { await fetch('https://api.web3forms.com/submit', { method: 'POST', body: formData }); } catch(e) {}
         }
 
         function renderShop() {
@@ -665,18 +671,11 @@
             const newBalance = currentBalance - price;
             await db.collection('users').doc(currentUser.uid).update({ balance: newBalance });
             currentBalance = newBalance;
-            updateBalanceDisplay();
-            await sendEmail({ type: 'ПОКУПКА ПРИВИЛЕГИИ', email: currentUser.email, message: `Куплено: ${name}\nЦена: ${price} ₽\nОстаток: ${newBalance} ₽` });
-            alert(`✅ Куплено: ${name}! Баланс: ${newBalance} ₽`);
+            document.getElementById('userBalance').innerText = currentBalance.toLocaleString();
+            document.getElementById('profileBalance').innerText = currentBalance.toLocaleString();
+            await sendEmail({ type: 'ПОКУПКА ПРИВИЛЕГИИ', email: currentUser.email, message: `Куплено: ${name}\nЦена: ${price} ₽` });
+            alert(`✅ Куплено: ${name}! Остаток: ${currentBalance} ₽`);
         };
-
-        let currentBalance = 0;
-        function updateBalanceDisplay() {
-            const el = document.getElementById('userBalance');
-            const pEl = document.getElementById('profileBalance');
-            if(el) el.innerText = currentBalance.toLocaleString();
-            if(pEl) pEl.innerText = currentBalance.toLocaleString();
-        }
 
         async function checkBan(userId, email, username) {
             const snapshot = await db.collection('bans').where('active', '==', true).get();
@@ -689,6 +688,16 @@
                     }
                     return ban;
                 }
+            }
+            return null;
+        }
+
+        async function checkKick(email) {
+            const snapshot = await db.collection('kicks').where('email', '==', email).where('active', '==', true).get();
+            if(!snapshot.empty) {
+                const kick = snapshot.docs[0].data();
+                await snapshot.docs[0].ref.update({ active: false });
+                return kick;
             }
             return null;
         }
@@ -709,13 +718,13 @@
         async function loadUserData(user) {
             const doc = await db.collection('users').doc(user.uid).get();
             if(doc.exists) {
-                currentUserData = doc.data();
-                currentBalance = currentUserData.balance || 50000;
-                updateBalanceDisplay();
-                document.getElementById('profileName').innerText = currentUserData.username || user.displayName;
+                const data = doc.data();
+                currentBalance = data.balance || 50000;
+                document.getElementById('userBalance').innerText = currentBalance.toLocaleString();
+                document.getElementById('profileName').innerText = data.username || user.displayName;
                 document.getElementById('profileEmail').innerText = user.email;
                 document.getElementById('profileBalance').innerText = currentBalance.toLocaleString();
-                document.getElementById('profileDate').innerText = currentUserData.registeredAt ? new Date(currentUserData.registeredAt).toLocaleDateString() : 'Сегодня';
+                document.getElementById('profileDate').innerText = data.registeredAt ? new Date(data.registeredAt).toLocaleDateString() : 'Сегодня';
             }
         }
 
@@ -725,7 +734,7 @@
             const snapshot = await db.collection('bans').where('active', '==', true).orderBy('createdAt', 'desc').get();
             container.innerHTML = snapshot.docs.map(doc => {
                 const ban = doc.data();
-                return `<div class="ban-item"><strong>${ban.username || ban.email}</strong><br>Причина: ${ban.reason}<br>До: ${ban.until ? new Date(ban.until.toDate()).toLocaleString() : 'Навсегда'}<br>Модератор: ${ban.moderator}<br><button class="unban-btn" onclick="unbanUser('${doc.id}')">СНЯТЬ БАН</button></div>`;
+                return `<div class="ban-item"><strong>${ban.username || ban.email}</strong><br>📝 ${ban.reason}<br>⏰ До: ${ban.until ? new Date(ban.until.toDate()).toLocaleString() : 'Навсегда'}<br>👮 ${ban.moderator}<br><button class="unban-btn" onclick="unbanUser('${doc.id}')">✅ СНЯТЬ БАН</button></div>`;
             }).join('');
         }
 
@@ -733,105 +742,33 @@
             const doc = await db.collection('bans').doc(banId).get();
             const ban = doc.data();
             await db.collection('unbanLogs').add({
-                userId: ban.userId,
-                email: ban.email,
-                username: ban.username,
+                userId: ban.userId, email: ban.email, username: ban.username,
                 reason: `Разбан от ${currentUser.email}`,
-                unbanModerator: currentUser.email,
-                unbanDate: new Date()
+                unbanModerator: currentUser.email, unbanDate: new Date(), shown: false
             });
             await doc.ref.update({ active: false });
             loadBansList();
-            alert('✅ Бан снят! При следующем входе пользователь увидит уведомление о разбане.');
+            alert('✅ Бан снят!');
         };
 
-        // ЭЛЕМЕНТЫ
-        const loadingPage = document.getElementById('loadingPage');
-        const loginPageEl = document.getElementById('loginPage');
-        const mainSiteEl = document.getElementById('mainSite');
-        const authModalEl = document.getElementById('authModal');
-        const adminModal = document.getElementById('adminModal');
-        const adminPasswordPanel = document.getElementById('adminPasswordPanel');
-        const adminPanelContent = document.getElementById('adminPanelContent');
+        // КИК СИСТЕМА
+        document.getElementById('kickUserBtn').onclick = async () => {
+            const nick = document.getElementById('kickNick').value.trim();
+            const reason = document.getElementById('kickReason').value.trim();
+            if(!nick || !reason) return alert('Заполните ник и причину');
+            const usersSnap = await db.collection('users').where('username', '==', nick).get();
+            if(usersSnap.empty) return alert('Пользователь не найден');
+            const userDoc = usersSnap.docs[0];
+            await db.collection('kicks').add({
+                userId: userDoc.id, email: userDoc.data().email, username: nick,
+                reason: reason, moderator: currentUser.email, active: true,
+                createdAt: new Date()
+            });
+            alert(`✅ Кик выдан пользователю ${nick}`);
+            document.getElementById('kickNick').value = '';
+            document.getElementById('kickReason').value = '';
+        };
 
-        document.getElementById('showLoginBtn').onclick = () => authModalEl.style.display = 'flex';
-        document.getElementById('closeAuthModal').onclick = () => authModalEl.style.display = 'none';
-        
-        document.getElementById('loginTabBtn').onclick = () => {
-            document.getElementById('loginPanel').style.display = 'block';
-            document.getElementById('registerPanel').style.display = 'none';
-        };
-        document.getElementById('registerTabBtn').onclick = () => {
-            document.getElementById('loginPanel').style.display = 'none';
-            document.getElementById('registerPanel').style.display = 'block';
-        };
-        
-        document.getElementById('doRegisterBtn').onclick = async () => {
-            const username = document.getElementById('regUsername').value.trim();
-            const email = document.getElementById('regEmail').value.trim();
-            const pass = document.getElementById('regPass').value;
-            if(!username || !email || !pass) return alert('Заполните все поля');
-            if(pass.length < 6) return alert('Пароль минимум 6 символов');
-            try {
-                const cred = await auth.createUserWithEmailAndPassword(email, pass);
-                await cred.user.updateProfile({ displayName: username });
-                await db.collection('users').doc(cred.user.uid).set({ username, email, balance: 50000, registeredAt: new Date().toISOString() });
-                authModalEl.style.display = 'none';
-                alert('✅ Регистрация успешна! Баланс: 50 000 ₽');
-            } catch(e) { alert('Ошибка: ' + e.message); }
-        };
-        
-        document.getElementById('doLoginBtn').onclick = async () => {
-            const email = document.getElementById('loginEmail').value.trim();
-            const pass = document.getElementById('loginPass').value;
-            if(!email || !pass) return alert('Введите email и пароль');
-            try {
-                await auth.signInWithEmailAndPassword(email, pass);
-                authModalEl.style.display = 'none';
-            } catch(e) { alert('Ошибка: ' + e.message); }
-        };
-        
-        document.getElementById('logoutBtn').onclick = async () => { await auth.signOut(); };
-        
-        document.getElementById('openAdminBtn').onclick = () => {
-            adminModal.style.display = 'flex';
-            adminPasswordPanel.style.display = 'block';
-            adminPanelContent.style.display = 'none';
-            document.getElementById('adminPassword').value = '';
-        };
-        
-        document.getElementById('checkAdminPassword').onclick = () => {
-            if(document.getElementById('adminPassword').value === 'website') {
-                adminPasswordPanel.style.display = 'none';
-                adminPanelContent.style.display = 'block';
-                loadBansList();
-            } else alert('❌ Неверный пароль!');
-        };
-        
-        document.getElementById('closeAdminModal').onclick = () => adminModal.style.display = 'none';
-        
-        // БАН
-        document.getElementById('banUserBtn').onclick = async () => {
-            const nick = document.getElementById('banNick').value.trim();
-            const email = document.getElementById('banEmail').value.trim();
-            const reason = document.getElementById('banReason').value.trim();
-            const duration = document.getElementById('banDuration').value;
-            if((!nick && !email) || !reason) return alert('Заполните ник/почту и причину');
-            let until = null;
-            if(duration !== 'forever') until = new Date(Date.now() + parseInt(duration) * 60 * 60 * 1000);
-            let targetUserId = null;
-            if(email) {
-                const snap = await db.collection('users').where('email', '==', email).get();
-                if(!snap.empty) targetUserId = snap.docs[0].id;
-            }
-            await db.collection('bans').add({ userId: targetUserId, username: nick, email, reason, until, active: true, moderator: currentUser.email, createdAt: new Date() });
-            alert('✅ Бан выдан!');
-            document.getElementById('banNick').value = '';
-            document.getElementById('banEmail').value = '';
-            document.getElementById('banReason').value = '';
-            loadBansList();
-        };
-        
         // ВЫДАЧА РУБЛЕЙ
         document.getElementById('giveBalanceBtn').onclick = async () => {
             const nick = document.getElementById('giveNick').value.trim();
@@ -842,15 +779,17 @@
             if(usersSnap.empty) return alert('Пользователь не найден');
             const userDoc = usersSnap.docs[0];
             const oldBalance = userDoc.data().balance || 0;
-            const newBalance = oldBalance + amount;
-            await userDoc.ref.update({ balance: newBalance });
-            await db.collection('balanceLogs').add({ userId: userDoc.id, amount, reason, moderator: currentUser.email, createdAt: new Date() });
+            await userDoc.ref.update({ balance: oldBalance + amount });
+            await db.collection('balanceLogs').add({
+                userId: userDoc.id, amount: amount, reason: reason,
+                moderator: currentUser.email, createdAt: new Date(), shown: false
+            });
             alert(`✅ Выдано ${amount} ₽ пользователю ${nick}`);
             document.getElementById('giveNick').value = '';
             document.getElementById('giveAmountInput').value = '';
             document.getElementById('giveReasonInput').value = '';
         };
-        
+
         // ГЛОБАЛЬНАЯ ВЫДАЧА
         document.getElementById('globalGiveBtn').onclick = async () => {
             const amount = parseInt(document.getElementById('globalAmountInput').value);
@@ -861,13 +800,17 @@
             for(const doc of usersSnap.docs) {
                 const oldBalance = doc.data().balance || 0;
                 await doc.ref.update({ balance: oldBalance + amount });
+                await db.collection('balanceLogs').add({
+                    userId: doc.id, amount: amount, reason: `ГЛОБАЛЬНО: ${reason}`,
+                    moderator: currentUser.email, createdAt: new Date(), shown: false
+                });
                 count++;
             }
             alert(`✅ Выдано ${amount} ₽ всем ${count} пользователям!`);
             document.getElementById('globalAmountInput').value = '';
             document.getElementById('globalReasonInput').value = '';
         };
-        
+
         // ЗАКРЫТИЕ/ОТКРЫТИЕ САЙТА
         document.getElementById('closeSiteBtn').onclick = async () => {
             const reason = document.getElementById('closeReason').value.trim();
@@ -877,12 +820,11 @@
             await db.collection('settings').doc('siteStatus').set({ closed: true, reason, until, moderator: currentUser.email, closedAt: new Date() });
             alert(`✅ Сайт закрыт до ${until.toLocaleString()}`);
         };
-        
         document.getElementById('openSiteBtn').onclick = async () => {
             await db.collection('settings').doc('siteStatus').update({ closed: false });
             alert('✅ Сайт открыт!');
         };
-        
+
         // ТЕСТ-СЕРВЕР
         let selectedTest = { days: null, price: null };
         document.getElementById('openTestBtn').onclick = () => document.getElementById('testModal').style.display = 'flex';
@@ -903,13 +845,13 @@
             const newBalance = currentBalance - selectedTest.price;
             await db.collection('users').doc(currentUser.uid).update({ balance: newBalance });
             currentBalance = newBalance;
-            updateBalanceDisplay();
+            document.getElementById('userBalance').innerText = currentBalance.toLocaleString();
             await sendEmail({ type: 'ЗАКАЗ ТЕСТ-СЕРВЕРА', email: currentUser.email, message: `Ник: ${nick}\nСрок: ${selectedTest.days === 'forever' ? 'Навсегда' : selectedTest.days + ' дней'}\nЦена: ${selectedTest.price.toLocaleString()} ₽` });
-            alert(`✅ Тест-сервер заказан! Письмо отправлено на почту.`);
+            alert(`✅ Тест-сервер заказан! Письмо отправлено.`);
             document.getElementById('testModal').style.display = 'none';
             selectedTest = { days: null, price: null };
         };
-        
+
         // ПЕРЕКЛЮЧЕНИЕ СТРАНИЦ
         document.querySelectorAll('.menu-tab').forEach(tab => {
             tab.onclick = () => {
@@ -921,18 +863,71 @@
                 if(page === 'profile' && currentUser) loadUserData(currentUser);
             };
         });
+
+        // АДМИНКА
+        document.getElementById('openAdminBtn').onclick = () => {
+            document.getElementById('adminModal').style.display = 'flex';
+            document.getElementById('adminPasswordPanel').style.display = 'block';
+            document.getElementById('adminPanelContent').style.display = 'none';
+        };
+        document.getElementById('checkAdminPassword').onclick = () => {
+            if(document.getElementById('adminPassword').value === 'website') {
+                document.getElementById('adminPasswordPanel').style.display = 'none';
+                document.getElementById('adminPanelContent').style.display = 'block';
+                loadBansList();
+            } else alert('❌ Неверный пароль!');
+        };
+        document.getElementById('closeAdminModal').onclick = () => document.getElementById('adminModal').style.display = 'none';
+        document.getElementById('showLoginBtn').onclick = () => document.getElementById('authModal').style.display = 'flex';
+        document.getElementById('closeAuthModal').onclick = () => document.getElementById('authModal').style.display = 'none';
         
-        // ОСНОВНАЯ ЛОГИКА
+        document.getElementById('loginTabBtn').onclick = () => {
+            document.getElementById('loginPanel').style.display = 'block';
+            document.getElementById('registerPanel').style.display = 'none';
+        };
+        document.getElementById('registerTabBtn').onclick = () => {
+            document.getElementById('loginPanel').style.display = 'none';
+            document.getElementById('registerPanel').style.display = 'block';
+        };
+        
+        document.getElementById('doRegisterBtn').onclick = async () => {
+            const username = document.getElementById('regUsername').value.trim();
+            const email = document.getElementById('regEmail').value.trim();
+            const pass = document.getElementById('regPass').value;
+            if(!username || !email || !pass) return alert('Заполните все поля');
+            if(pass.length < 6) return alert('Пароль минимум 6 символов');
+            try {
+                const cred = await auth.createUserWithEmailAndPassword(email, pass);
+                await cred.user.updateProfile({ displayName: username });
+                await db.collection('users').doc(cred.user.uid).set({ username, email, balance: 50000, registeredAt: new Date().toISOString() });
+                document.getElementById('authModal').style.display = 'none';
+                alert('✅ Регистрация успешна! Баланс: 50 000 ₽');
+            } catch(e) { alert('Ошибка: ' + e.message); }
+        };
+        
+        document.getElementById('doLoginBtn').onclick = async () => {
+            const email = document.getElementById('loginEmail').value.trim();
+            const pass = document.getElementById('loginPass').value;
+            if(!email || !pass) return alert('Введите email и пароль');
+            try {
+                await auth.signInWithEmailAndPassword(email, pass);
+                document.getElementById('authModal').style.display = 'none';
+            } catch(e) { alert('Ошибка: ' + e.message); }
+        };
+        
+        document.getElementById('logoutBtn').onclick = async () => { await auth.signOut(); };
+        
+        // ОСНОВНАЯ ЛОГИКА ВХОДА
         auth.onAuthStateChanged(async (user) => {
             if(user) {
                 currentUser = user;
-                loadingPage.style.display = 'flex';
-                loginPageEl.style.display = 'none';
+                document.getElementById('loadingPage').style.display = 'flex';
+                document.getElementById('loginPage').style.display = 'none';
                 
-                // Проверка закрытия сайта
+                // Проверка закрытия сайта (ramonenok@bk.ru может заходить)
                 const siteClosed = await checkSiteClosed();
                 if(siteClosed && user.email !== 'ramonenok@bk.ru') {
-                    loadingPage.style.display = 'none';
+                    document.getElementById('loadingPage').style.display = 'none';
                     document.getElementById('closedReason').innerText = siteClosed.reason;
                     document.getElementById('closedUntil').innerText = siteClosed.until ? new Date(siteClosed.until.toDate()).toLocaleString() : 'Неизвестно';
                     document.getElementById('closedModerator').innerText = siteClosed.moderator;
@@ -941,10 +936,22 @@
                     return;
                 }
                 
+                // Проверка кика
+                const kickInfo = await checkKick(user.email);
+                if(kickInfo) {
+                    document.getElementById('loadingPage').style.display = 'none';
+                    document.getElementById('kickModerator').innerText = kickInfo.moderator;
+                    document.getElementById('kickReasonText').innerText = kickInfo.reason;
+                    document.getElementById('kickDateText').innerText = new Date(kickInfo.createdAt.toDate()).toLocaleString();
+                    document.getElementById('kickWindow').style.display = 'flex';
+                    document.getElementById('kickExitBtn').onclick = async () => { await auth.signOut(); document.getElementById('kickWindow').style.display = 'none'; };
+                    return;
+                }
+                
                 // Проверка бана
                 const banInfo = await checkBan(user.uid, user.email, user.displayName);
                 if(banInfo) {
-                    loadingPage.style.display = 'none';
+                    document.getElementById('loadingPage').style.display = 'none';
                     document.getElementById('banModerator').innerText = banInfo.moderator;
                     document.getElementById('banReasonText').innerText = banInfo.reason;
                     document.getElementById('banUnbanDate').innerText = banInfo.until ? new Date(banInfo.until.toDate()).toLocaleString() : 'Навсегда';
@@ -966,38 +973,40 @@
                     document.getElementById('unbanContinueBtn').onclick = () => document.getElementById('unbanWindow').style.display = 'none';
                 }
                 
-                // Проверка выдачи рублей
+                // Проверка выдачи рублей (даже если себе)
                 const balanceSnap = await db.collection('balanceLogs').where('userId', '==', user.uid).where('shown', '==', false).get();
                 if(!balanceSnap.empty) {
-                    const give = balanceSnap.docs[0].data();
-                    await balanceSnap.docs[0].ref.update({ shown: true });
-                    document.getElementById('giveModerator').innerText = give.moderator;
-                    document.getElementById('giveAmount').innerText = give.amount.toLocaleString();
-                    document.getElementById('giveReason').innerText = give.reason;
-                    document.getElementById('giveBalanceWindow').style.display = 'flex';
-                    document.getElementById('giveBalanceContinueBtn').onclick = () => document.getElementById('giveBalanceWindow').style.display = 'none';
+                    for(const doc of balanceSnap.docs) {
+                        const give = doc.data();
+                        await doc.ref.update({ shown: true });
+                        document.getElementById('giveModerator').innerText = give.moderator;
+                        document.getElementById('giveAmount').innerText = give.amount.toLocaleString();
+                        document.getElementById('giveReason').innerText = give.reason;
+                        document.getElementById('giveBalanceWindow').style.display = 'flex';
+                        document.getElementById('giveBalanceContinueBtn').onclick = () => document.getElementById('giveBalanceWindow').style.display = 'none';
+                    }
                 }
                 
                 await loadUserData(user);
                 renderShop();
                 setTimeout(() => {
-                    loadingPage.style.display = 'none';
-                    mainSiteEl.style.display = 'block';
+                    document.getElementById('loadingPage').style.display = 'none';
+                    document.getElementById('mainSite').style.display = 'block';
                 }, 1500);
             } else {
-                loadingPage.style.display = 'flex';
-                loginPageEl.style.display = 'none';
-                mainSiteEl.style.display = 'none';
+                document.getElementById('loadingPage').style.display = 'flex';
+                document.getElementById('loginPage').style.display = 'none';
+                document.getElementById('mainSite').style.display = 'none';
                 setTimeout(() => {
-                    loadingPage.style.display = 'none';
-                    loginPageEl.style.display = 'flex';
+                    document.getElementById('loadingPage').style.display = 'none';
+                    document.getElementById('loginPage').style.display = 'flex';
                 }, 800);
             }
         });
         
         window.onclick = (e) => {
-            if(e.target === adminModal) adminModal.style.display = 'none';
-            if(e.target === authModalEl) authModalEl.style.display = 'none';
+            if(e.target === document.getElementById('adminModal')) document.getElementById('adminModal').style.display = 'none';
+            if(e.target === document.getElementById('authModal')) document.getElementById('authModal').style.display = 'none';
             if(e.target === document.getElementById('testModal')) document.getElementById('testModal').style.display = 'none';
         };
     </script>
