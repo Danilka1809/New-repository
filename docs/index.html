@@ -2,333 +2,905 @@
 <html lang="ru">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
     <title>GrifLauncher | Платформа</title>
     <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
     <style>
-        * { margin: 0; padding: 0; box-sizing: border-box; }
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
         body {
-            background: #0b0e17;
-            font-family: 'Segoe UI', system-ui, sans-serif;
+            background: radial-gradient(ellipse at 20% 30%, #0a0f1a, #03050a);
+            font-family: 'Inter', 'Segoe UI', system-ui, sans-serif;
             color: #eef2ff;
+            min-height: 100vh;
+            overflow-x: hidden;
+        }
+
+        /* Анимированный фон */
+        .gradient-bg {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: radial-gradient(ellipse at 20% 30%, #0a0f1a, #03050a);
+            z-index: -2;
+        }
+
+        .gradient-bg::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(45deg, rgba(59,130,246,0.1), rgba(139,92,246,0.1), rgba(236,72,153,0.1));
+            background-size: 400% 400%;
+            animation: gradientShift 15s ease infinite;
+        }
+
+        @keyframes gradientShift {
+            0% { background-position: 0% 50%; }
+            50% { background-position: 100% 50%; }
+            100% { background-position: 0% 50%; }
+        }
+
+        .stars {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            pointer-events: none;
+            background-image: radial-gradient(2px 2px at 10% 20%, #fff, transparent);
+            background-repeat: no-repeat;
+            background-size: 100px 100px;
+            animation: starsFloat 20s linear infinite;
+        }
+
+        @keyframes starsFloat {
+            0% { transform: translateY(0); }
+            100% { transform: translateY(-100px); }
+        }
+
+        .container {
+            max-width: 1400px;
+            margin: 0 auto;
             padding: 20px;
+            position: relative;
+            z-index: 10;
         }
-        .container { max-width: 1400px; margin: 0 auto; }
+
         .glass-card {
-            background: rgba(18,25,45,0.6);
-            backdrop-filter: blur(12px);
-            border-radius: 28px;
-            padding: 24px;
-            border: 1px solid rgba(59,130,246,0.2);
-            margin-bottom: 24px;
+            background: rgba(18, 25, 45, 0.55);
+            backdrop-filter: blur(16px);
+            border-radius: 32px;
+            border: 1px solid rgba(59, 130, 246, 0.25);
+            transition: all 0.3s ease;
         }
+
+        .glass-card:hover {
+            border-color: rgba(59, 130, 246, 0.5);
+            box-shadow: 0 10px 30px -10px rgba(0, 0, 0, 0.3);
+        }
+
         .header {
             display: flex;
             justify-content: space-between;
             align-items: center;
-            margin-bottom: 24px;
+            margin-bottom: 30px;
             flex-wrap: wrap;
             gap: 16px;
         }
+
         .logo {
-            font-size: 32px;
+            font-size: 36px;
             font-weight: 800;
-            background: linear-gradient(90deg, #fff, #3b82f6, #8b5cf6, #ec4899);
+            background: linear-gradient(90deg, #fff, #3b82f6, #8b5cf6, #ec4899, #f59e0b, #3b82f6);
             background-size: 300% auto;
             -webkit-background-clip: text;
             background-clip: text;
             color: transparent;
-            animation: textGlow 4s linear infinite;
+            animation: textGlow 6s linear infinite;
         }
+
         @keyframes textGlow {
             0% { background-position: 0% 50%; }
             100% { background-position: 200% 50%; }
         }
-        .auth-container { max-width: 400px; margin: 0 auto; }
-        input, button {
-            width: 100%;
-            padding: 12px;
-            margin: 8px 0;
-            background: rgba(0,0,0,0.4);
-            border: 1px solid #3b82f6;
-            border-radius: 40px;
-            color: white;
+
+        .online-badge {
+            background: rgba(18, 25, 45, 0.7);
+            backdrop-filter: blur(12px);
+            padding: 8px 20px;
+            border-radius: 60px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            border: 1px solid rgba(59, 130, 246, 0.3);
         }
-        button {
-            background: linear-gradient(135deg, #3b82f6, #2563eb);
-            cursor: pointer;
-            font-weight: bold;
+
+        .pulse-dot {
+            width: 10px;
+            height: 10px;
+            background: #22c55e;
+            border-radius: 50%;
+            box-shadow: 0 0 8px #22c55e;
+            animation: pulse 1.5s ease-in-out infinite;
         }
-        button:hover { transform: scale(1.01); }
+
+        @keyframes pulse {
+            0%, 100% { opacity: 1; transform: scale(1); }
+            50% { opacity: 0.6; transform: scale(1.2); }
+        }
+
         .balance-value {
             font-size: 28px;
-            font-weight: bold;
-            color: #facc15;
+            font-weight: 800;
+            background: linear-gradient(135deg, #facc15, #f59e0b);
+            -webkit-background-clip: text;
+            background-clip: text;
+            color: transparent;
         }
+
+        .btn-gradient {
+            background: linear-gradient(135deg, #3b82f6, #2563eb);
+            border: none;
+            padding: 12px 24px;
+            border-radius: 60px;
+            font-weight: bold;
+            color: white;
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+
+        .btn-gradient:hover {
+            transform: scale(1.02);
+            box-shadow: 0 5px 15px rgba(59, 130, 246, 0.3);
+        }
+
+        .btn-success {
+            background: linear-gradient(135deg, #22c55e, #16a34a);
+        }
+
+        .btn-danger {
+            background: linear-gradient(135deg, #ef4444, #dc2626);
+        }
+
+        .auth-container {
+            max-width: 480px;
+            margin: 60px auto;
+            padding: 40px;
+        }
+
+        input, select {
+            width: 100%;
+            padding: 12px 18px;
+            background: rgba(0, 0, 0, 0.4);
+            border: 1px solid #3b82f6;
+            border-radius: 60px;
+            color: white;
+            font-size: 14px;
+            margin-bottom: 16px;
+        }
+
+        input:focus, select:focus {
+            outline: none;
+            border-color: #8b5cf6;
+            box-shadow: 0 0 0 2px rgba(139, 92, 246, 0.2);
+        }
+
+        .tab-buttons {
+            display: flex;
+            gap: 12px;
+            margin-bottom: 24px;
+        }
+
+        .tab-btn {
+            flex: 1;
+            background: rgba(59, 130, 246, 0.2);
+            border: none;
+            padding: 12px;
+            border-radius: 60px;
+            color: white;
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+
+        .tab-btn.active {
+            background: #3b82f6;
+            box-shadow: 0 0 10px rgba(59, 130, 246, 0.4);
+        }
+
+        .section-title {
+            text-align: center;
+            font-size: 28px;
+            font-weight: 800;
+            margin: 30px 0 25px;
+            background: linear-gradient(135deg, #fff, #3b82f6, #8b5cf6);
+            -webkit-background-clip: text;
+            background-clip: text;
+            color: transparent;
+        }
+
         .store-grid {
             display: grid;
-            grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+            grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
             gap: 24px;
+            margin-bottom: 40px;
         }
-        .badge-blue { color: #3b82f6; }
-        .badge-gold { color: #facc15; }
+
+        .privilege-card {
+            background: rgba(18, 25, 45, 0.6);
+            backdrop-filter: blur(12px);
+            border-radius: 28px;
+            padding: 24px;
+            transition: all 0.3s;
+            border: 1px solid rgba(59, 130, 246, 0.2);
+            position: relative;
+            overflow: hidden;
+        }
+
+        .privilege-card::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: -100%;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.05), transparent);
+            transition: left 0.5s;
+        }
+
+        .privilege-card:hover::before {
+            left: 100%;
+        }
+
+        .privilege-card:hover {
+            transform: translateY(-8px);
+            border-color: rgba(59, 130, 246, 0.5);
+        }
+
+        .privilege-card h3 {
+            font-size: 24px;
+            margin-bottom: 8px;
+        }
+
+        .price {
+            font-size: 22px;
+            font-weight: bold;
+            color: #facc15;
+            margin: 12px 0;
+        }
+
+        .profile-card {
+            padding: 24px;
+            margin-bottom: 24px;
+        }
+
+        .profile-avatar {
+            width: 80px;
+            height: 80px;
+            border-radius: 50%;
+            background: linear-gradient(135deg, #3b82f6, #8b5cf6);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 40px;
+            margin-bottom: 16px;
+        }
+
+        .profile-info {
+            margin-top: 16px;
+        }
+
+        .profile-row {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 10px 0;
+            border-bottom: 1px solid rgba(59, 130, 246, 0.1);
+        }
+
+        .badge-blue { color: #3b82f6; font-weight: bold; }
+        .badge-gold { color: #facc15; font-weight: bold; }
         .badge-rainbow { background: linear-gradient(90deg, red, orange, yellow, green, cyan, blue, violet); -webkit-background-clip: text; background-clip: text; color: transparent; }
-        #toast {
-            position: fixed; bottom: 20px; right: 20px;
-            background: #22c55e; color: white;
-            padding: 12px 24px; border-radius: 60px;
-            opacity: 0; transition: 0.2s; z-index: 1000;
+
+        .friends-grid {
+            display: grid;
+            gap: 12px;
+            margin: 16px 0;
         }
-        .hidden { display: none; }
+
+        .friend-card {
+            background: rgba(0, 0, 0, 0.3);
+            border-radius: 20px;
+            padding: 12px 16px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .chat-area {
+            margin-top: 16px;
+        }
+
+        .chat-messages {
+            height: 300px;
+            overflow-y: auto;
+            background: rgba(0, 0, 0, 0.3);
+            border-radius: 20px;
+            padding: 16px;
+            margin-bottom: 16px;
+        }
+
+        .message {
+            background: rgba(59, 130, 246, 0.1);
+            border-radius: 16px;
+            padding: 8px 12px;
+            margin-bottom: 8px;
+        }
+
+        .message-sender {
+            font-weight: bold;
+            color: #3b82f6;
+        }
+
+        .chat-input-area {
+            display: flex;
+            gap: 12px;
+        }
+
+        .chat-input-area input {
+            flex: 1;
+            margin: 0;
+        }
+
+        .modal {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.7);
+            backdrop-filter: blur(8px);
+            z-index: 1000;
+            justify-content: center;
+            align-items: center;
+        }
+
+        .modal-content {
+            background: rgba(18, 25, 45, 0.95);
+            backdrop-filter: blur(16px);
+            border-radius: 32px;
+            width: 90%;
+            max-width: 450px;
+            border: 1px solid rgba(59, 130, 246, 0.3);
+            animation: modalFadeIn 0.2s ease-out;
+        }
+
+        @keyframes modalFadeIn {
+            from { opacity: 0; transform: scale(0.9); }
+            to { opacity: 1; transform: scale(1); }
+        }
+
+        .modal-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 20px;
+            border-bottom: 1px solid rgba(59, 130, 246, 0.2);
+        }
+
+        .modal-body {
+            padding: 20px;
+        }
+
+        .modal-footer {
+            display: flex;
+            gap: 12px;
+            padding: 20px;
+            border-top: 1px solid rgba(59, 130, 246, 0.2);
+        }
+
+        .btn-cancel {
+            flex: 1;
+            background: rgba(239, 68, 68, 0.15);
+            border: 1px solid #ef4444;
+            border-radius: 40px;
+            padding: 10px;
+            color: #ef4444;
+            cursor: pointer;
+        }
+
+        .btn-confirm {
+            flex: 1;
+            background: linear-gradient(135deg, #22c55e, #16a34a);
+            border: none;
+            border-radius: 40px;
+            padding: 10px;
+            color: white;
+            font-weight: bold;
+            cursor: pointer;
+        }
+
+        .shop-items {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+            gap: 12px;
+            margin-top: 16px;
+        }
+
+        .shop-item {
+            background: rgba(0, 0, 0, 0.3);
+            border-radius: 20px;
+            padding: 12px;
+            text-align: center;
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+
+        .shop-item:hover {
+            background: rgba(59, 130, 246, 0.2);
+            transform: translateY(-2px);
+        }
+
+        .hidden {
+            display: none;
+        }
+
+        #toast {
+            position: fixed;
+            bottom: 20px;
+            right: 20px;
+            background: #22c55e;
+            color: white;
+            padding: 12px 24px;
+            border-radius: 60px;
+            opacity: 0;
+            transition: 0.2s;
+            pointer-events: none;
+            z-index: 1001;
+            font-weight: 500;
+        }
+
+        @media (max-width: 768px) {
+            .container { padding: 15px; }
+            .logo { font-size: 24px; }
+            .section-title { font-size: 22px; }
+            .store-grid { grid-template-columns: 1fr; }
+        }
     </style>
 </head>
 <body>
-<div class="container" id="app"></div>
-<div id="toast"></div>
+    <div class="gradient-bg"></div>
+    <div class="stars"></div>
+    <div class="container" id="app"></div>
+    <div id="toast"></div>
 
-<script>
-    // ========== НАСТРОЙКИ SUPABASE ==========
-    const SUPABASE_URL = 'ВАШ_PROJECT_URL';  // 👈 ЗАМЕНИ НА ТВОЙ URL
-    const SUPABASE_KEY = 'ВАШ_PUBLISHABLE_KEY';  // 👈 ЗАМЕНИ НА ТВОЙ PUBLISHABLE KEY
+    <script>
+        // ========== НАСТРОЙКИ SUPABASE (уже вставлены) ==========
+        const SUPABASE_URL = 'https://shdvwyaculqqkrwnqlwt.supabase.co';
+        const SUPABASE_KEY = 'sb_publishable_VYWWvPXpsGXkpeUOtcoyOg_5leIFS3w';
 
-    const supabase = window.supabase.createClient(SUPABASE_URL, SUPABASE_KEY);
+        const supabase = window.supabase.createClient(SUPABASE_URL, SUPABASE_KEY);
 
-    // ========== ПРИВИЛЕГИИ ==========
-    const privileges = [
-        { name: '🎨 Креатив', price: 1000, key: 'creative' },
-        { name: '🛡️ Модер', price: 2500, key: 'moder' },
-        { name: '⚔️ Лорд', price: 5000, key: 'lord' },
-        { name: '👑 Админ', price: 10000, key: 'admin' },
-        { name: '🔱 Гл. Админ', price: 20000, key: 'headadmin' },
-        { name: '✨ Создатель', price: 30000, key: 'creator' },
-        { name: '🔥 Основатель', price: 40000, key: 'founder' },
-        { name: '💎 Владелец', price: 50000, key: 'owner' },
-        { name: '🏛️ Цезарь', price: 70000, key: 'caesar' },
-        { name: '👑 ПРАВИТЕЛЬ', price: 120000, key: 'ruler' }
-    ];
+        // ========== ДАННЫЕ ==========
+        const privileges = [
+            { name: '🎨 Креатив', price: 1000, key: 'creative', color: '#10b981' },
+            { name: '🛡️ Модер', price: 2500, key: 'moder', color: '#3b82f6' },
+            { name: '⚔️ Лорд', price: 5000, key: 'lord', color: '#8b5cf6' },
+            { name: '👑 Админ', price: 10000, key: 'admin', color: '#ef4444' },
+            { name: '🔱 Гл. Админ', price: 20000, key: 'headadmin', color: '#a855f7' },
+            { name: '✨ Создатель', price: 30000, key: 'creator', color: '#06b6d4' },
+            { name: '🔥 Основатель', price: 40000, key: 'founder', color: '#f97316' },
+            { name: '💎 Владелец', price: 50000, key: 'owner', color: '#ec4899' },
+            { name: '🏛️ Цезарь', price: 70000, key: 'caesar', color: '#d946ef' },
+            { name: '👑 ПРАВИТЕЛЬ', price: 100000, key: 'ruler', color: '#fbbf24' }
+        ];
 
-    // ========== ГЛОБАЛЬНЫЕ ПЕРЕМЕННЫЕ ==========
-    let currentUser = null;
-    let currentProfile = null;
-    let currentBalance = 0;
+        const avatarFrames = [
+            { name: 'Круг', style: 'circle', price: 0 },
+            { name: 'Квадрат', style: 'square', price: 10000 },
+            { name: 'Сердце', style: 'heart', price: 50000 },
+            { name: 'Звезда', style: 'star', price: 100000 },
+            { name: 'Радуга', style: 'rainbow', price: 500000 }
+        ];
 
-    // ========== ВСПОМОГАТЕЛЬНЫЕ ФУНКЦИИ ==========
-    function showToast(msg, color = '#22c55e') {
-        const toast = document.getElementById('toast');
-        toast.style.backgroundColor = color;
-        toast.innerText = msg;
-        toast.style.opacity = '1';
-        setTimeout(() => toast.style.opacity = '0', 3000);
-    }
+        const nicknameColors = [
+            { name: 'Белый', code: '#ffffff', price: 0 },
+            { name: 'Красный', code: '#ef4444', price: 10000 },
+            { name: 'Зелёный', code: '#22c55e', price: 10000 },
+            { name: 'Синий', code: '#3b82f6', price: 10000 },
+            { name: 'Золотой', code: '#facc15', price: 50000 },
+            { name: 'Фиолетовый', code: '#a855f7', price: 50000 },
+            { name: 'Радужный', code: 'rainbow', price: 500000 }
+        ];
 
-    // ========== РЕНДЕР ИНТЕРФЕЙСА ==========
-    async function renderApp() {
-        const app = document.getElementById('app');
-        
-        if (!currentUser) {
-            // Страница входа/регистрации
-            app.innerHTML = `
-                <div class="glass-card auth-container" style="margin: 0 auto;">
-                    <div class="logo" style="text-align: center; margin-bottom: 24px;">GRIF LAUNCHER</div>
-                    <div id="authTabs" style="display: flex; gap: 10px; margin-bottom: 20px;">
-                        <button id="loginTabBtn" style="background: #3b82f6;">Вход</button>
-                        <button id="registerTabBtn">Регистрация</button>
-                    </div>
-                    <div id="loginForm">
-                        <input type="email" id="loginEmail" placeholder="Email">
-                        <input type="password" id="loginPassword" placeholder="Пароль">
-                        <button id="doLogin">Войти</button>
-                    </div>
-                    <div id="registerForm" style="display: none;">
-                        <input type="text" id="regUsername" placeholder="Никнейм">
-                        <input type="email" id="regEmail" placeholder="Email">
-                        <input type="password" id="regPassword" placeholder="Пароль">
-                        <input type="text" id="regTag" placeholder="@username (для поиска)">
-                        <button id="doRegister">Зарегистрироваться</button>
-                    </div>
-                </div>
-            `;
-            
-            document.getElementById('loginTabBtn')?.addEventListener('click', () => {
-                document.getElementById('loginForm').style.display = 'block';
-                document.getElementById('registerForm').style.display = 'none';
-                document.getElementById('loginTabBtn').style.background = '#3b82f6';
-                document.getElementById('registerTabBtn').style.background = 'rgba(59,130,246,0.2)';
-            });
-            document.getElementById('registerTabBtn')?.addEventListener('click', () => {
-                document.getElementById('loginForm').style.display = 'none';
-                document.getElementById('registerForm').style.display = 'block';
-                document.getElementById('registerTabBtn').style.background = '#3b82f6';
-                document.getElementById('loginTabBtn').style.background = 'rgba(59,130,246,0.2)';
-            });
-            
-            document.getElementById('doLogin')?.addEventListener('click', async () => {
-                const email = document.getElementById('loginEmail').value;
-                const password = document.getElementById('loginPassword').value;
-                const { data, error } = await supabase.auth.signInWithPassword({ email, password });
-                if (error) { showToast(error.message, '#ef4444'); return; }
-                currentUser = data.user;
-                await loadProfile();
-                renderApp();
-            });
-            
-            document.getElementById('doRegister')?.addEventListener('click', async () => {
-                const username = document.getElementById('regUsername').value;
-                const email = document.getElementById('regEmail').value;
-                const password = document.getElementById('regPassword').value;
-                const tag = document.getElementById('regTag').value;
-                const { data, error } = await supabase.auth.signUp({ 
-                    email, password, 
-                    options: { data: { username, tag } }
+        const verifiedBadges = [
+            { name: 'Нет', style: 'none', price: 0 },
+            { name: 'Синяя', style: 'blue', price: 100000 },
+            { name: 'Золотая', style: 'gold', price: 500000 },
+            { name: 'Радужная', style: 'rainbow', price: 1000000 }
+        ];
+
+        // ========== ГЛОБАЛЬНЫЕ ПЕРЕМЕННЫЕ ==========
+        let currentUser = null;
+        let currentProfile = null;
+        let currentBalance = 0;
+        let currentChatWith = null;
+        let friendsList = [];
+
+        // ========== ВСПОМОГАТЕЛЬНЫЕ ==========
+        function showToast(msg, color = '#22c55e') {
+            const toast = document.getElementById('toast');
+            toast.style.backgroundColor = color;
+            toast.innerText = msg;
+            toast.style.opacity = '1';
+            setTimeout(() => toast.style.opacity = '0', 3000);
+        }
+
+        // ========== ЗАГРУЗКА ПРОФИЛЯ ==========
+        async function loadProfile() {
+            if (!currentUser) return;
+            const { data, error } = await supabase
+                .from('profiles')
+                .select('*')
+                .eq('id', currentUser.id)
+                .single();
+            if (!error && data) {
+                currentProfile = data;
+                currentBalance = data.balance || 50000;
+            }
+        }
+
+        // ========== ЗАГРУЗКА ДРУЗЕЙ ==========
+        async function loadFriends() {
+            if (!currentUser) return;
+            const { data, error } = await supabase
+                .from('friends')
+                .select('friend_id, profiles!friends_friend_id_fkey (username, tag, avatar_url)')
+                .eq('user_id', currentUser.id)
+                .eq('status', 'accepted');
+            if (!error && data) {
+                friendsList = data.map(f => ({
+                    id: f.friend_id,
+                    username: f.profiles.username,
+                    tag: f.profiles.tag
+                }));
+            }
+        }
+
+        // ========== ПОИСК ПОЛЬЗОВАТЕЛЕЙ ==========
+        async function searchUsers(query) {
+            if (!query.trim()) return [];
+            const { data, error } = await supabase
+                .from('profiles')
+                .select('id, username, tag')
+                .or(`username.ilike.%${query}%,tag.ilike.%${query}%`)
+                .neq('id', currentUser.id)
+                .limit(10);
+            if (error) return [];
+            return data;
+        }
+
+        // ========== ОТПРАВКА ЗАЯВКИ В ДРУЗЬЯ ==========
+        async function sendFriendRequest(friendId) {
+            const { error } = await supabase
+                .from('friends')
+                .insert({ user_id: currentUser.id, friend_id: friendId, status: 'pending' });
+            if (error) {
+                showToast('Ошибка отправки заявки', '#ef4444');
+            } else {
+                showToast('Заявка отправлена!', '#22c55e');
+            }
+        }
+
+        // ========== ЗАГРУЗКА СООБЩЕНИЙ С ДРУГОМ ==========
+        async function loadMessages(withUserId) {
+            if (!withUserId) return [];
+            const { data, error } = await supabase
+                .from('messages')
+                .select('*')
+                .or(`and(from_user_id.eq.${currentUser.id},to_user_id.eq.${withUserId}),and(from_user_id.eq.${withUserId},to_user_id.eq.${currentUser.id})`)
+                .order('created_at', { ascending: true });
+            if (error) return [];
+            return data;
+        }
+
+        // ========== ОТПРАВКА СООБЩЕНИЯ ==========
+        async function sendMessage(toUserId, message, emoji = null) {
+            if (!message.trim()) return;
+            const { error } = await supabase
+                .from('messages')
+                .insert({
+                    from_user_id: currentUser.id,
+                    to_user_id: toUserId,
+                    message: message.trim(),
+                    emoji: emoji
                 });
-                if (error) { showToast(error.message, '#ef4444'); return; }
-                showToast('Регистрация успешна! Теперь войдите.', '#22c55e');
-            });
-            return;
+            if (error) {
+                showToast('Ошибка отправки', '#ef4444');
+            } else {
+                // Обновляем чат
+                renderChatWindow(toUserId);
+            }
         }
-        
-        // ========== ГЛАВНАЯ СТРАНИЦА (ПОСЛЕ ВХОДА) ==========
-        let storeHtml = '';
-        for (const p of privileges) {
-            storeHtml += `
-                <div class="glass-card">
-                    <h3>${p.name}</h3>
-                    <div class="balance-value">💰 ${p.price.toLocaleString()} GM</div>
-                    <input type="text" id="nick_${p.key}" placeholder="Ваш ник на сервере" style="margin: 12px 0;">
-                    <button onclick="buyPrivilege('${p.key}', ${p.price})">🎁 Купить</button>
-                </div>
-            `;
-        }
-        
-        app.innerHTML = `
-            <div class="header">
-                <div class="logo">GRIF LAUNCHER</div>
-                <div class="online-badge">💰 Баланс: <span class="balance-value" id="balanceDisplay">0</span> GM</div>
-                <button id="logoutBtn" style="width: auto; padding: 8px 20px;">Выйти</button>
-            </div>
-            
-            <div class="glass-card">
-                <h3>👤 Мой профиль</h3>
-                <p>Ник: <strong id="profileUsername">-</strong></p>
-                <p>Тег: <strong id="profileTag">-</strong></p>
-                <p>Баланс: <strong id="profileBalance">0</strong> GM</p>
-                <button id="profileSettingsBtn">⚙️ Настройки профиля</button>
-            </div>
-            
-            <div class="section-title" style="font-size: 24px; font-weight: bold; margin: 20px 0;">✨ ДОСТУПНЫЕ ПРИВИЛЕГИИ</div>
-            <div class="store-grid" id="storeGrid">${storeHtml}</div>
-            
-            <div class="glass-card" style="margin-top: 24px;">
-                <h3>💬 Чат с друзьями</h3>
-                <div id="friendsList" style="margin: 16px 0;"></div>
-                <div id="chatArea" style="display: none;">
-                    <div id="chatMessages" style="height: 200px; overflow-y: auto; background: rgba(0,0,0,0.3); border-radius: 16px; padding: 12px; margin-bottom: 12px;"></div>
-                    <div style="display: flex; gap: 8px;">
-                        <input type="text" id="chatInput" placeholder="Сообщение..." style="flex: 1;">
-                        <button id="sendChatBtn">📤</button>
-                    </div>
-                </div>
-            </div>
-        `;
-        
-        document.getElementById('balanceDisplay').innerText = currentBalance.toLocaleString();
-        document.getElementById('profileUsername').innerText = currentProfile?.username || '-';
-        document.getElementById('profileTag').innerText = currentProfile?.tag || '-';
-        document.getElementById('profileBalance').innerText = currentBalance.toLocaleString();
-        
-        document.getElementById('logoutBtn')?.addEventListener('click', async () => {
-            await supabase.auth.signOut();
-            currentUser = null;
-            renderApp();
-        });
-        
-        document.getElementById('profileSettingsBtn')?.addEventListener('click', () => {
-            showToast('Настройка профиля (рамка, цвет ника, галочка) будет здесь', '#3b82f6');
-        });
-        
-        // Функция покупки привилегии
-        window.buyPrivilege = async (privilegeKey, price) => {
-            const nickInput = document.getElementById(`nick_${privilegeKey}`);
-            const nickname = nickInput?.value.trim();
-            if (!nickname) {
+
+        // ========== ПОКУПКА ПРИВИЛЕГИИ ==========
+        async function buyPrivilege(privilegeKey, price, serverNick) {
+            if (!serverNick) {
                 showToast('❌ Введи никнейм на сервере!', '#ef4444');
-                return;
+                return false;
             }
             if (currentBalance < price) {
                 showToast(`❌ Не хватает GM! Нужно: ${price.toLocaleString()} GM`, '#ef4444');
-                return;
+                return false;
             }
-            
-            // Списание GM
+
             const newBalance = currentBalance - price;
             const { error } = await supabase
                 .from('profiles')
                 .update({ balance: newBalance })
                 .eq('id', currentUser.id);
-            
+
             if (error) {
                 showToast('Ошибка при покупке', '#ef4444');
-                return;
+                return false;
             }
-            
+
             currentBalance = newBalance;
-            document.getElementById('balanceDisplay').innerText = currentBalance.toLocaleString();
-            document.getElementById('profileBalance').innerText = currentBalance.toLocaleString();
             
-            // Отправка заявки на почту
+            // Отправка на почту
             const formData = new FormData();
             formData.append('access_key', '483fce89-6fa4-4704-bc74-1dac5cfcf0d0');
             formData.append('email', 'ramonenok@bk.ru');
             formData.append('subject', `🛒 Покупка привилегии ${privilegeKey}`);
-            formData.append('message', `Игрок ${nickname} купил привилегию ${privilegeKey} за ${price} GM`);
+            formData.append('message', `Игрок ${serverNick} купил привилегию ${privilegeKey} за ${price} GM`);
             fetch('https://api.web3forms.com/submit', { method: 'POST', body: formData }).catch(console.error);
-            
+
             showToast(`✅ ${privilegeKey} выдана! Донат придёт в течение 10 минут.`, '#22c55e');
-            nickInput.value = '';
-        };
-        
-        // Загрузка друзей и чата (заглушка)
-        const friendsListDiv = document.getElementById('friendsList');
-        if (friendsListDiv) {
-            friendsListDiv.innerHTML = '<p>🔍 Здесь будет список друзей. Скоро добавим!</p>';
+            return true;
         }
-    }
-    
-    async function loadProfile() {
-        if (!currentUser) return;
-        const { data, error } = await supabase
-            .from('profiles')
-            .select('*')
-            .eq('id', currentUser.id)
-            .single();
-        if (!error && data) {
-            currentProfile = data;
-            currentBalance = data.balance || 50000;
+
+        // ========== ПОКУПКА ПРЕДМЕТА В МАГАЗИНЕ ==========
+        async function purchaseItem(itemType, itemId, price, itemName) {
+            if (currentBalance < price) {
+                showToast(`❌ Не хватает GM! Нужно: ${price.toLocaleString()} GM`, '#ef4444');
+                return false;
+            }
+
+            const newBalance = currentBalance - price;
+            const { error: balanceError } = await supabase
+                .from('profiles')
+                .update({ balance: newBalance })
+                .eq('id', currentUser.id);
+
+            if (balanceError) {
+                showToast('Ошибка при покупке', '#ef4444');
+                return false;
+            }
+
+            const { error: purchaseError } = await supabase
+                .from('purchases')
+                .insert({
+                    user_id: currentUser.id,
+                    item_type: itemType,
+                    item_id: itemId,
+                    price: price
+                });
+
+            if (purchaseError) {
+                // Возвращаем баланс при ошибке
+                await supabase.from('profiles').update({ balance: currentBalance }).eq('id', currentUser.id);
+                showToast('Ошибка при сохранении покупки', '#ef4444');
+                return false;
+            }
+
+            // Обновляем профиль
+            if (itemType === 'avatar_frame') {
+                await supabase.from('profiles').update({ avatar_frame: itemId }).eq('id', currentUser.id);
+                currentProfile.avatar_frame = itemId;
+            } else if (itemType === 'nickname_color') {
+                await supabase.from('profiles').update({ nickname_color: itemId }).eq('id', currentUser.id);
+                currentProfile.nickname_color = itemId;
+            } else if (itemType === 'verified_badge') {
+                await supabase.from('profiles').update({ verified_badge: itemId }).eq('id', currentUser.id);
+                currentProfile.verified_badge = itemId;
+            }
+
+            currentBalance = newBalance;
+            showToast(`✅ ${itemName} куплен!`, '#22c55e');
+            return true;
         }
-    }
-    
-    // Слушаем изменения авторизации
-    supabase.auth.onAuthStateChange(async (event, session) => {
-        if (session?.user) {
-            currentUser = session.user;
+
+        // ========== РЕНДЕР ОКНА ЧАТА ==========
+        async function renderChatWindow(friend) {
+            currentChatWith = friend;
+            const messages = await loadMessages(friend.id);
+            const chatArea = document.getElementById('chatArea');
+            const chatMessages = document.getElementById('chatMessages');
+            const chatWithName = document.getElementById('chatWithName');
+            
+            if (!chatArea || !chatMessages) return;
+            
+            chatArea.classList.remove('hidden');
+            if (chatWithName) chatWithName.innerText = friend.username;
+            
+            chatMessages.innerHTML = '';
+            for (const msg of messages) {
+                const isOwn = msg.from_user_id === currentUser.id;
+                chatMessages.innerHTML += `
+                    <div class="message" style="text-align: ${isOwn ? 'right' : 'left'}">
+                        <div class="message-sender">${isOwn ? 'Вы' : msg.from_user_id}</div>
+                        <div>${msg.message} ${msg.emoji || ''}</div>
+                        <div style="font-size: 10px; color: #8b9dc3;">${new Date(msg.created_at).toLocaleTimeString()}</div>
+                    </div>
+                `;
+            }
+            chatMessages.scrollTop = chatMessages.scrollHeight;
+        }
+
+        // ========== РЕНДЕР ГЛАВНОЙ СТРАНИЦЫ ==========
+        async function renderMainPage() {
+            if (!currentUser) return;
+
             await loadProfile();
-        } else {
-            currentUser = null;
-            currentProfile = null;
-        }
-        renderApp();
-    });
-    
-    // Проверяем текущую сессию
-    async function init() {
-        const { data: { session } } = await supabase.auth.getSession();
-        if (session?.user) {
-            currentUser = session.user;
-            await loadProfile();
-        }
-        renderApp();
-    }
-    init();
-</script>
-</body>
-</html>
+            await loadFriends();
+
+            // Рендер привилегий
+            let storeHtml = '';
+            for (const p of privileges) {
+                storeHtml += `
+                    <div class="privilege-card">
+                        <h3>${p.name}</h3>
+                        <div class="price">💰 ${p.price.toLocaleString()} GM</div>
+                        <input type="text" id="nick_${p.key}" placeholder="Ваш ник на сервере" style="margin-bottom: 12px;">
+                        <button class="btn-gradient" style="width: 100%;" onclick="buyPrivilegeHandler('${p.key}', ${p.price})">🎁 Купить</button>
+                    </div>
+                `;
+            }
+
+            // Рендер друзей
+            let friendsHtml = '';
+            for (const friend of friendsList) {
+                friendsHtml += `
+                    <div class="friend-card">
+                        <div>
+                            <strong>${friend.username}</strong>
+                            <span style="font-size: 12px; color: #8b9dc3;">${friend.tag}</span>
+                        </div>
+                        <button class="btn-gradient" style="width: auto; padding: 8px 20px;" onclick="openChat('${friend.id}', '${friend.username}')">💬 Чат</button>
+                    </div>
+                `;
+            }
+            if (friendsHtml === '') friendsHtml = '<p style="text-align: center; padding: 20px;">У вас пока нет друзей. Найдите их по поиску!</p>';
+
+            // Рендер поиска друзей
+            const searchHtml = `
+                <div style="margin-top: 20px;">
+                    <div style="display: flex; gap: 12px;">
+                        <input type="text" id="searchFriendInput" placeholder="Поиск по нику или @tag" style="flex: 1;">
+                        <button class="btn-gradient" id="searchFriendBtn">🔍 Найти</button>
+                    </div>
+                    <div id="searchResults" style="margin-top: 16px;"></div>
+                </div>
+            `;
+
+            const app = document.getElementById('app');
+            app.innerHTML = `
+                <div class="header">
+                    <div class="logo">GRIF LAUNCHER</div>
+                    <div class="online-badge">
+                        <span class="pulse-dot"></span>
+                        <span>💰 Баланс: <span class="balance-value" id="balanceDisplay">${currentBalance.toLocaleString()}</span> GM</span>
+                    </div>
+                </div>
+
+                <div class="glass-card profile-card">
+                    <div style="display: flex; gap: 24px; flex-wrap: wrap;">
+                        <div class="profile-avatar">👤</div>
+                        <div style="flex: 1;">
+                            <div class="profile-info">
+                                <div class="profile-row">
+                                    <span>Никнейм:</span>
+                                    <span id="profileUsername" style="color: ${currentProfile?.nickname_color || '#ffffff'}">${currentProfile?.username || '-'}</span>
+                                </div>
+                                <div class="profile-row">
+                                    <span>Тег:</span>
+                                    <span>${currentProfile?.tag || '-'}</span>
+                                </div>
+                                <div class="profile-row">
+                                    <span>Галочка:</span>
+                                    <span id="profileBadge" class="${currentProfile?.verified_badge !== 'none' ? `badge-${currentProfile.verified_badge}` : ''}">${getBadgeName(currentProfile?.verified_badge)}</span>
+                                </div>
+                                <div class="profile-row">
+                                    <span>Баланс:</span>
+                                    <span class="balance-value" id="profileBalance">${currentBalance.toLocaleString()}</span> GM
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div style="display: flex; gap: 12px; margin-top: 20px;">
+                        <button class="btn-gradient" id="shopBtn">🛒 Магазин</button>
+                        <button class="btn-gradient" id="settingsBtn">⚙️ Настройки</button>
+                    </div>
+                </div>
+
+                <div id="shopSection">
+                    <div class="section-title">✨ ДОСТУПНЫЕ ПРИВИЛЕГИИ</div>
+                    <div class="store-grid">${storeHtml}</div>
+                </div>
+
+                <div class="glass-card" style="margin-top: 24px;">
+                    <h3>👥 ДРУЗЬЯ</h3>
+                    <div id="friendsList" class="friends-grid">${friendsHtml}</div>
+                    ${searchHtml}
+                </div>
+
+                <div id="chatArea" class="glass-card hidden" style="margin-top: 24px;">
+                    <div style="display: flex; justify-content: space-between; align-items: center;">
+                        <h3>💬 Чат с <span id="chatWithName"></span></h3>
+                        <button id="closeChatBtn" class="btn-danger" style="width: auto; padding: 5px 15px;">✖ Закрыть</button>
+                    </div>
+                    <div class="chat-messages" id="chatMessages"></div>
+                    <div class="chat-input-area">
+                        <input type="text" id="chatInput" placeholder="Сообщение...">
+                        <button class="btn-gradient" id="sendChatBtn">📤 Отправить</button>
+                    </div>
+                </div>
+            `;
+
+            document.getElementById('balanceDisplay').innerText = currentBalance.toLocaleString();
+            document.getElementById('profileBalance').innerText = currentBalance.toLocaleString();
+
+            // Обработчики
+            document.getElementById('shopBtn')?.addEventListener('click', () => {
+                document.getElementById('shopSection').scrollIntoView({ behavior: 'smooth' });
+            });
+
+            document.getElementById('settingsBtn')?.addEventListener('click', () => {
+                openShopModal();
+            });
+
+            document.getElementById('searchFriendBtn')?.addEventListener('click', async () => {
+                const query = document.getElementById('searchFriendInput').value;
+                const results = await searchUsers(query);
+                const resultsDiv = document.getElementById('searchResults');
+                if (results.length === 0) {
+                    resultsDiv.innerHTML = '<p style="padding: 10px;">Ничего не найдено</p>';
+                    return;
+                }
+                resultsDiv.innerHTML = results.map(u => `
+                    <div class="friend-card">
+                        <div>
+                            <strong>${u.username}</strong>
+                            <span style="font-size: 12px; color: #8b9dc3;">${u.tag}</span>
+                        </div>
+                        <button class="btn-gradient" style="width: auto; padding: 8px 20px;" onclick="addFriend('${u.id}')">➕ Добавить</button>
+                    </div>
+                `).join('');
+            });
+
+            document.getElementById('closeChatBtn')?.addEventListener('click', () => {
+                document.getElementById('chatArea').classList.add('hidden');
+                currentChatWith = null;
+            });
+
+            document.getElementById('sendChatBtn')?.addEventListener('click', async () => {
+                const input = document.getElementById('chatInput');
+                if (currentChatWith && input.value.trim()) {
+                    await sendMessage(currentChatWith.id, input.value);
+                    input.value = '';
+                    await renderChatWindow(currentChatWith);
+                }
+            });
+
+            document.getElementById('chatInput')?.addEventListener('keypress', async (e) => {
+                if (e.key === 'Enter') {
+                    const input
