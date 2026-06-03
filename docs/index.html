@@ -3,96 +3,332 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>GrifLauncher | Донат магазин</title>
-    <link rel="stylesheet" href="style.css">
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+    <title>GrifLauncher | Платформа</title>
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body {
+            background: #0b0e17;
+            font-family: 'Segoe UI', system-ui, sans-serif;
+            color: #eef2ff;
+            padding: 20px;
+        }
+        .container { max-width: 1400px; margin: 0 auto; }
+        .glass-card {
+            background: rgba(18,25,45,0.6);
+            backdrop-filter: blur(12px);
+            border-radius: 28px;
+            padding: 24px;
+            border: 1px solid rgba(59,130,246,0.2);
+            margin-bottom: 24px;
+        }
+        .header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 24px;
+            flex-wrap: wrap;
+            gap: 16px;
+        }
+        .logo {
+            font-size: 32px;
+            font-weight: 800;
+            background: linear-gradient(90deg, #fff, #3b82f6, #8b5cf6, #ec4899);
+            background-size: 300% auto;
+            -webkit-background-clip: text;
+            background-clip: text;
+            color: transparent;
+            animation: textGlow 4s linear infinite;
+        }
+        @keyframes textGlow {
+            0% { background-position: 0% 50%; }
+            100% { background-position: 200% 50%; }
+        }
+        .auth-container { max-width: 400px; margin: 0 auto; }
+        input, button {
+            width: 100%;
+            padding: 12px;
+            margin: 8px 0;
+            background: rgba(0,0,0,0.4);
+            border: 1px solid #3b82f6;
+            border-radius: 40px;
+            color: white;
+        }
+        button {
+            background: linear-gradient(135deg, #3b82f6, #2563eb);
+            cursor: pointer;
+            font-weight: bold;
+        }
+        button:hover { transform: scale(1.01); }
+        .balance-value {
+            font-size: 28px;
+            font-weight: bold;
+            color: #facc15;
+        }
+        .store-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+            gap: 24px;
+        }
+        .badge-blue { color: #3b82f6; }
+        .badge-gold { color: #facc15; }
+        .badge-rainbow { background: linear-gradient(90deg, red, orange, yellow, green, cyan, blue, violet); -webkit-background-clip: text; background-clip: text; color: transparent; }
+        #toast {
+            position: fixed; bottom: 20px; right: 20px;
+            background: #22c55e; color: white;
+            padding: 12px 24px; border-radius: 60px;
+            opacity: 0; transition: 0.2s; z-index: 1000;
+        }
+        .hidden { display: none; }
+    </style>
 </head>
 <body>
-    <!-- Анимированный фон -->
-    <div class="gradient-bg"></div>
-    <div class="stars"></div>
+<div class="container" id="app"></div>
+<div id="toast"></div>
 
-    <div class="container">
-        <!-- ШАПКА -->
-        <header class="header">
-            <div class="logo">
-                <h1 class="glow-text">GRIF LAUNCHER</h1>
-                <div class="logo-glow"></div>
+<script>
+    // ========== НАСТРОЙКИ SUPABASE ==========
+    const SUPABASE_URL = 'ВАШ_PROJECT_URL';  // 👈 ЗАМЕНИ НА ТВОЙ URL
+    const SUPABASE_KEY = 'ВАШ_PUBLISHABLE_KEY';  // 👈 ЗАМЕНИ НА ТВОЙ PUBLISHABLE KEY
+
+    const supabase = window.supabase.createClient(SUPABASE_URL, SUPABASE_KEY);
+
+    // ========== ПРИВИЛЕГИИ ==========
+    const privileges = [
+        { name: '🎨 Креатив', price: 1000, key: 'creative' },
+        { name: '🛡️ Модер', price: 2500, key: 'moder' },
+        { name: '⚔️ Лорд', price: 5000, key: 'lord' },
+        { name: '👑 Админ', price: 10000, key: 'admin' },
+        { name: '🔱 Гл. Админ', price: 20000, key: 'headadmin' },
+        { name: '✨ Создатель', price: 30000, key: 'creator' },
+        { name: '🔥 Основатель', price: 40000, key: 'founder' },
+        { name: '💎 Владелец', price: 50000, key: 'owner' },
+        { name: '🏛️ Цезарь', price: 70000, key: 'caesar' },
+        { name: '👑 ПРАВИТЕЛЬ', price: 120000, key: 'ruler' }
+    ];
+
+    // ========== ГЛОБАЛЬНЫЕ ПЕРЕМЕННЫЕ ==========
+    let currentUser = null;
+    let currentProfile = null;
+    let currentBalance = 0;
+
+    // ========== ВСПОМОГАТЕЛЬНЫЕ ФУНКЦИИ ==========
+    function showToast(msg, color = '#22c55e') {
+        const toast = document.getElementById('toast');
+        toast.style.backgroundColor = color;
+        toast.innerText = msg;
+        toast.style.opacity = '1';
+        setTimeout(() => toast.style.opacity = '0', 3000);
+    }
+
+    // ========== РЕНДЕР ИНТЕРФЕЙСА ==========
+    async function renderApp() {
+        const app = document.getElementById('app');
+        
+        if (!currentUser) {
+            // Страница входа/регистрации
+            app.innerHTML = `
+                <div class="glass-card auth-container" style="margin: 0 auto;">
+                    <div class="logo" style="text-align: center; margin-bottom: 24px;">GRIF LAUNCHER</div>
+                    <div id="authTabs" style="display: flex; gap: 10px; margin-bottom: 20px;">
+                        <button id="loginTabBtn" style="background: #3b82f6;">Вход</button>
+                        <button id="registerTabBtn">Регистрация</button>
+                    </div>
+                    <div id="loginForm">
+                        <input type="email" id="loginEmail" placeholder="Email">
+                        <input type="password" id="loginPassword" placeholder="Пароль">
+                        <button id="doLogin">Войти</button>
+                    </div>
+                    <div id="registerForm" style="display: none;">
+                        <input type="text" id="regUsername" placeholder="Никнейм">
+                        <input type="email" id="regEmail" placeholder="Email">
+                        <input type="password" id="regPassword" placeholder="Пароль">
+                        <input type="text" id="regTag" placeholder="@username (для поиска)">
+                        <button id="doRegister">Зарегистрироваться</button>
+                    </div>
+                </div>
+            `;
+            
+            document.getElementById('loginTabBtn')?.addEventListener('click', () => {
+                document.getElementById('loginForm').style.display = 'block';
+                document.getElementById('registerForm').style.display = 'none';
+                document.getElementById('loginTabBtn').style.background = '#3b82f6';
+                document.getElementById('registerTabBtn').style.background = 'rgba(59,130,246,0.2)';
+            });
+            document.getElementById('registerTabBtn')?.addEventListener('click', () => {
+                document.getElementById('loginForm').style.display = 'none';
+                document.getElementById('registerForm').style.display = 'block';
+                document.getElementById('registerTabBtn').style.background = '#3b82f6';
+                document.getElementById('loginTabBtn').style.background = 'rgba(59,130,246,0.2)';
+            });
+            
+            document.getElementById('doLogin')?.addEventListener('click', async () => {
+                const email = document.getElementById('loginEmail').value;
+                const password = document.getElementById('loginPassword').value;
+                const { data, error } = await supabase.auth.signInWithPassword({ email, password });
+                if (error) { showToast(error.message, '#ef4444'); return; }
+                currentUser = data.user;
+                await loadProfile();
+                renderApp();
+            });
+            
+            document.getElementById('doRegister')?.addEventListener('click', async () => {
+                const username = document.getElementById('regUsername').value;
+                const email = document.getElementById('regEmail').value;
+                const password = document.getElementById('regPassword').value;
+                const tag = document.getElementById('regTag').value;
+                const { data, error } = await supabase.auth.signUp({ 
+                    email, password, 
+                    options: { data: { username, tag } }
+                });
+                if (error) { showToast(error.message, '#ef4444'); return; }
+                showToast('Регистрация успешна! Теперь войдите.', '#22c55e');
+            });
+            return;
+        }
+        
+        // ========== ГЛАВНАЯ СТРАНИЦА (ПОСЛЕ ВХОДА) ==========
+        let storeHtml = '';
+        for (const p of privileges) {
+            storeHtml += `
+                <div class="glass-card">
+                    <h3>${p.name}</h3>
+                    <div class="balance-value">💰 ${p.price.toLocaleString()} GM</div>
+                    <input type="text" id="nick_${p.key}" placeholder="Ваш ник на сервере" style="margin: 12px 0;">
+                    <button onclick="buyPrivilege('${p.key}', ${p.price})">🎁 Купить</button>
+                </div>
+            `;
+        }
+        
+        app.innerHTML = `
+            <div class="header">
+                <div class="logo">GRIF LAUNCHER</div>
+                <div class="online-badge">💰 Баланс: <span class="balance-value" id="balanceDisplay">0</span> GM</div>
+                <button id="logoutBtn" style="width: auto; padding: 8px 20px;">Выйти</button>
             </div>
-            <div class="online-badge" id="statusBadge">
-                <span class="pulse-dot"></span>
-                <span id="statusText">Проверка...</span>
+            
+            <div class="glass-card">
+                <h3>👤 Мой профиль</h3>
+                <p>Ник: <strong id="profileUsername">-</strong></p>
+                <p>Тег: <strong id="profileTag">-</strong></p>
+                <p>Баланс: <strong id="profileBalance">0</strong> GM</p>
+                <button id="profileSettingsBtn">⚙️ Настройки профиля</button>
             </div>
-        </header>
-
-        <!-- ВЫБОР СЕРВЕРА -->
-        <div class="glass-card server-section">
-            <h3>🎮 ВЫБЕРИ СЕРВЕР</h3>
-            <div class="server-buttons" id="serverButtons">
-                <button class="server-btn active" data-server="survival">🏔️ Выживание #1</button>
-                <button class="server-btn" data-server="creative">🎨 Креатив</button>
-                <button class="server-btn" data-server="anarchy">⚔️ Анархия</button>
+            
+            <div class="section-title" style="font-size: 24px; font-weight: bold; margin: 20px 0;">✨ ДОСТУПНЫЕ ПРИВИЛЕГИИ</div>
+            <div class="store-grid" id="storeGrid">${storeHtml}</div>
+            
+            <div class="glass-card" style="margin-top: 24px;">
+                <h3>💬 Чат с друзьями</h3>
+                <div id="friendsList" style="margin: 16px 0;"></div>
+                <div id="chatArea" style="display: none;">
+                    <div id="chatMessages" style="height: 200px; overflow-y: auto; background: rgba(0,0,0,0.3); border-radius: 16px; padding: 12px; margin-bottom: 12px;"></div>
+                    <div style="display: flex; gap: 8px;">
+                        <input type="text" id="chatInput" placeholder="Сообщение..." style="flex: 1;">
+                        <button id="sendChatBtn">📤</button>
+                    </div>
+                </div>
             </div>
-        </div>
-
-        <!-- БАЛАНС -->
-        <div class="glass-card balance-card">
-            <div class="balance-icon">💰</div>
-            <div class="balance-info">
-                <span class="balance-label">Ваш баланс GM</span>
-                <span class="balance-value" id="userBalance">50 000</span>
-            </div>
-            <button class="btn-gradient" onclick="topUpBalance()">➕ Пополнить</button>
-        </div>
-
-        <!-- СТАТУС СЕРВЕРА -->
-        <div class="glass-card status-card">
-            <div class="status-row">🌐 Сервер: <span id="serverOnline">—</span></div>
-            <div class="status-row">👥 Игроки: <span id="serverPlayers">—</span></div>
-            <div class="status-row">🎮 Версия: <span id="serverVersion">—</span></div>
-        </div>
-
-        <!-- МАГАЗИН -->
-        <div class="section-title">
-            <span class="title-gradient">✨ ДОСТУПНЫЕ ПРИВИЛЕГИИ</span>
-        </div>
-        <div class="store-grid" id="storeGrid"></div>
-
-        <!-- ИНФО КАРТОЧКА -->
-        <div class="glass-card info-card">
-            <div class="info-icon">⏰</div>
-            <div class="info-text">
-                <strong>Важная информация!</strong><br>
-                После покупки привилегия будет выдана в течение 10 минут.<br>
-                Проверьте никнейм перед покупкой! Валюту GM можно заработать в игре.
-            </div>
-        </div>
-
-        <footer class="footer">
-            💰 Валюта: <strong>GM</strong> | Начальный баланс: 50 000 GM | Все донаты выдаются автоматически
-        </footer>
-    </div>
-
-    <div id="toast"></div>
-    <div class="modal" id="buyModal">
-        <div class="modal-content">
-            <div class="modal-header">
-                <h3>Подтверждение покупки</h3>
-                <button class="modal-close" onclick="closeModal()">✖</button>
-            </div>
-            <div class="modal-body">
-                <p>Вы покупаете: <strong id="modalPrivName"></strong></p>
-                <p>Цена: <strong id="modalPrice"></strong> GM</p>
-                <p>Никнейм: <strong id="modalNick"></strong></p>
-                <p>Сервер: <strong id="modalServer"></strong></p>
-            </div>
-            <div class="modal-footer">
-                <button class="btn-cancel" onclick="closeModal()">Отмена</button>
-                <button class="btn-confirm" onclick="confirmPurchase()">Подтвердить</button>
-            </div>
-        </div>
-    </div>
-
-    <script src="script.js"></script>
+        `;
+        
+        document.getElementById('balanceDisplay').innerText = currentBalance.toLocaleString();
+        document.getElementById('profileUsername').innerText = currentProfile?.username || '-';
+        document.getElementById('profileTag').innerText = currentProfile?.tag || '-';
+        document.getElementById('profileBalance').innerText = currentBalance.toLocaleString();
+        
+        document.getElementById('logoutBtn')?.addEventListener('click', async () => {
+            await supabase.auth.signOut();
+            currentUser = null;
+            renderApp();
+        });
+        
+        document.getElementById('profileSettingsBtn')?.addEventListener('click', () => {
+            showToast('Настройка профиля (рамка, цвет ника, галочка) будет здесь', '#3b82f6');
+        });
+        
+        // Функция покупки привилегии
+        window.buyPrivilege = async (privilegeKey, price) => {
+            const nickInput = document.getElementById(`nick_${privilegeKey}`);
+            const nickname = nickInput?.value.trim();
+            if (!nickname) {
+                showToast('❌ Введи никнейм на сервере!', '#ef4444');
+                return;
+            }
+            if (currentBalance < price) {
+                showToast(`❌ Не хватает GM! Нужно: ${price.toLocaleString()} GM`, '#ef4444');
+                return;
+            }
+            
+            // Списание GM
+            const newBalance = currentBalance - price;
+            const { error } = await supabase
+                .from('profiles')
+                .update({ balance: newBalance })
+                .eq('id', currentUser.id);
+            
+            if (error) {
+                showToast('Ошибка при покупке', '#ef4444');
+                return;
+            }
+            
+            currentBalance = newBalance;
+            document.getElementById('balanceDisplay').innerText = currentBalance.toLocaleString();
+            document.getElementById('profileBalance').innerText = currentBalance.toLocaleString();
+            
+            // Отправка заявки на почту
+            const formData = new FormData();
+            formData.append('access_key', '483fce89-6fa4-4704-bc74-1dac5cfcf0d0');
+            formData.append('email', 'ramonenok@bk.ru');
+            formData.append('subject', `🛒 Покупка привилегии ${privilegeKey}`);
+            formData.append('message', `Игрок ${nickname} купил привилегию ${privilegeKey} за ${price} GM`);
+            fetch('https://api.web3forms.com/submit', { method: 'POST', body: formData }).catch(console.error);
+            
+            showToast(`✅ ${privilegeKey} выдана! Донат придёт в течение 10 минут.`, '#22c55e');
+            nickInput.value = '';
+        };
+        
+        // Загрузка друзей и чата (заглушка)
+        const friendsListDiv = document.getElementById('friendsList');
+        if (friendsListDiv) {
+            friendsListDiv.innerHTML = '<p>🔍 Здесь будет список друзей. Скоро добавим!</p>';
+        }
+    }
+    
+    async function loadProfile() {
+        if (!currentUser) return;
+        const { data, error } = await supabase
+            .from('profiles')
+            .select('*')
+            .eq('id', currentUser.id)
+            .single();
+        if (!error && data) {
+            currentProfile = data;
+            currentBalance = data.balance || 50000;
+        }
+    }
+    
+    // Слушаем изменения авторизации
+    supabase.auth.onAuthStateChange(async (event, session) => {
+        if (session?.user) {
+            currentUser = session.user;
+            await loadProfile();
+        } else {
+            currentUser = null;
+            currentProfile = null;
+        }
+        renderApp();
+    });
+    
+    // Проверяем текущую сессию
+    async function init() {
+        const { data: { session } } = await supabase.auth.getSession();
+        if (session?.user) {
+            currentUser = session.user;
+            await loadProfile();
+        }
+        renderApp();
+    }
+    init();
+</script>
 </body>
 </html>
