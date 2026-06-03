@@ -4,12 +4,44 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>GrifLauncher | Магазин</title>
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;500;600;700;800;900&family=Montserrat:wght@400;500;600;700&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
-    <link rel="stylesheet" href="style.css">
-    <script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-app-compat.js"></script>
-    <script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-auth-compat.js"></script>
-    <script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore-compat.js"></script>
+    <link rel="stylesheet" href="global.css">
+    <style>
+        .shop-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(320px, 1fr));
+            gap: 30px;
+            margin-top: 40px;
+        }
+        .product-card {
+            background: rgba(20,20,30,0.6);
+            backdrop-filter: blur(8px);
+            border-radius: 24px;
+            padding: 24px;
+            text-align: center;
+            transition: 0.3s;
+            border: 1px solid rgba(255,215,0,0.15);
+        }
+        .product-card:hover {
+            transform: translateY(-8px);
+            border-color: #ffd700;
+        }
+        .product-icon i { font-size: 48px; color: #ffd700; margin-bottom: 20px; }
+        .price { font-size: 28px; font-weight: bold; color: #ffd700; margin: 16px 0; }
+        .product-card ul { list-style: none; margin: 20px 0; text-align: left; }
+        .product-card li { padding: 8px 0; display: flex; align-items: center; gap: 10px; }
+        .buy-btn {
+            background: linear-gradient(135deg, #ffd700, #ffaa00);
+            color: #0a0a0a;
+            border: none;
+            padding: 12px;
+            border-radius: 60px;
+            font-weight: bold;
+            cursor: pointer;
+            width: 100%;
+        }
+    </style>
 </head>
 <body>
     <div class="sidebar">
@@ -17,30 +49,32 @@
         <div class="sidebar-menu">
             <a href="index.html" class="menu-item"><i class="fas fa-home"></i> Главная</a>
             <a href="shop.html" class="menu-item active"><i class="fas fa-store"></i> Магазин</a>
-            <a href="chat.html" class="menu-item"><i class="fas fa-comments"></i> Чат</a>
             <a href="profile.html" class="menu-item"><i class="fas fa-user"></i> Профиль</a>
             <a href="gallery.html" class="menu-item"><i class="fas fa-image"></i> Галерея</a>
-            <a href="support.html" class="menu-item"><i class="fas fa-ticket-alt"></i> Поддержка</a>
         </div>
         <div class="sidebar-footer">
-            <div id="authStatus"></div>
-            <button id="logoutBtn" class="logout-btn"><i class="fas fa-sign-out-alt"></i> Выйти</button>
+            <div class="auth-status">Не авторизован</div>
+            <button class="logout-btn"><i class="fas fa-sign-out-alt"></i> Выйти</button>
         </div>
     </div>
 
     <div class="main-content">
-        <div class="shop-header"><h1>✨ МАГАЗИН ПРИВИЛЕГИЙ</h1></div>
-        <div class="shop-grid" id="shopGrid"></div>
-    </div>
-
-    <div id="purchaseModal" class="modal">
-        <div class="modal-content">
-            <span class="close-purchase">&times;</span>
-            <h2>Покупка</h2>
-            <p id="purchaseMessage"></p>
-            <button id="closePurchaseBtn">Закрыть</button>
+        <div class="top-bar">
+            <div class="user-info">
+                <img src="https://ui-avatars.com/api/?background=ffd700&color=000&name=Гость">
+                <span>Гость</span>
+            </div>
+        </div>
+        <div class="section-title">✨ МАГАЗИН ПРИВИЛЕГИЙ</div>
+        <div class="shop-grid">
+            <div class="product-card"><div class="product-icon"><i class="fas fa-crown"></i></div><h3>VIP Стандарт</h3><div class="price">150 ₽</div><ul><li><i class="fas fa-check-circle"></i> Цветной ник</li><li><i class="fas fa-check-circle"></i> /kit</li><li><i class="fas fa-check-circle"></i> /fly</li></ul><button class="buy-btn">КУПИТЬ</button></div>
+            <div class="product-card"><div class="product-icon"><i class="fas fa-gem"></i></div><h3>VIP+ Продвинутый</h3><div class="price">350 ₽</div><ul><li><i class="fas fa-check-circle"></i> Всё из VIP</li><li><i class="fas fa-check-circle"></i> VIP-чат</li><li><i class="fas fa-check-circle"></i> /heal</li></ul><button class="buy-btn">КУПИТЬ</button></div>
+            <div class="product-card"><div class="product-icon"><i class="fas fa-star"></i></div><h3>MVP Вечный</h3><div class="price">1000 ₽</div><ul><li><i class="fas fa-check-circle"></i> Всё из VIP+</li><li><i class="fas fa-check-circle"></i> Префикс [KING]</li><li><i class="fas fa-check-circle"></i> /god</li></ul><button class="buy-btn">КУПИТЬ</button></div>
         </div>
     </div>
-    <script src="script.js"></script>
+
+    <script>
+        document.querySelectorAll('.buy-btn').forEach(btn => btn.onclick = () => alert('Демо-покупка'));
+    </script>
 </body>
 </html>
