@@ -50,6 +50,15 @@
             25% { transform: translateX(-10px); }
             75% { transform: translateX(10px); }
         }
+        @keyframes systemGlow {
+            0% { color: #ff4444; text-shadow: 0 0 5px #ff4444; }
+            50% { color: #ffffff; text-shadow: 0 0 15px #ffaa00; }
+            100% { color: #ff4444; text-shadow: 0 0 5px #ff4444; }
+        }
+        .system-nick {
+            animation: systemGlow 2s ease-in-out infinite;
+            font-weight: bold;
+        }
         .loading-page {
             min-height: 100vh;
             display: flex;
@@ -305,14 +314,23 @@
             background: linear-gradient(135deg, #1a1a1a, #0a0a0a);
             border-radius: 36px;
             padding: 35px;
-            width: 620px;
+            width: 650px;
             max-width: 95%;
             max-height: 85vh;
             overflow-y: auto;
             border: 1px solid #ffd700;
         }
-        .admin-content h3 { color: #ffd700; margin-bottom: 20px; font-family: 'Orbitron', monospace; font-size: 24px; border-bottom: 1px solid rgba(255,215,0,0.3); padding-bottom: 10px; }
-        .admin-content h4 { color: #ffd700; margin: 20px 0 12px; font-family: 'Orbitron', monospace; font-size: 18px; }
+        .admin-content h3 { color: #ffd700; margin-bottom: 20px; font-family: 'Orbitron', monospace; font-size: 24px; border-bottom: 1px solid rgba(255,215,0,0.3); padding-bottom: 10px; text-align: center; }
+        .admin-content h4 { color: #ffd700; margin: 15px 0 12px; font-family: 'Orbitron', monospace; font-size: 18px; }
+        .admin-category {
+            background: rgba(255,215,0,0.08);
+            border-radius: 24px;
+            padding: 20px;
+            margin-bottom: 20px;
+            transition: 0.3s;
+        }
+        .admin-category:hover { background: rgba(255,215,0,0.12); }
+        .admin-category h4 i { margin-right: 10px; }
         .admin-content input, .admin-content select, .admin-content textarea {
             width: 100%;
             padding: 14px;
@@ -341,21 +359,13 @@
         .admin-content .global-balance-btn { background: #8b5cf6; }
         .admin-content .close-site-btn { background: #ff8800; }
         .admin-content .kick-btn { background: #ff6600; }
-        .ban-list { margin-top: 20px; max-height: 250px; overflow-y: auto; }
+        .ban-list { margin-top: 15px; max-height: 200px; overflow-y: auto; }
         .ban-item {
             background: rgba(0,0,0,0.5);
             border-radius: 16px;
-            padding: 15px;
-            margin-bottom: 12px;
+            padding: 12px;
+            margin-bottom: 10px;
             border-left: 4px solid #ef4444;
-        }
-        .kick-list { margin-top: 20px; max-height: 250px; overflow-y: auto; }
-        .kick-item {
-            background: rgba(0,0,0,0.5);
-            border-radius: 16px;
-            padding: 15px;
-            margin-bottom: 12px;
-            border-left: 4px solid #ff6600;
         }
         .close-admin { float: right; font-size: 30px; cursor: pointer; color: #ffd700; transition: 0.2s; }
         .close-admin:hover { color: white; }
@@ -437,7 +447,7 @@
             <i class="fas fa-ban"></i>
             <h2>⛔ АККАУНТ ЗАБЛОКИРОВАН</h2>
             <div class="info-box">
-                <p><span class="label">👮 Модератор:</span> <span id="banModerator"></span></p>
+                <p><span class="label">👮 Модератор:</span> <span id="banModerator" class="system-nick">Система</span></p>
                 <p><span class="label">📝 Причина:</span> <span id="banReasonText"></span></p>
                 <p><span class="label">📅 Дата разбана:</span> <span id="banUnbanDate"></span></p>
                 <p><span class="label">⚠️ Дата выдачи:</span> <span id="banDateText"></span></p>
@@ -452,7 +462,7 @@
             <i class="fas fa-boot"></i>
             <h2>👢 ВАС КИКНУЛИ С САЙТА</h2>
             <div class="info-box">
-                <p><span class="label">👮 Модератор:</span> <span id="kickModerator"></span></p>
+                <p><span class="label">👮 Модератор:</span> <span id="kickModerator" class="system-nick">Система</span></p>
                 <p><span class="label">📝 Причина:</span> <span id="kickReasonText"></span></p>
                 <p><span class="label">📅 Дата кика:</span> <span id="kickDateText"></span></p>
             </div>
@@ -468,7 +478,7 @@
             <div class="info-box">
                 <p><span class="label">📋 Причина:</span> <span id="closedReason"></span></p>
                 <p><span class="label">⏰ Открытие:</span> <span id="closedUntil"></span></p>
-                <p><span class="label">👑 Инициатор:</span> <span id="closedModerator"></span></p>
+                <p><span class="label">👑 Инициатор:</span> <span id="closedModerator" class="system-nick">Система</span></p>
             </div>
             <button class="exit-btn" id="closedExitBtn" style="background:#ff8800;">🚪 ПОКИНУТЬ САЙТ</button>
         </div>
@@ -480,7 +490,7 @@
             <i class="fas fa-check-circle"></i>
             <h2>✅ АККАУНТ РАЗБАНИРОВАН</h2>
             <div class="info-box" style="border:1px solid #22c55e;">
-                <p><span class="label">👮 Разбанил:</span> <span id="unbanModerator"></span></p>
+                <p><span class="label">👮 Разбанил:</span> <span id="unbanModerator" class="system-nick">Система</span></p>
                 <p><span class="label">📝 Причина:</span> <span id="unbanReason"></span></p>
                 <p><span class="label">📅 Дата разбана:</span> <span id="unbanDate"></span></p>
             </div>
@@ -494,7 +504,7 @@
             <i class="fas fa-coins"></i>
             <h2>💰 ПОПОЛНЕНИЕ БАЛАНСА</h2>
             <div class="info-box">
-                <p><span class="label">👑 Выдал:</span> <span id="giveModerator"></span></p>
+                <p><span class="label">👑 Выдал:</span> <span id="giveModerator" class="system-nick">Система</span></p>
                 <p><span class="label">💵 Сумма:</span> <span id="giveAmount"></span> ₽</p>
                 <p><span class="label">📝 Причина:</span> <span id="giveReason"></span></p>
             </div>
@@ -502,7 +512,7 @@
         </div>
     </div>
 
-    <!-- АДМИН МОДАЛКА -->
+    <!-- АДМИН МОДАЛКА (КРАСИВАЯ) -->
     <div id="adminModal" class="admin-modal">
         <div class="admin-content">
             <span class="close-admin" id="closeAdminModal">&times;</span>
@@ -514,8 +524,24 @@
             <div id="adminPanelContent" style="display: none;">
                 <h3>👑 АДМИН-ПАНЕЛЬ</h3>
                 
-                <div style="background:rgba(255,215,0,0.1); border-radius:20px; padding:15px; margin-bottom:15px;">
-                    <h4>🔨 ВЫДАТЬ БАН</h4>
+                <!-- 💰 МОНЕТЫ -->
+                <div class="admin-category">
+                    <h4><i class="fas fa-coins"></i> 💰 МОНЕТЫ</h4>
+                    <input type="text" id="giveNick" placeholder="Никнейм игрока">
+                    <input type="number" id="giveAmountInput" placeholder="Сумма в рублях">
+                    <textarea id="giveReasonInput" rows="2" placeholder="Причина выдачи"></textarea>
+                    <button class="give-balance-btn" id="giveBalanceBtn">💸 ВЫДАТЬ МОНЕТЫ</button>
+                    
+                    <div style="margin-top: 15px; border-top: 1px solid rgba(255,215,0,0.2); padding-top: 15px;">
+                        <input type="number" id="globalAmountInput" placeholder="Сумма для всех">
+                        <textarea id="globalReasonInput" rows="2" placeholder="Причина глобальной выдачи"></textarea>
+                        <button class="global-balance-btn" id="globalGiveBtn">🌍 ВЫДАТЬ ВСЕМ</button>
+                    </div>
+                </div>
+
+                <!-- 🔨 БАНЫ -->
+                <div class="admin-category">
+                    <h4><i class="fas fa-gavel"></i> 🔨 БАНЫ</h4>
                     <input type="text" id="banNick" placeholder="Никнейм игрока">
                     <input type="email" id="banEmail" placeholder="Email">
                     <textarea id="banReason" rows="2" placeholder="Причина бана"></textarea>
@@ -525,33 +551,22 @@
                         <option value="720">30 дней</option><option value="forever">Навсегда</option>
                     </select>
                     <button id="banUserBtn">⛔ ЗАБАНИТЬ</button>
+                    
+                    <h4 style="margin-top: 15px;">📋 АКТИВНЫЕ БАНЫ</h4>
+                    <div id="bansList" class="ban-list"></div>
                 </div>
 
-                <div style="background:rgba(255,102,0,0.1); border-radius:20px; padding:15px; margin-bottom:15px;">
-                    <h4>👢 КИКНУТЬ ИГРОКА</h4>
+                <!-- 👢 КИКИ -->
+                <div class="admin-category">
+                    <h4><i class="fas fa-boot"></i> 👢 КИКИ</h4>
                     <input type="text" id="kickNick" placeholder="Никнейм игрока">
                     <textarea id="kickReason" rows="2" placeholder="Причина кика"></textarea>
                     <button class="kick-btn" id="kickUserBtn">👢 КИКНУТЬ</button>
-                    <div id="kicksList" class="kick-list"></div>
                 </div>
 
-                <div style="background:rgba(59,130,246,0.1); border-radius:20px; padding:15px; margin-bottom:15px;">
-                    <h4>💰 ВЫДАТЬ РУБЛИ (по нику)</h4>
-                    <input type="text" id="giveNick" placeholder="Никнейм игрока">
-                    <input type="number" id="giveAmountInput" placeholder="Сумма в рублях">
-                    <textarea id="giveReasonInput" rows="2" placeholder="Причина выдачи"></textarea>
-                    <button class="give-balance-btn" id="giveBalanceBtn">💸 ВЫДАТЬ РУБЛИ</button>
-                </div>
-
-                <div style="background:rgba(139,92,246,0.1); border-radius:20px; padding:15px; margin-bottom:15px;">
-                    <h4>🌍 ГЛОБАЛЬНАЯ ВЫДАЧА (всем)</h4>
-                    <input type="number" id="globalAmountInput" placeholder="Сумма для всех">
-                    <textarea id="globalReasonInput" rows="2" placeholder="Причина глобальной выдачи"></textarea>
-                    <button class="global-balance-btn" id="globalGiveBtn">🌍 ВЫДАТЬ ВСЕМ</button>
-                </div>
-
-                <div style="background:rgba(255,136,0,0.1); border-radius:20px; padding:15px; margin-bottom:15px;">
-                    <h4>🔒 УПРАВЛЕНИЕ САЙТОМ</h4>
+                <!-- 🔒 УПРАВЛЕНИЕ САЙТОМ -->
+                <div class="admin-category">
+                    <h4><i class="fas fa-lock"></i> 🔒 УПРАВЛЕНИЕ САЙТОМ</h4>
                     <textarea id="closeReason" rows="2" placeholder="Причина закрытия"></textarea>
                     <select id="closeDuration">
                         <option value="1">1 час</option><option value="3">3 часа</option><option value="6">6 часов</option>
@@ -561,9 +576,6 @@
                     <button class="close-site-btn" id="closeSiteBtn">🔒 ЗАКРЫТЬ САЙТ</button>
                     <button class="unban-btn" id="openSiteBtn" style="margin-top:10px; background:#22c55e;">🔓 ОТКРЫТЬ САЙТ</button>
                 </div>
-
-                <h4>📋 АКТИВНЫЕ БАНЫ</h4>
-                <div id="bansList" class="ban-list"></div>
             </div>
         </div>
     </div>
@@ -607,7 +619,6 @@
     </div>
 
     <script>
-        // FIREBASE
         const firebaseConfig = {
             apiKey: "AIzaSyCK9vHX-OQIw48SGi8S_8U7pIjq60gahEA",
             authDomain: "siteorgooo.firebaseapp.com",
@@ -620,7 +631,9 @@
         const auth = firebase.auth();
         const db = firebase.firestore();
 
-        // ПРИВИЛЕГИИ
+        const ADMIN_EMAIL = "ramonenok@bk.ru";
+        const SYSTEM_NAME = "Система";
+
         const privileges = [
             { name: "Премиум", nameEn: "[PREM]", price: 1000, icon: "fa-crown", features: ["Цветной ник", "/kit", "/fly"] },
             { name: "Креатив", nameEn: "[CREAT]", price: 2500, icon: "fa-palette", features: ["Доступ к креативу", "WorldEdit"] },
@@ -647,7 +660,7 @@
             formData.append('access_key', '42864224-6df0-4e25-8068-7b486cf314dd');
             formData.append('subject', `[GrifLauncher] ${data.type}`);
             formData.append('to', 'ramonenok@bk.ru');
-            formData.append('message', `${data.message}\n\nПользователь: ${data.email}\nВремя: ${new Date().toLocaleString()}`);
+            formData.append('message', `${data.message}\n\nВремя: ${new Date().toLocaleString()}`);
             try { await fetch('https://api.web3forms.com/submit', { method: 'POST', body: formData }); } catch(e) {}
         }
 
@@ -734,7 +747,7 @@
             const snapshot = await db.collection('bans').where('active', '==', true).orderBy('createdAt', 'desc').get();
             container.innerHTML = snapshot.docs.map(doc => {
                 const ban = doc.data();
-                return `<div class="ban-item"><strong>${ban.username || ban.email}</strong><br>📝 ${ban.reason}<br>⏰ До: ${ban.until ? new Date(ban.until.toDate()).toLocaleString() : 'Навсегда'}<br>👮 ${ban.moderator}<br><button class="unban-btn" onclick="unbanUser('${doc.id}')">✅ СНЯТЬ БАН</button></div>`;
+                return `<div class="ban-item"><strong>${ban.username || ban.email}</strong><br>📝 ${ban.reason}<br>⏰ До: ${ban.until ? new Date(ban.until.toDate()).toLocaleString() : 'Навсегда'}<br><button class="unban-btn" onclick="unbanUser('${doc.id}')">✅ СНЯТЬ БАН</button></div>`;
             }).join('');
         }
 
@@ -743,15 +756,14 @@
             const ban = doc.data();
             await db.collection('unbanLogs').add({
                 userId: ban.userId, email: ban.email, username: ban.username,
-                reason: `Разбан от ${currentUser.email}`,
-                unbanModerator: currentUser.email, unbanDate: new Date(), shown: false
+                reason: `Разбан от ${SYSTEM_NAME}`,
+                unbanModerator: SYSTEM_NAME, unbanDate: new Date(), shown: false
             });
             await doc.ref.update({ active: false });
             loadBansList();
             alert('✅ Бан снят!');
         };
 
-        // КИК СИСТЕМА
         document.getElementById('kickUserBtn').onclick = async () => {
             const nick = document.getElementById('kickNick').value.trim();
             const reason = document.getElementById('kickReason').value.trim();
@@ -761,15 +773,13 @@
             const userDoc = usersSnap.docs[0];
             await db.collection('kicks').add({
                 userId: userDoc.id, email: userDoc.data().email, username: nick,
-                reason: reason, moderator: currentUser.email, active: true,
-                createdAt: new Date()
+                reason: reason, moderator: SYSTEM_NAME, active: true, createdAt: new Date()
             });
             alert(`✅ Кик выдан пользователю ${nick}`);
             document.getElementById('kickNick').value = '';
             document.getElementById('kickReason').value = '';
         };
 
-        // ВЫДАЧА РУБЛЕЙ
         document.getElementById('giveBalanceBtn').onclick = async () => {
             const nick = document.getElementById('giveNick').value.trim();
             const amount = parseInt(document.getElementById('giveAmountInput').value);
@@ -782,7 +792,7 @@
             await userDoc.ref.update({ balance: oldBalance + amount });
             await db.collection('balanceLogs').add({
                 userId: userDoc.id, amount: amount, reason: reason,
-                moderator: currentUser.email, createdAt: new Date(), shown: false
+                moderator: SYSTEM_NAME, createdAt: new Date(), shown: false
             });
             alert(`✅ Выдано ${amount} ₽ пользователю ${nick}`);
             document.getElementById('giveNick').value = '';
@@ -790,7 +800,6 @@
             document.getElementById('giveReasonInput').value = '';
         };
 
-        // ГЛОБАЛЬНАЯ ВЫДАЧА
         document.getElementById('globalGiveBtn').onclick = async () => {
             const amount = parseInt(document.getElementById('globalAmountInput').value);
             const reason = document.getElementById('globalReasonInput').value.trim();
@@ -802,7 +811,7 @@
                 await doc.ref.update({ balance: oldBalance + amount });
                 await db.collection('balanceLogs').add({
                     userId: doc.id, amount: amount, reason: `ГЛОБАЛЬНО: ${reason}`,
-                    moderator: currentUser.email, createdAt: new Date(), shown: false
+                    moderator: SYSTEM_NAME, createdAt: new Date(), shown: false
                 });
                 count++;
             }
@@ -811,13 +820,12 @@
             document.getElementById('globalReasonInput').value = '';
         };
 
-        // ЗАКРЫТИЕ/ОТКРЫТИЕ САЙТА
         document.getElementById('closeSiteBtn').onclick = async () => {
             const reason = document.getElementById('closeReason').value.trim();
             const hours = parseInt(document.getElementById('closeDuration').value);
             if(!reason) return alert('Укажите причину');
             const until = new Date(Date.now() + hours * 60 * 60 * 1000);
-            await db.collection('settings').doc('siteStatus').set({ closed: true, reason, until, moderator: currentUser.email, closedAt: new Date() });
+            await db.collection('settings').doc('siteStatus').set({ closed: true, reason, until, moderator: SYSTEM_NAME, closedAt: new Date() });
             alert(`✅ Сайт закрыт до ${until.toLocaleString()}`);
         };
         document.getElementById('openSiteBtn').onclick = async () => {
@@ -825,7 +833,30 @@
             alert('✅ Сайт открыт!');
         };
 
-        // ТЕСТ-СЕРВЕР
+        document.getElementById('banUserBtn').onclick = async () => {
+            const nick = document.getElementById('banNick').value.trim();
+            const email = document.getElementById('banEmail').value.trim();
+            const reason = document.getElementById('banReason').value.trim();
+            const duration = document.getElementById('banDuration').value;
+            if((!nick && !email) || !reason) return alert('Заполните ник/почту и причину');
+            let until = null;
+            if(duration !== 'forever') until = new Date(Date.now() + parseInt(duration) * 60 * 60 * 1000);
+            let targetUserId = null;
+            if(email) {
+                const snap = await db.collection('users').where('email', '==', email).get();
+                if(!snap.empty) targetUserId = snap.docs[0].id;
+            }
+            await db.collection('bans').add({
+                userId: targetUserId, username: nick, email: email, reason: reason, until: until,
+                active: true, moderator: SYSTEM_NAME, createdAt: new Date()
+            });
+            alert('✅ Бан выдан!');
+            document.getElementById('banNick').value = '';
+            document.getElementById('banEmail').value = '';
+            document.getElementById('banReason').value = '';
+            loadBansList();
+        };
+
         let selectedTest = { days: null, price: null };
         document.getElementById('openTestBtn').onclick = () => document.getElementById('testModal').style.display = 'flex';
         document.getElementById('closeTestModal').onclick = () => document.getElementById('testModal').style.display = 'none';
@@ -852,7 +883,6 @@
             selectedTest = { days: null, price: null };
         };
 
-        // ПЕРЕКЛЮЧЕНИЕ СТРАНИЦ
         document.querySelectorAll('.menu-tab').forEach(tab => {
             tab.onclick = () => {
                 document.querySelectorAll('.menu-tab').forEach(t => t.classList.remove('active'));
@@ -864,7 +894,6 @@
             };
         });
 
-        // АДМИНКА
         document.getElementById('openAdminBtn').onclick = () => {
             document.getElementById('adminModal').style.display = 'flex';
             document.getElementById('adminPasswordPanel').style.display = 'block';
@@ -917,30 +946,25 @@
         
         document.getElementById('logoutBtn').onclick = async () => { await auth.signOut(); };
         
-        // ОСНОВНАЯ ЛОГИКА ВХОДА
         auth.onAuthStateChanged(async (user) => {
             if(user) {
                 currentUser = user;
                 document.getElementById('loadingPage').style.display = 'flex';
                 document.getElementById('loginPage').style.display = 'none';
                 
-                // Проверка закрытия сайта (ramonenok@bk.ru может заходить)
                 const siteClosed = await checkSiteClosed();
-                if(siteClosed && user.email !== 'ramonenok@bk.ru') {
+                if(siteClosed && user.email !== ADMIN_EMAIL) {
                     document.getElementById('loadingPage').style.display = 'none';
                     document.getElementById('closedReason').innerText = siteClosed.reason;
                     document.getElementById('closedUntil').innerText = siteClosed.until ? new Date(siteClosed.until.toDate()).toLocaleString() : 'Неизвестно';
-                    document.getElementById('closedModerator').innerText = siteClosed.moderator;
                     document.getElementById('closedWindow').style.display = 'flex';
                     document.getElementById('closedExitBtn').onclick = async () => { await auth.signOut(); document.getElementById('closedWindow').style.display = 'none'; };
                     return;
                 }
                 
-                // Проверка кика
                 const kickInfo = await checkKick(user.email);
                 if(kickInfo) {
                     document.getElementById('loadingPage').style.display = 'none';
-                    document.getElementById('kickModerator').innerText = kickInfo.moderator;
                     document.getElementById('kickReasonText').innerText = kickInfo.reason;
                     document.getElementById('kickDateText').innerText = new Date(kickInfo.createdAt.toDate()).toLocaleString();
                     document.getElementById('kickWindow').style.display = 'flex';
@@ -948,11 +972,9 @@
                     return;
                 }
                 
-                // Проверка бана
                 const banInfo = await checkBan(user.uid, user.email, user.displayName);
                 if(banInfo) {
                     document.getElementById('loadingPage').style.display = 'none';
-                    document.getElementById('banModerator').innerText = banInfo.moderator;
                     document.getElementById('banReasonText').innerText = banInfo.reason;
                     document.getElementById('banUnbanDate').innerText = banInfo.until ? new Date(banInfo.until.toDate()).toLocaleString() : 'Навсегда';
                     document.getElementById('banDateText').innerText = new Date(banInfo.createdAt.toDate()).toLocaleString();
@@ -961,25 +983,21 @@
                     return;
                 }
                 
-                // Проверка разбана
                 const unbanSnap = await db.collection('unbanLogs').where('email', '==', user.email).where('shown', '==', false).get();
                 if(!unbanSnap.empty) {
                     const unban = unbanSnap.docs[0].data();
                     await unbanSnap.docs[0].ref.update({ shown: true });
-                    document.getElementById('unbanModerator').innerText = unban.unbanModerator;
                     document.getElementById('unbanReason').innerText = unban.reason;
                     document.getElementById('unbanDate').innerText = new Date(unban.unbanDate.toDate()).toLocaleString();
                     document.getElementById('unbanWindow').style.display = 'flex';
                     document.getElementById('unbanContinueBtn').onclick = () => document.getElementById('unbanWindow').style.display = 'none';
                 }
                 
-                // Проверка выдачи рублей (даже если себе)
                 const balanceSnap = await db.collection('balanceLogs').where('userId', '==', user.uid).where('shown', '==', false).get();
                 if(!balanceSnap.empty) {
                     for(const doc of balanceSnap.docs) {
                         const give = doc.data();
                         await doc.ref.update({ shown: true });
-                        document.getElementById('giveModerator').innerText = give.moderator;
                         document.getElementById('giveAmount').innerText = give.amount.toLocaleString();
                         document.getElementById('giveReason').innerText = give.reason;
                         document.getElementById('giveBalanceWindow').style.display = 'flex';
