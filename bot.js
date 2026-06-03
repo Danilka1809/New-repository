@@ -3,7 +3,7 @@ const mineflayer = require('mineflayer');
 // ===== НАСТРОЙКИ (МЕНЯЙ ТУТ) =====
 const CONFIG = {
     // УКАЖИ СВОЙ ДОМЕН ATERNOS (пример: 'tvoi-server.aternos.me')
-    host: 'ТВОЙ_СЕРВЕР.aternos.me',
+    host: 'botcreatortest.aternos.me',
     // ПОРТ МОЖЕШЬ НЕ УКАЗЫВАТЬ - БОТ САМ ПОДСТАВИТ ПРАВИЛЬНЫЙ!
     username: 'DonateBot',       // Ник бота
     version: '1.20.1',           // Версия Minecraft
