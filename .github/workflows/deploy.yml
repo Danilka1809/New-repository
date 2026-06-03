@@ -7,21 +7,29 @@ jobs:
     runs-on: ubuntu-latest
     
     steps:
-      # Установка Java 21 (необходима для современных сборок PaperMC)
+      # Установка Java 21
       - name: Установка JDK
         uses: actions/setup-java@v4
         with:
-          java-version: '21'  # Обязательно указываем Java 21
+          java-version: '21'
           distribution: 'temurin'
-      
-      # Создание директории и переход в неё
-      - name: Создание папки для сервера
-        run: |
-          mkdir server
-          cd server
-      
-      # Скачивание последней версии PaperMC 1.21.4
+
+      # Создание папки для сервера и скачивание файла
       - name: Скачивание сервера
         run: |
+          # Создаем папку для сервера и переходим в неё
+          mkdir server
           cd server
-          wget https://api.purpurmc.org/v2/purpur/1.21.4/2416/download -O server.
+
+          # Скачиваем файл напрямую по рабочей ссылке
+          wget https://api.purpurmc.org/v2/purpur/1.21.4/2416/download -O server.jar
+
+          # Принимаем лицензию EULA
+          echo "eula=true" > eula.txt
+
+      # Запуск сервера с полным выводом логов
+      - name: Запуск сервера
+        run: |
+          cd server
+          java -Xmx2048M -Xms2048M -jar server.jar nogui
+        shell: bash {0} >> $RUNNER_TEMP/my_logs.log 2>&1
