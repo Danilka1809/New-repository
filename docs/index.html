@@ -4,13 +4,14 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>GrifLauncher | Главная</title>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="style.css">
     <script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-app-compat.js"></script>
     <script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-auth-compat.js"></script>
     <script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore-compat.js"></script>
 </head>
 <body>
-    <header class="header">
+    <div class="header">
         <div class="nav">
             <div class="logo">GRIF LAUNCHER</div>
             <div class="nav-links">
@@ -21,44 +22,37 @@
                 <a href="chat.html">Чат</a>
                 <a href="gallery.html">Галерея</a>
             </div>
-            <div id="authStatus"></div>
+            <div id="authStatus" class="auth-status"></div>
         </div>
-    </header>
+    </div>
+
+    <div class="hero">
+        <h1>GRIF LAUNCHER</h1>
+        <p>Стань частью лучшего игрового сообщества. Привилегии, уникальный контент и поддержка 24/7</p>
+        <a href="shop.html" class="btn-primary">🔥 Приобрести донат</a>
+    </div>
 
     <div class="container">
-        <div class="hero">
-            <h1>GRIF LAUNCHER</h1>
-            <p>Лучший игровой опыт с привилегиями, поддержкой и активным сообществом</p>
-            <a href="shop.html" class="btn-primary">🔥 Приобрести донат</a>
+        <div class="video-block">
+            <iframe width="100%" height="450" src="https://www.youtube.com/embed/dQw4w9WgXcQ?autoplay=0" frameborder="0" allowfullscreen></iframe>
         </div>
 
         <div class="two-columns">
-            <!-- НОВОСТИ -->
             <div class="main-content">
-                <div class="section-title">📰 Последние новости</div>
+                <div class="section-title">📰 ПОСЛЕДНИЕ НОВОСТИ</div>
                 <div id="newsList" class="news-list"></div>
             </div>
-
-            <!-- БОКОВАЯ ПАНЕЛЬ -->
             <aside class="sidebar">
                 <div class="card">
                     <h3>💬 Сайт-чат</h3>
                     <div id="chatMessages" class="chat-messages"></div>
                     <input type="text" id="chatInput" placeholder="Написать сообщение...">
-                    <button id="sendChat">Отправить</button>
+                    <button id="sendChatBtn">Отправить</button>
                 </div>
                 <div class="card">
                     <h3>🤖 Telegram бот</h3>
                     <p>Напишите <strong>@GrifLauncherBot</strong> в Telegram, чтобы узнать онлайн, получить помощь или задать вопрос.</p>
                     <p><strong>Команды:</strong> /faq, /online, /site</p>
-                </div>
-                <div class="card">
-                    <h3>⚡ Преимущества</h3>
-                    <ul>
-                        <li>✅ Мгновенная выдача</li>
-                        <li>✅ Поддержка 24/7</li>
-                        <li>✅ Лучшие цены</li>
-                    </ul>
                 </div>
             </aside>
         </div>
