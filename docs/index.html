@@ -19,8 +19,8 @@
             <a href="shop.html" class="menu-item"><i class="fas fa-store"></i> Магазин</a>
             <a href="chat.html" class="menu-item"><i class="fas fa-comments"></i> Чат</a>
             <a href="profile.html" class="menu-item"><i class="fas fa-user"></i> Профиль</a>
-            <a href="wiki.html" class="menu-item"><i class="fas fa-book"></i> База знаний</a>
             <a href="gallery.html" class="menu-item"><i class="fas fa-image"></i> Галерея</a>
+            <a href="support.html" class="menu-item"><i class="fas fa-ticket-alt"></i> Поддержка</a>
         </div>
         <div class="sidebar-footer">
             <div id="authStatus"></div>
@@ -40,14 +40,29 @@
             <p>Лучший игровой опыт с привилегиями, поддержкой и активным сообществом</p>
             <a href="shop.html" class="btn-main">🔥 ПРИОБРЕСТИ ДОНАТ</a>
         </div>
-        <div class="two-columns">
-            <div class="feed-column">
-                <div class="card"><h3>📰 Лента активности</h3><div id="feedList"></div></div>
-                <div class="card"><h3>🔥 Популярные товары</h3><div id="popularProducts"></div></div>
+
+        <!-- КАЛЕНДАРЬ ИВЕНТОВ -->
+        <div class="card"><h3><i class="fas fa-calendar-alt"></i> Календарь ивентов</h3>
+            <div class="timeline" id="eventCalendar">
+                <div class="event-item"><div class="event-date">15 июня</div><div class="event-info"><h4>🔥 Турнир по PvP</h4><p>Призовой фонд 50 000 ₽</p></div></div>
+                <div class="event-item"><div class="event-date">20 июня</div><div class="event-info"><h4>🏰 Клановая война</h4><p>Сброс рейтинга, новый сезон</p></div></div>
+                <div class="event-item"><div class="event-date">25 июня</div><div class="event-info"><h4>✨ Ивент "Охота на дракона"</h4><p>Эксклюзивные награды</p></div></div>
             </div>
-            <div class="right-column">
-                <div class="card"><h3>🟢 Игроки онлайн</h3><div id="onlineCount">128 игроков</div></div>
-                <div class="card"><h3>🎮 Наши партнёры</h3><div>• Minecraft Community<br>• Server Hub</div></div>
+        </div>
+
+        <!-- КОНСТРУКТОР АВАТАРОВ -->
+        <div class="card"><h3><i class="fas fa-user-astronaut"></i> Конструктор аватаров</h3>
+            <div class="avatar-builder">
+                <div class="avatar-preview" id="avatarPreview"><i class="fas fa-user-circle"></i></div>
+                <div class="avatar-parts">
+                    <button class="part-btn" data-part="hair1">Причёска 1</button>
+                    <button class="part-btn" data-part="hair2">Причёска 2</button>
+                    <button class="part-btn" data-part="eyes1">Глаза 1</button>
+                    <button class="part-btn" data-part="eyes2">Глаза 2</button>
+                    <button class="part-btn" data-part="outfit1">Одежда 1</button>
+                    <button class="part-btn" data-part="outfit2">Одежда 2</button>
+                </div>
+                <button id="saveAvatarBtn" class="btn-primary">Сохранить аватар</button>
             </div>
         </div>
     </div>
